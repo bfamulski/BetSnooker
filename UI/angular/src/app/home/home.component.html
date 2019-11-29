@@ -1,0 +1,64 @@
+﻿<!-- <div class="card mt-4">
+    <h4 class="card-header">Matches</h4>
+    <div class="card-body">
+        <h6>{{roundInfo?.roundName}}</h6>
+        <div *ngIf="loading" class="spinner-border spinner-border-sm"></div>
+        <ul *ngIf="matches">
+            <li *ngFor="let match of matches">{{match.player1Name}} vs {{match.player2Name}}</li>
+        </ul>
+    </div>
+</div> -->
+
+<div style="text-align: center;">
+  <span *ngIf="loading" class="spinner-border spinner-border-lm" style="display: inline-block; margin: 50px;"></span>
+</div>
+
+<table class="table table-striped" *ngIf="!loading">
+  <thead>
+    <tr style="padding: 0px;">
+      <th style="text-align: center;">ID</th>
+      <th style="text-align: center;">BEST OF</th>
+      <th style="text-align: right;">PLAYER 1</th>
+      <th style="text-align: center;"></th>
+      <th style="text-align: center; width: fit-content;"></th>
+      <th style="text-align: center;"></th>
+      <th style="text-align: left;">PLAYER 2</th>
+      <th style="text-align: left;">WINNER</th>
+      <th style="text-align: center;" colspan="6">BETS</th>
+    </tr>
+    <tr>
+      <th style="text-align: center;" colspan="8"></th>
+      <th *ngFor="let user of users" style="text-align: center;" colspan="3">{{user.username}}</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <tr mdbTableCol *ngFor="let item of dashboardItems">
+      <td style="text-align: center;">{{item.matchId}}</td>
+      <td style="text-align: center;">{{item.roundBestOf}}</td>
+      <td style="text-align: right;">{{item.player1Name}}</td>
+      <td style="text-align: center; font-weight: bold;">{{item.score1}}</td>
+      <td style="text-align: center; width: fit-content;">:</td>
+      <td style="text-align: center; font-weight: bold;">{{item.score2}}</td>
+      <td style="text-align: left;">{{item.player2Name}}</td>
+      <td style="text-align: left;">{{item.winnerName}}</td>
+      <!-- <td style="text-align: center; font-weight: bold; border: 1px solid black;">{{item.user1Bets?.betScore1}}</td> -->
+
+      <td *ngFor="let user of users" colspan="3" style="text-align: center;">
+        <table style="text-align: center; background-color: transparent;">
+          <tr style="text-align: center;">
+            <td style="text-align: center; font-weight: bold;">{{item.userBets[user.username]?.betScore1}}</td>
+            <td style="text-align: center; width: fit-content;">:</td>
+            <td style="text-align: center; font-weight: bold;">{{item.userBets[user.username]?.betScore2}}</td>
+          </tr>
+        </table>
+      </td>
+      <!-- <td style="text-align: center; font-weight: bold;">{{item.userBets[users[0]?.username]?.betScore1}}</td>
+      <td style="text-align: center; width: fit-content;">:</td>
+      <td style="text-align: center; font-weight: bold;">{{item.userBets[users[0]?.username]?.betScore2}}</td>
+      <td style="text-align: center; font-weight: bold;">{{item.userBets[users[1]?.username]?.betScore1}}</td>
+      <td style="text-align: center; width: fit-content;">:</td>
+      <td style="text-align: center; font-weight: bold;">{{item.userBets[users[1]?.username]?.betScore2}}</td> -->
+    </tr>
+  </tbody>
+</table>
