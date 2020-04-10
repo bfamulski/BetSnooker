@@ -14,12 +14,12 @@ export class BetsService {
 
     constructor(private http: HttpClient) { }
 
-    getBets(roundId: number): Observable<RoundBets> {
-        return this.http.get<RoundBets>(`${environment.apiUrl}/bets/${roundId}`);
+    getUserBets(): Observable<RoundBets> {
+        return this.http.get<RoundBets>(`${environment.apiUrl}/bets`);
     }
 
-    getAllBets(roundId: number): Observable<RoundBets[]> {
-        return this.http.get<RoundBets[]>(`${environment.apiUrl}/bets/all/${roundId}`);
+    getAllBets(): Observable<RoundBets[]> {
+        return this.http.get<RoundBets[]>(`${environment.apiUrl}/bets/all`);
     }
 
     submitBets(bets: RoundBets) {

@@ -10,15 +10,15 @@ import { Match, RoundInfo } from '../_models';
 export class SnookerFeedService {
     constructor(private http: HttpClient) { }
 
-    getEvents(): Observable<Event[]> {
-        return this.http.get<Event[]>(`${environment.apiUrl}/snookerFeed/events/${environment.season}`);
+    getCurrentEvent(): Observable<Event> {
+        return this.http.get<Event>(`${environment.apiUrl}/snookerFeed/event/current`);
     }
 
-    getRoundMatches(roundId: number): Observable<Match[]> {
-        return this.http.get<Match[]>(`${environment.apiUrl}/snookerFeed/matches/${roundId}`);
+    getEventMatches(): Observable<Match[]> {
+        return this.http.get<Match[]>(`${environment.apiUrl}/snookerFeed/matches/all`);
     }
 
-    getRoundInfo(roundId: number): Observable<RoundInfo> {
-        return this.http.get<RoundInfo>(`${environment.apiUrl}/snookerFeed/round/${roundId}`);
+    getCurrentRoundInfo(): Observable<RoundInfo> {
+        return this.http.get<RoundInfo>(`${environment.apiUrl}/snookerFeed/round/current`);
     }
 }

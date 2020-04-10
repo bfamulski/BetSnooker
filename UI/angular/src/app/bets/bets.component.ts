@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
-import { environment } from '../../environments/environment';
 import { Match, RoundInfo, Bet, RoundBets } from '../_models';
 import { SnookerFeedService, BetsService } from '../_services';
 
@@ -11,8 +10,6 @@ import { SnookerFeedService, BetsService } from '../_services';
   styleUrls: ['./bets.component.less']
 })
 export class BetsComponent implements OnInit {
-  private roundId = environment.roundId;
-
   private bets: Bet[];
   private roundInfo: RoundInfo;
 
@@ -24,19 +21,26 @@ export class BetsComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
 
-    const roundInfoRequest = this.snookerFeedService.getRoundInfo(this.roundId);
-    const betsRequest = this.betsService.getBets(this.roundId);
+    const currentRoundInfoRequest = this.snookerFeedService.getCurrentRoundInfo();
+    const betsRequest = this.betsService.getUserBets();
 
-    forkJoin([roundInfoRequest, betsRequest]).subscribe(results => {
+    forkJoin([currentRoundInfoRequest, betsRequest]).subscribe(results => {
       this.roundInfo = results[0];
-      this.bets = results[1].matchBets;
+
+      if (results[1] != null) {
+        this.bets = results[1].matchBets;
+      }
+      // else display: "No bets available at this moment"
 
       this.loading = false;
-    }, error => console.log(error));
+    }, error => {
+      console.log(error);
+      this.loading = false;
+    });
   }
 
   submit() {
-    const roundBets = new RoundBets({ roundId: this.roundId, matchBets: this.bets });
+    const roundBets = new RoundBets({ roundId: this.roundInfo.round, distance: this.roundInfo.distance, matchBets: this.bets });
     this.betsService.submitBets(roundBets).subscribe();
   }
 }

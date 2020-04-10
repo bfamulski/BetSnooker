@@ -3,15 +3,17 @@
 import { LoginComponent } from './login';
 import { HomeComponent } from './home';
 import { BetsComponent } from './bets';
+import { RegisterComponent } from './register';
 import { AuthGuard } from './_helpers';
 
 const routes: Routes = [
-    { path: '', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
-    { path: 'bets', component: BetsComponent },
+    { path: 'register', component: RegisterComponent },
+    { path: 'dashboard', component: HomeComponent, canActivate: [AuthGuard] },
+    { path: 'bets', component: BetsComponent, canActivate: [AuthGuard] },
 
     // otherwise redirect to home
-    { path: '**', redirectTo: '' }
+    { path: '**', redirectTo: 'dashboard' }
 ];
 
 export const appRoutingModule = RouterModule.forRoot(routes);

@@ -7,7 +7,6 @@ export const environment = {
     apiUrl: 'https://localhost:44320',
     season: 2019,
 
-    roundId: 7,
     userId: 'test'
 };
 

@@ -16,7 +16,7 @@ export class DashboardItem {
   roundName: string;
   roundBestOf: number;
 
-  userBets: { [userId: string]: { betScore1?: number, betScore2?: number } };
+  userBets: { [userId: string]: { betScore1?: number, betScore2?: number, scoreValue?: number } };
 
   public constructor(fields?: Partial<DashboardItem>) {
     Object.assign(this, fields);

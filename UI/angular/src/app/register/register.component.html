@@ -1,0 +1,37 @@
+<div class="col-md-6 offset-md-3 mt-5">
+    <div class="card">
+        <h4 class="card-header">BetSnooker - register new user</h4>
+        <div class="card-body">
+            <form [formGroup]="registerForm" autocomplete="off" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" formControlName="username" autocomplete="false" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+                    <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                        <div *ngIf="f.username.errors.required">Username is required</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" formControlName="password" autocomplete="off" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                        <div *ngIf="f.password.errors.required">Password is required</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmpassword">Confirm password</label>
+                    <input type="password" formControlName="confirmpassword" autocomplete="off" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.confirmpassword.errors }" />
+                    <div *ngIf="submitted && f.confirmpassword.errors" class="invalid-feedback">
+                        <div *ngIf="f.confirmpassword.errors.required">Password confirmation is required</div>
+                    </div>
+                </div>
+                <div class="center-container">
+                    <button [disabled]="loading" class="btn btn-primary">
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                        Register
+                    </button>
+                    <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

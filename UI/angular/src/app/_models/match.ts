@@ -3,6 +3,7 @@ export class Match {
     eventId: number;
     round: number;
     roundName: string;
+    distance: number;
     number: number;
     player1Id: number;
     player1Name: string;

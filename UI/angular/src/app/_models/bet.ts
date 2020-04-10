@@ -4,6 +4,7 @@ export class RoundBets {
     updatedAt: Date;
     eventId: number;
     roundId: number;
+    distance: number;
     matchBets: Bet[];
 
     public constructor(fields?: Partial<RoundBets>) {
@@ -20,4 +21,6 @@ export class Bet {
     player2Id: number;
     player2Name: string;
     score2?: number;
+    scoreValue: number;
+    error: number;
 }

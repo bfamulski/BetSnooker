@@ -10,7 +10,8 @@ import { appRoutingModule } from './app.routing';
 import { BasicAuthInterceptor, ErrorInterceptor } from './_helpers';
 import { HomeComponent } from './home';
 import { LoginComponent } from './login';
-import { BetsComponent } from './bets';
+import { BetsComponent } from './bets';;
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
     imports: [
@@ -24,7 +25,8 @@ import { BetsComponent } from './bets';
         AppComponent,
         HomeComponent,
         LoginComponent,
-        BetsComponent
+        BetsComponent,
+        RegisterComponent
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true },
