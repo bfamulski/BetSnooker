@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using BetSnooker.Models;
-using BetSnooker.Services;
+using BetSnooker.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BetSnooker.Controllers
@@ -21,12 +21,12 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> Register([Required, FromBody] User user)
         {
             var result = await _authenticationService.Register(user);
-            if (!result)
+            if (result == null)
             {
                 return BadRequest(new { message = "Could not register user" });
             }
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpPost("login")]

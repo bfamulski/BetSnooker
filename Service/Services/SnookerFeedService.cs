@@ -1,221 +1,211 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BetSnooker.HttpHelper;
 using BetSnooker.Models;
 using BetSnooker.Models.API;
+using BetSnooker.Services.Interfaces;
 
 namespace BetSnooker.Services
 {
-    public interface ISnookerFeedService
+    public interface ISnookerFeedService  // TODO: move to a separate file
     {
         // events
-        Task<IEnumerable<Event>> GetEvents(int season);
-        Task<Event> GetEvent(int eventId);
+        Task<IEnumerable<Event>> GetEvents(int season); // TODO: potentially not used
+        Task<Event> GetCurrentEvent();
 
         // rounds
-        Task<IEnumerable<RoundInfo>> GetAllRoundsInfo();
+        Task<IEnumerable<RoundInfo>> GetEventRounds();
         Task<RoundInfo> GetRoundInfo(int roundId);
+        Task<RoundInfoDetails> GetCurrentRound();
 
         // matches
-        Task<IEnumerable<Match>> GetEventMatches();
+        Task<IEnumerable<MatchDetails>> GetEventMatches(bool forceRefresh = true);
         Task<IEnumerable<MatchDetails>> GetRoundMatches(int roundId);
-        Task<Match> GetMatch(int roundId, int matchNumber);
+        Task<Match> GetMatch(int eventId, int roundId, int matchNumber); // TODO: potentially not used
 
         // players
         Task<IEnumerable<Player>> GetEventPlayers();
-        Task<Player> GetPlayer(int playerId);
     }
 
     public class SnookerFeedService : ISnookerFeedService
     {
-        private const string SnookerApiUrl = "http://api.snooker.org/";
-
-        private readonly IAsyncRestClient _restClient;
-        private readonly IAdminService _adminService;
+        private readonly ISnookerApiService _snookerApiService;
+        private readonly IConfigurationService _configurationService;
 
         // TODO: implement better caching
-        private readonly IDictionary<int, IEnumerable<Player>> _cachedPlayers = new Dictionary<int, IEnumerable<Player>>();
-        private readonly IDictionary<int, IEnumerable<RoundInfo>> _cachedRounds = new Dictionary<int, IEnumerable<RoundInfo>>();
+        private static readonly IDictionary<int, List<RoundInfo>> _cachedRounds = new Dictionary<int, List<RoundInfo>>();
+        private static readonly IDictionary<int, List<Match>> _cachedMatches = new ConcurrentDictionary<int, List<Match>>();
+        private static readonly IDictionary<int, List<Player>> _cachedPlayers = new Dictionary<int, List<Player>>();
 
-        public SnookerFeedService(IAsyncRestClient restClient, IAdminService adminService)
+        public SnookerFeedService(ISnookerApiService snookerApiService, IConfigurationService configurationService)
         {
-            _restClient = restClient;
-            _restClient.BaseAddress = new Uri(SnookerApiUrl);
-
-            _adminService = adminService;
+            _snookerApiService = snookerApiService;
+            _configurationService = configurationService;
         }
 
         public async Task<IEnumerable<Event>> GetEvents(int season)
         {
-            var request = HttpRequestBuilder.Create().WithQueryParams()
-                .Add("t", "5")
-                .Add("s", season.ToString())
-                .BuildQuery();
-            var response = await _restClient.Send<IEnumerable<Event>>(request);
-
-            if (!response.Success)
-            {
-                throw new Exception(response.ErrorMessage);
-            }
-
-            return response.Data;
+            return await _snookerApiService.GetEvents(season);
         }
 
-        public async Task<Event> GetEvent(int eventId)
+        public async Task<Event> GetCurrentEvent()
         {
-            var request = HttpRequestBuilder.Create().WithQueryParams().Add("e", eventId.ToString()).BuildQuery();
-            var response = await _restClient.Send<IEnumerable<Event>>(request);
-
-            if (!response.Success)
-            {
-                throw new Exception(response.ErrorMessage);
-            }
-
-            return response.Data.FirstOrDefault();
+            return await _snookerApiService.GetEvent(_configurationService.EventId);
         }
 
-        public async Task<Player> GetPlayer(int playerId)
+        public async Task<IEnumerable<RoundInfo>> GetEventRounds()
         {
-            var request = HttpRequestBuilder.Create().WithQueryParams().Add("p", playerId.ToString()).BuildQuery();
-            var response = await _restClient.Send<IEnumerable<Player>>(request);
-
-            if (!response.Success)
-            {
-                throw new Exception(response.ErrorMessage);
-            }
-
-            return response.Data.FirstOrDefault();
-        }
-
-        public async Task<IEnumerable<Player>> GetEventPlayers()
-        {
-            var eventId = await _adminService.GetCurrentEventId();
-
-            if (_cachedPlayers.ContainsKey(eventId) && _cachedPlayers[eventId].Any())
-            {
-                return _cachedPlayers[eventId];
-            }
-
-            var request = HttpRequestBuilder.Create().WithQueryParams()
-                .Add("t", "9")
-                .Add("e", eventId.ToString())
-                .BuildQuery();
-            
-            var response = await _restClient.Send<IEnumerable<Player>>(request);
-            if (!response.Success)
-            {
-                throw new Exception(response.ErrorMessage);
-            }
-
-            _cachedPlayers[eventId] = response.Data;
-            return response.Data;
-        }
-
-        public async Task<IEnumerable<Match>> GetEventMatches()
-        {
-            var eventId = await _adminService.GetCurrentEventId();
-
-            var eventMatchesRequest = HttpRequestBuilder.Create().WithQueryParams()
-                .Add("t", "6")
-                .Add("e", eventId.ToString())
-                .BuildQuery();
-
-            var eventMatchesResponse = await _restClient.Send<IEnumerable<Match>>(eventMatchesRequest);
-            if (!eventMatchesResponse.Success)
-            {
-                throw new Exception(eventMatchesResponse.ErrorMessage);
-            }
-
-            return eventMatchesResponse.Data;
-        }
-
-        public async Task<IEnumerable<MatchDetails>> GetRoundMatches(int roundId)
-        {
-            var eventId = await _adminService.GetCurrentEventId();
-
-            var eventMatchesRequest = HttpRequestBuilder.Create().WithQueryParams()
-                .Add("t", "6")
-                .Add("e", eventId.ToString())
-                .BuildQuery();
-            
-            var eventMatchesResponse = await _restClient.Send<IEnumerable<Match>>(eventMatchesRequest);
-            if (!eventMatchesResponse.Success)
-            {
-                throw new Exception(eventMatchesResponse.ErrorMessage);
-            }
-
-            var roundMatches = eventMatchesResponse.Data.Where(m => m.Round == roundId);
-
-            var roundInfo = await GetRoundInfo(roundId);
-            var players = await GetEventPlayers();
-
-            var matchDetailsCollection = new List<MatchDetails>();
-            foreach (var match in roundMatches)
-            {
-                var player1 = players.Single(p => p.Id == match.Player1Id);
-                var player2 = players.Single(p => p.Id == match.Player2Id);
-                var winner = players.SingleOrDefault(p => p.Id == match.WinnerId);
-
-                MatchDetails matchDetails = new MatchDetails(match);
-                matchDetails.Player1Name = player1.ToString();
-                matchDetails.Player2Name = player2.ToString();
-                matchDetails.WinnerName = winner != null ? winner.ToString() : "";
-                matchDetails.RoundName = roundInfo.RoundName;
-                matchDetailsCollection.Add(matchDetails);
-            }
-
-            return matchDetailsCollection;
-        }
-
-        public async Task<Match> GetMatch(int roundId, int matchNumber)
-        {
-            var eventId = await _adminService.GetCurrentEventId();
-
-            var request = HttpRequestBuilder.Create().WithQueryParams()
-                .Add("e", eventId.ToString())
-                .Add("r", roundId.ToString())
-                .Add("n", matchNumber.ToString())
-                .BuildQuery();
-            var response = await _restClient.Send<IEnumerable<Match>>(request);
-
-            if (!response.Success)
-            {
-                throw new Exception(response.ErrorMessage);
-            }
-
-            return response.Data.FirstOrDefault();
-        }
-
-        public async Task<IEnumerable<RoundInfo>> GetAllRoundsInfo()
-        {
-            var eventId = await _adminService.GetCurrentEventId();
-
+            int eventId = _configurationService.EventId;
             if (_cachedRounds.ContainsKey(eventId) && _cachedRounds[eventId].Any())
             {
                 return _cachedRounds[eventId];
             }
 
-            var request = HttpRequestBuilder.Create().WithQueryParams()
-                .Add("t", "12")
-                .Add("e", eventId.ToString())
-                .BuildQuery();
-            var response = await _restClient.Send<IEnumerable<RoundInfo>>(request);
-
-            if (!response.Success)
+            var eventRounds = await _snookerApiService.GetEventRounds(eventId);
+            if (eventRounds != null && eventRounds.Any())
             {
-                throw new Exception(response.ErrorMessage);
+                _cachedRounds[eventId] = eventRounds.ToList();
             }
 
-            _cachedRounds[eventId] = response.Data;
-            return response.Data;
+            return eventRounds;
         }
 
         public async Task<RoundInfo> GetRoundInfo(int roundId)
         {
-            var allRounds = await GetAllRoundsInfo();
-            return allRounds.SingleOrDefault(r => r.Round == roundId);
+            var eventRounds = await GetEventRounds();
+            var round = eventRounds.SingleOrDefault(r => r.Round == roundId);
+            return new RoundInfoDetails(round);
+        }
+
+        public async Task<RoundInfoDetails> GetCurrentRound()
+        {
+            var eventMatches = await GetEventMatches(false);
+            var eventMatchesGroupedByRound = eventMatches.GroupBy(m => m.Round).OrderBy(r => r.Key);
+
+            RoundInfoDetails roundInfoDetails = null;
+            foreach (var matchesGrouped in eventMatchesGroupedByRound)
+            {
+                var roundFinished = matchesGrouped.All(match => !match.Unfinished && (match.Score1 != 0 || match.Score2 != 0));
+                if (roundFinished && matchesGrouped.Count() > 1) continue; // do not null final round
+
+                var roundId = matchesGrouped.First().Round;
+                var roundInfo = await GetRoundInfo(roundId);
+                
+                var minScheduledDate = matchesGrouped.Min(m => m.ScheduledDate);
+                roundInfoDetails = new RoundInfoDetails(roundInfo)
+                {
+                    Started = minScheduledDate.HasValue && minScheduledDate.Value.ToLocalTime() <= DateTime.Now
+                };
+
+                break;
+            }
+
+            return roundInfoDetails;
+        }
+
+        public async Task<IEnumerable<MatchDetails>> GetEventMatches(bool forceRefresh = true)
+        {
+            int eventId = _configurationService.EventId;
+            IEnumerable<Match> eventMatches;
+            if (forceRefresh)
+            {
+                eventMatches = await _snookerApiService.GetEventMatches(eventId);
+                if (eventMatches != null && eventMatches.Any())
+                {
+                    lock (_cachedMatches)
+                    {
+                        _cachedMatches[eventId] = eventMatches.ToList();
+                    }
+                }
+            }
+            else
+            {
+                bool cacheContainsKey;
+                lock (_cachedMatches)
+                {
+                    cacheContainsKey = _cachedMatches.ContainsKey(eventId);
+                }
+
+                if (cacheContainsKey)
+                {
+                    lock (_cachedMatches)
+                    {
+                        eventMatches = _cachedMatches[eventId];
+                    }
+                }
+                else
+                {
+                    eventMatches = await _snookerApiService.GetEventMatches(eventId);
+                    if (eventMatches != null && eventMatches.Any())
+                    {
+                        lock (_cachedMatches)
+                        {
+                            _cachedMatches[eventId] = eventMatches.ToList();
+                        }
+                    }
+                }
+            }
+
+            var startRoundId = _configurationService.StartRound;
+            var filteredMatches = eventMatches?.Where(match => match.Round >= startRoundId);
+
+            return filteredMatches != null && filteredMatches.Any()
+                ? await ConvertToMatchDetails(filteredMatches)
+                : new List<MatchDetails>();
+        }
+
+        public async Task<IEnumerable<MatchDetails>> GetRoundMatches(int roundId)
+        {
+            var eventMatches = await GetEventMatches();
+            var roundMatches = eventMatches.Where(m => m.Round == roundId);
+            return await ConvertToMatchDetails(roundMatches);
+        }
+
+        public async Task<Match> GetMatch(int eventId, int roundId, int matchNumber)
+        {
+            return await _snookerApiService.GetMatch(eventId, roundId, matchNumber);
+        }
+
+        public async Task<IEnumerable<Player>> GetEventPlayers()
+        {
+            int eventId = _configurationService.EventId;
+            if (_cachedPlayers.ContainsKey(eventId) && _cachedPlayers[eventId].Any())
+            {
+                return _cachedPlayers[eventId];
+            }
+
+            var eventPlayers = await _snookerApiService.GetEventPlayers(eventId);
+            _cachedPlayers[eventId] = eventPlayers != null ? eventPlayers.ToList() : new List<Player>();
+            return eventPlayers;
+        }
+
+        private async Task<IEnumerable<MatchDetails>> ConvertToMatchDetails(IEnumerable<Match> matches)
+        {
+            var players = await GetEventPlayers();
+
+            var matchDetailsCollection = new List<MatchDetails>();
+            foreach (var match in matches)
+            {
+                var player1 = players.Single(p => p.Id == match.Player1Id);
+                var player2 = players.Single(p => p.Id == match.Player2Id);
+                var winner = players.SingleOrDefault(p => p.Id == match.WinnerId);
+
+                var roundInfo = await GetRoundInfo(match.Round);
+                var matchDetails = new MatchDetails(match)
+                {
+                    Player1Name = player1.ToString(),
+                    Player2Name = player2.ToString(),
+                    WinnerName = winner != null ? winner.ToString() : "",
+                    RoundName = roundInfo.RoundName,
+                    Distance = roundInfo.Distance
+                };
+
+                matchDetailsCollection.Add(matchDetails);
+            }
+
+            return matchDetailsCollection.AsEnumerable();
         }
     }
 }

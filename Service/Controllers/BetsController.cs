@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using BetSnooker.Models;
-using BetSnooker.Services;
+using BetSnooker.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,19 +22,29 @@ namespace BetSnooker.Controllers
             _betsService = betsService;
         }
 
-        [HttpGet("{roundId:int}")]
-        public async Task<IActionResult> Get(int roundId)
+        [HttpGet]
+        public async Task<IActionResult> GetUserBets()
         { 
             var userId = GetUserIdFromRequest(Request);
-            var result = await _betsService.GetBets(userId, roundId);
+            var result = await _betsService.GetUserBets(userId);
+            if (result == null)
+            {
+                return NoContent(); // round already started
+            }
+
             return Ok(result);
         }
 
         [AllowAnonymous]
-        [HttpGet("all/{roundId:int}")]
-        public async Task<IActionResult> GetAllBets(int roundId)
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllBets()
         {
-            var result = await _betsService.GetAllBets(roundId);
+            var result = await _betsService.GetAllBets();
+            if (result == null)
+            {
+                return NoContent();
+            }
+
             return Ok(result);
         }
 
@@ -42,7 +52,12 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> Submit([FromBody] RoundBets bets)
         {
             var userId = GetUserIdFromRequest(Request);
-            await _betsService.SubmitBets(userId, bets);
+            var result = await _betsService.SubmitBets(userId, bets);
+            if (!result)
+            {
+                return BadRequest(new { message = "Could not submit bets for current round, because it has already started." });
+            }
+
             return Ok();
         }
 

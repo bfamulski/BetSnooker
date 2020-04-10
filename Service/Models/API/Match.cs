@@ -31,5 +31,7 @@ namespace BetSnooker.Models.API
         public DateTime? ScheduledDate { get; set; }
 
         public bool Unfinished { get; set; }
+
+        public string MatchId => $"{EventId}_{Round}_{Number}";
     }
 }

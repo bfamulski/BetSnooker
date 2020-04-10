@@ -17,15 +17,13 @@ namespace BetSnooker.Repositories
 
         public DbSet<Bet> MatchBets { get; set; }
 
-        public DbSet<Score> Scores { get; set; }
-
-        public DbSet<Event> Events { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoundBets>()
                 .HasMany(b => b.MatchBets)
                 .WithOne();
+
+            modelBuilder.Entity<RoundInfo>().HasKey(r => r.Round);
         }
     }
 }

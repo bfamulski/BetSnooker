@@ -4,17 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using BetSnooker.Helpers;
 using BetSnooker.Models;
-using BetSnooker.Repositories;
+using BetSnooker.Repositories.Interfaces;
+using BetSnooker.Services.Interfaces;
 
 namespace BetSnooker.Services
 {
-    public interface IAuthenticationService
-    {
-        Task<bool> Register(User user);
-        Task<User> Login(Credentials credentials);
-        Task<IEnumerable<User>> GetUsers();
-    }
-    
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IAuthenticationRepository _authenticationRepository;
@@ -24,17 +18,18 @@ namespace BetSnooker.Services
             _authenticationRepository = authenticationRepository;
         }
 
-        public async Task<bool> Register(User user)
+        public async Task<User> Register(User user)
         {
             user.Password = PasswordHelper.HashPassword(user.Password);
 
             try
             {
-                return await _authenticationRepository.AddUser(user);
+                var result = await _authenticationRepository.AddUser(user);
+                return result ? user : null;
             }
             catch (Exception)
             {
-                return false;
+                return null;
             }
         }
 

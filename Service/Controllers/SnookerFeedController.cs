@@ -15,17 +15,10 @@ namespace BetSnooker.Controllers
             _snookerFeedService = snookerFeedService;
         }
 
-        [HttpGet("events/{season:int}")]
-        public async Task<IActionResult> GetEvents(int season)
+        [HttpGet("event/current")]
+        public async Task<IActionResult> GetCurrentEvent()
         {
-            var result = await _snookerFeedService.GetEvents(season);
-            return Ok(result);
-        }
-
-        [HttpGet("matches/{roundId:int}")]
-        public async Task<IActionResult> GetRoundMatches(int roundId)
-        {
-            var result = await _snookerFeedService.GetRoundMatches(roundId);
+            var result = await _snookerFeedService.GetCurrentEvent();
             return Ok(result);
         }
 
@@ -36,10 +29,10 @@ namespace BetSnooker.Controllers
             return Ok(result);
         }
 
-        [HttpGet("round/{roundId:int}")]
-        public async Task<IActionResult> GetRoundInfo(int roundId)
+        [HttpGet("round/current")]
+        public async Task<IActionResult> GetCurrentRoundInfo()
         {
-            var result = await _snookerFeedService.GetRoundInfo(roundId);
+            var result = await _snookerFeedService.GetCurrentRound();
             return Ok(result);
         }
     }

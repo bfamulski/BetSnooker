@@ -18,8 +18,10 @@ namespace BetSnooker.Models
             NumMatches = roundInfo.NumMatches;
         }
 
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
         public bool Finished { get; set; }
+
+        public bool Started { get; set; }
     }
 }

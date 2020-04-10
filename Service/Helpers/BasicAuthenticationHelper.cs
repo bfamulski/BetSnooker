@@ -8,7 +8,7 @@ using BetSnooker.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using IAuthenticationService = BetSnooker.Services.IAuthenticationService;
+using IAuthenticationService = BetSnooker.Services.Interfaces.IAuthenticationService;
 
 namespace BetSnooker.Helpers
 {

@@ -7,7 +7,7 @@ namespace BetSnooker.Models
         public MatchDetails(Match match)
         {
             Id = match.Id;
-            MatchId = match.WorldSnookerId;
+            WorldSnookerId = match.WorldSnookerId;
             EventId = match.EventId;
             Round = match.Round;
             Number = match.Number;
@@ -22,9 +22,9 @@ namespace BetSnooker.Models
             Unfinished = match.Unfinished;
         }
 
-        public int MatchId { get; set; }
-
         public string RoundName { get; set; }
+
+        public int Distance { get; set; }
 
         public string Player1Name { get; set; }
 

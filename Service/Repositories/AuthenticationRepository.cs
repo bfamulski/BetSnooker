@@ -2,17 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BetSnooker.Models;
+using BetSnooker.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetSnooker.Repositories
 {
-    public interface IAuthenticationRepository
-    {
-        Task<bool> AddUser(User user);
-        User GetUser(string username, string password);
-        Task<IEnumerable<User>> GetUsers();
-    }
-
     public class AuthenticationRepository : IAuthenticationRepository
     {
         private readonly InMemoryDbContext _context;
