@@ -1,5 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://localhost:4000',
-    season: 2019
+    apiUrl: 'http://localhost:4000'
 };

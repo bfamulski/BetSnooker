@@ -24,22 +24,24 @@ namespace BetSnooker.Services
 
         public async Task<IEnumerable<RoundBets>> GetAllBets()
         {
-            var startRoundId = _configurationService.StartRound;
+            var eventRounds = await _snookerFeedService.GetEventRounds();
             var currentRound = await _snookerFeedService.GetCurrentRound();
-            var allRounds = await _snookerFeedService.GetEventRounds();
-
+            if (currentRound == null)
+            {
+                return null;
+            }
+            
             var filteredRounds = currentRound.Started
-                ? allRounds.Where(r => r.Round >= startRoundId && r.Round <= currentRound.Round)
-                : allRounds.Where(r => r.Round >= startRoundId && r.Round < currentRound.Round);
+                ? eventRounds.Where(r => r.Round <= currentRound.Round)
+                : eventRounds.Where(r => r.Round < currentRound.Round);
 
             var filteredBets = await Task.Run(() => _betsRepository.GetAllBets(filteredRounds.Select(r => r.Round).ToArray()));
             if (filteredBets == null || !filteredBets.Any())
             {
-                return filteredBets; // TODO: handle it in a better way
+                return null;
             }
 
             var eventMatches = await _snookerFeedService.GetEventMatches();
-
             foreach (var bet in filteredBets)
             {
                 foreach (var matchBet in bet.MatchBets)
@@ -57,7 +59,7 @@ namespace BetSnooker.Services
             var eventId = _configurationService.EventId;
 
             RoundInfoDetails roundInfo = await _snookerFeedService.GetCurrentRound();
-            if (roundInfo.Started)
+            if (roundInfo == null || roundInfo.Started)
             {
                 return null;
             }

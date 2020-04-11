@@ -14,6 +14,7 @@ export class HomeComponent {
   private matches: Match[];
   private roundBets: RoundBets[];
   private users: User[];
+  private eventRounds: RoundInfo[];
 
   private dashboardItems: DashboardItem[] = [];
 
@@ -29,10 +30,12 @@ export class HomeComponent {
 
     const roundMatchesRequest = this.snookerFeedService.getEventMatches();
     const usersRequest = this.authenticationService.getUsers();
+    const eventRoundsRequest = this.snookerFeedService.getEventRounds();
 
-    forkJoin([roundMatchesRequest, usersRequest]).subscribe(results => {
+    forkJoin([roundMatchesRequest, usersRequest, eventRoundsRequest]).subscribe(results => {
       this.matches = results[0];
       this.users = results[1];
+      this.eventRounds = results[2];
 
       this.betsService.getAllBets().subscribe(bets => {
         this.roundBets = bets;
@@ -54,17 +57,20 @@ export class HomeComponent {
             userBets: {}
           });
 
-          this.users.forEach(user => {
-            const userRoundBets = this.roundBets.filter(b => b.userId === user.username);
-            userRoundBets.forEach(userRoundBet => {
-              const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
-              if (bet) {
-                dashboardItem.userBets[user.username] = { betScore1: bet.score1, betScore2: bet.score2, scoreValue: bet.scoreValue };
-              }
+          if (this.roundBets) {
+            this.users.forEach(user => {
+              const userRoundBets = this.roundBets.filter(b => b.userId === user.username);
+              userRoundBets.forEach(userRoundBet => {
+                const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
+                if (bet) {
+                  dashboardItem.userBets[user.username] = { betScore1: bet.score1, betScore2: bet.score2, scoreValue: bet.scoreValue };
+                }
+              });
             });
-          });
+          }
 
           this.dashboardItems.push(dashboardItem);
+          this.dashboardItems.sort((item1, item2) => item2.matchId - item1.matchId);
         });
       }, error => {
         this.error = error;

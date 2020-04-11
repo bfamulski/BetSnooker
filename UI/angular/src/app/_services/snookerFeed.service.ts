@@ -11,7 +11,7 @@ export class SnookerFeedService {
     constructor(private http: HttpClient) { }
 
     getCurrentEvent(): Observable<Event> {
-        return this.http.get<Event>(`${environment.apiUrl}/snookerFeed/event/current`);
+        return this.http.get<Event>(`${environment.apiUrl}/snookerFeed/events/current`);
     }
 
     getEventMatches(): Observable<Match[]> {
@@ -19,6 +19,10 @@ export class SnookerFeedService {
     }
 
     getCurrentRoundInfo(): Observable<RoundInfo> {
-        return this.http.get<RoundInfo>(`${environment.apiUrl}/snookerFeed/round/current`);
+        return this.http.get<RoundInfo>(`${environment.apiUrl}/snookerFeed/rounds/current`);
+    }
+
+    getEventRounds(): Observable<RoundInfo[]> {
+        return this.http.get<RoundInfo[]>(`${environment.apiUrl}/snookerFeed/rounds/all`);
     }
 }

@@ -1,31 +1,37 @@
-<table class="table table-striped">
-    <thead>
-      <tr>
-        <th style="text-align: center;">ID</th>
-        <th style="text-align: center;">BEST OF</th>
-        <th style="text-align: right;">PLAYER 1</th>
-        <th style="text-align: center;"></th>
-        <th style="text-align: center; width: fit-content;"></th>
-        <th style="text-align: center;"></th>
-        <th style="text-align: left;">PLAYER 2</th>
-      </tr>
-    </thead>
-    <div *ngIf="loading" class="spinner-border spinner-border-lm" style="margin: 10px;"></div>
-    <tbody>
-      <tr mdbTableCol *ngFor="let bet of bets">
-        <td style="text-align: center;">{{bet.matchId}}</td>
-        <td style="text-align: center;">{{roundInfo.distance * 2 - 1}}</td>
-        <td style="text-align: right;">{{bet.player1Name}}</td>
-        <td style="text-align: center;">
-            <input type="number" min="0" max="{{roundInfo.distance}}" [(ngModel)]="bet.score1" style="width: 50px;"/>
-        </td>
-        <td style="text-align: center; width: fit-content;">:</td>
-        <td style="text-align: center;">
-            <input type="number" min="0" max="{{roundInfo.distance}}" [(ngModel)]="bet.score2" style="width: 50px;"/>
-        </td>
-        <td style="text-align: left;">{{bet.player2Name}}</td>
-      </tr>
-    </tbody>
-</table>
+<div *ngIf="!loading && !error">
+  <div class="title-container" style="padding: 10px;">{{roundInfo.roundName}}</div>
+  <table class="table table-striped">
+      <thead>
+        <tr>
+          <th style="text-align: center;">ID</th>
+          <th style="text-align: center;">BEST OF</th>
+          <th style="text-align: right;">PLAYER 1</th>
+          <th style="text-align: center;"></th>
+          <th style="text-align: center; width: fit-content;"></th>
+          <th style="text-align: center;"></th>
+          <th style="text-align: left;">PLAYER 2</th>
+        </tr>
+      </thead>
+      <div *ngIf="loading" class="spinner-border spinner-border-lm" style="margin: 10px;"></div>
+      <tbody>
+        <tr mdbTableCol *ngFor="let bet of bets">
+          <td style="text-align: center;">{{bet.matchId}}</td>
+          <td style="text-align: center;">{{roundInfo.distance * 2 - 1}}</td>
+          <td style="text-align: right;">{{bet.player1Name}}</td>
+          <td style="text-align: center;">
+              <input type="number" min="0" max="{{roundInfo.distance}}" [(ngModel)]="bet.score1" style="width: 50px;"/>
+          </td>
+          <td style="text-align: center; width: fit-content;">:</td>
+          <td style="text-align: center;">
+              <input type="number" min="0" max="{{roundInfo.distance}}" [(ngModel)]="bet.score2" style="width: 50px;"/>
+          </td>
+          <td style="text-align: left;">{{bet.player2Name}}</td>
+        </tr>
+      </tbody>
+  </table>
 
-<button type="submit" class="btn btn-success" style="width: 200px; float: right; margin: 20px;" (click)="submit()">Submit</button>
+  <div class="center-container">
+    <button type="submit" class="btn btn-success" style="width: 200px; margin: 20px;" (click)="submit()">Submit</button>
+  </div>
+</div>
+<div *ngIf="error" class="alert alert-info mt-3 mb-0">{{error}}</div>

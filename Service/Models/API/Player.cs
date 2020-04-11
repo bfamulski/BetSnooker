@@ -8,6 +8,6 @@
 
         public string LastName { get; set; }
 
-        public override string ToString() => FirstName == "TBD" ? "TBD" : $"{FirstName} {LastName}";
+        public override string ToString() => FirstName == "TBD" ? string.Empty : $"{FirstName} {LastName}";
     }
 }

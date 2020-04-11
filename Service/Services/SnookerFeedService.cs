@@ -12,18 +12,15 @@ namespace BetSnooker.Services
     public interface ISnookerFeedService  // TODO: move to a separate file
     {
         // events
-        Task<IEnumerable<Event>> GetEvents(int season); // TODO: potentially not used
         Task<Event> GetCurrentEvent();
 
         // rounds
-        Task<IEnumerable<RoundInfo>> GetEventRounds();
-        Task<RoundInfo> GetRoundInfo(int roundId);
+        Task<IEnumerable<RoundInfo>> GetEventRounds(bool allEventRounds = false);
         Task<RoundInfoDetails> GetCurrentRound();
 
         // matches
-        Task<IEnumerable<MatchDetails>> GetEventMatches(bool forceRefresh = true);
+        Task<IEnumerable<MatchDetails>> GetEventMatches(bool forceRefresh = true, bool allEventMatches = false);
         Task<IEnumerable<MatchDetails>> GetRoundMatches(int roundId);
-        Task<Match> GetMatch(int eventId, int roundId, int matchNumber); // TODO: potentially not used
 
         // players
         Task<IEnumerable<Player>> GetEventPlayers();
@@ -31,13 +28,13 @@ namespace BetSnooker.Services
 
     public class SnookerFeedService : ISnookerFeedService
     {
-        private readonly ISnookerApiService _snookerApiService;
-        private readonly IConfigurationService _configurationService;
-
         // TODO: implement better caching
         private static readonly IDictionary<int, List<RoundInfo>> _cachedRounds = new Dictionary<int, List<RoundInfo>>();
         private static readonly IDictionary<int, List<Match>> _cachedMatches = new ConcurrentDictionary<int, List<Match>>();
         private static readonly IDictionary<int, List<Player>> _cachedPlayers = new Dictionary<int, List<Player>>();
+
+        private readonly ISnookerApiService _snookerApiService;
+        private readonly IConfigurationService _configurationService;
 
         public SnookerFeedService(ISnookerApiService snookerApiService, IConfigurationService configurationService)
         {
@@ -45,43 +42,35 @@ namespace BetSnooker.Services
             _configurationService = configurationService;
         }
 
-        public async Task<IEnumerable<Event>> GetEvents(int season)
-        {
-            return await _snookerApiService.GetEvents(season);
-        }
-
         public async Task<Event> GetCurrentEvent()
         {
             return await _snookerApiService.GetEvent(_configurationService.EventId);
         }
 
-        public async Task<IEnumerable<RoundInfo>> GetEventRounds()
+        public async Task<IEnumerable<RoundInfo>> GetEventRounds(bool allEventRounds = false)
         {
             int eventId = _configurationService.EventId;
+            int startRound = _configurationService.StartRound;
+
             if (_cachedRounds.ContainsKey(eventId) && _cachedRounds[eventId].Any())
             {
-                return _cachedRounds[eventId];
+                var rounds = _cachedRounds[eventId];
+                return allEventRounds ? rounds : rounds.Where(r => r.Round >= startRound);
             }
 
             var eventRounds = await _snookerApiService.GetEventRounds(eventId);
-            if (eventRounds != null && eventRounds.Any())
+            var filteredRounds = eventRounds.Where(r => r.NumMatches > 0);
+            if (filteredRounds.Any())
             {
-                _cachedRounds[eventId] = eventRounds.ToList();
+                _cachedRounds[eventId] = filteredRounds.ToList();
             }
 
-            return eventRounds;
-        }
-
-        public async Task<RoundInfo> GetRoundInfo(int roundId)
-        {
-            var eventRounds = await GetEventRounds();
-            var round = eventRounds.SingleOrDefault(r => r.Round == roundId);
-            return new RoundInfoDetails(round);
+            return allEventRounds ? filteredRounds : filteredRounds.Where(r => r.Round >= startRound);
         }
 
         public async Task<RoundInfoDetails> GetCurrentRound()
         {
-            var eventMatches = await GetEventMatches(false);
+            var eventMatches = await GetEventMatches(false, true);
             var eventMatchesGroupedByRound = eventMatches.GroupBy(m => m.Round).OrderBy(r => r.Key);
 
             RoundInfoDetails roundInfoDetails = null;
@@ -102,10 +91,10 @@ namespace BetSnooker.Services
                 break;
             }
 
-            return roundInfoDetails;
+            return roundInfoDetails.Round >= _configurationService.StartRound ? roundInfoDetails : null;
         }
 
-        public async Task<IEnumerable<MatchDetails>> GetEventMatches(bool forceRefresh = true)
+        public async Task<IEnumerable<MatchDetails>> GetEventMatches(bool forceRefresh = true, bool allEventMatches = false)
         {
             int eventId = _configurationService.EventId;
             IEnumerable<Match> eventMatches;
@@ -148,6 +137,13 @@ namespace BetSnooker.Services
                 }
             }
 
+            if (allEventMatches)
+            {
+                return eventMatches != null && eventMatches.Any()
+                    ? await ConvertToMatchDetails(eventMatches)
+                    : new List<MatchDetails>();
+            }
+
             var startRoundId = _configurationService.StartRound;
             var filteredMatches = eventMatches?.Where(match => match.Round >= startRoundId);
 
@@ -163,11 +159,6 @@ namespace BetSnooker.Services
             return await ConvertToMatchDetails(roundMatches);
         }
 
-        public async Task<Match> GetMatch(int eventId, int roundId, int matchNumber)
-        {
-            return await _snookerApiService.GetMatch(eventId, roundId, matchNumber);
-        }
-
         public async Task<IEnumerable<Player>> GetEventPlayers()
         {
             int eventId = _configurationService.EventId;
@@ -177,7 +168,11 @@ namespace BetSnooker.Services
             }
 
             var eventPlayers = await _snookerApiService.GetEventPlayers(eventId);
-            _cachedPlayers[eventId] = eventPlayers != null ? eventPlayers.ToList() : new List<Player>();
+            if (eventPlayers != null && eventPlayers.Any())
+            {
+                _cachedPlayers[eventId] = eventPlayers.ToList();
+            }
+
             return eventPlayers;
         }
 
@@ -205,7 +200,14 @@ namespace BetSnooker.Services
                 matchDetailsCollection.Add(matchDetails);
             }
 
-            return matchDetailsCollection.AsEnumerable();
+            return matchDetailsCollection.AsEnumerable().OrderBy(m => m.Id);
+        }
+
+        private async Task<RoundInfo> GetRoundInfo(int roundId)
+        {
+            var eventRounds = await GetEventRounds(true);
+            var round = eventRounds.SingleOrDefault(r => r.Round == roundId);
+            return new RoundInfoDetails(round);
         }
     }
 }

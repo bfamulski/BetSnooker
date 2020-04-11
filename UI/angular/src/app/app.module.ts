@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { appRoutingModule } from './app.routing';
 
-import { BasicAuthInterceptor, ErrorInterceptor } from './_helpers';
+import { BasicAuthInterceptor, ErrorInterceptor, DashboardItemRoundFilterPipe } from './_helpers';
 import { HomeComponent } from './home';
 import { LoginComponent } from './login';
 import { BetsComponent } from './bets';;
@@ -26,7 +26,8 @@ import { RegisterComponent } from './register/register.component';
         HomeComponent,
         LoginComponent,
         BetsComponent,
-        RegisterComponent
+        RegisterComponent,
+        DashboardItemRoundFilterPipe
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true },

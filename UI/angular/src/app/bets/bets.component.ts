@@ -14,6 +14,7 @@ export class BetsComponent implements OnInit {
   private roundInfo: RoundInfo;
 
   loading = false;
+  error = '';
 
   constructor(private betsService: BetsService,
               private snookerFeedService: SnookerFeedService) { }
@@ -25,16 +26,16 @@ export class BetsComponent implements OnInit {
     const betsRequest = this.betsService.getUserBets();
 
     forkJoin([currentRoundInfoRequest, betsRequest]).subscribe(results => {
-      this.roundInfo = results[0];
-
-      if (results[1] != null) {
+      if (results[0] != null && results[1] != null) {
+        this.roundInfo = results[0];
         this.bets = results[1].matchBets;
+      } else {
+        this.error = 'No bets available at this moment';
       }
-      // else display: "No bets available at this moment"
 
       this.loading = false;
     }, error => {
-      console.log(error);
+      this.error = error;
       this.loading = false;
     });
   }

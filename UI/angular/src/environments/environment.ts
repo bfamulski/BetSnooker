@@ -4,10 +4,7 @@
 
 export const environment = {
     production: false,
-    apiUrl: 'https://localhost:44320',
-    season: 2019,
-
-    userId: 'test'
+    apiUrl: 'https://localhost:44320'
 };
 
 /*
