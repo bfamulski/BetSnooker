@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using BetSnooker.Models;
 using BetSnooker.Services.Interfaces;
@@ -44,8 +45,13 @@ namespace BetSnooker.Controllers
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers()
         {
-            var result = await _authenticationService.GetUsers();
-            return Ok(result);
+            var users = await _authenticationService.GetUsers();
+            if (users == null || !users.Any())
+            {
+                return NoContent();
+            }
+
+            return Ok(users);
         }
     }
 }

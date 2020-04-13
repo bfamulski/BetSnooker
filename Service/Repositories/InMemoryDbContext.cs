@@ -19,10 +19,6 @@ namespace BetSnooker.Repositories
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RoundBets>()
-                .HasMany(b => b.MatchBets)
-                .WithOne();
-
             modelBuilder.Entity<RoundInfo>().HasKey(r => r.Round);
         }
     }

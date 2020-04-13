@@ -122,11 +122,7 @@ namespace BetSnooker.Services
         {
             var currentRound =  await _snookerFeedService.GetCurrentRound();
             var startRound = _configurationService.StartRound;
-
-            return !currentRound.Started && currentRound.Round >= startRound;
-            //return (!currentRound.StartDate.HasValue || (currentRound.StartDate.HasValue && currentRound.StartDate > DateTime.Now))
-            //       && currentRound.Round >= startRound;
-            //return currentRound.StartDate > DateTime.Now && currentRound.Round >= startRound;
+            return currentRound != null && !currentRound.Started && currentRound.Round >= startRound;
         }
 
         private void CalculateScore(Match eventMatch, Bet matchBet, int matchDistance)

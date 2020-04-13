@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,26 +27,26 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> GetUserBets()
         { 
             var userId = GetUserIdFromRequest(Request);
-            var result = await _betsService.GetUserBets(userId);
-            if (result == null)
+            var bets = await _betsService.GetUserBets(userId);
+            if (bets == null || !bets.MatchBets.Any())
             {
-                return NoContent(); // round already started
+                return NoContent();
             }
 
-            return Ok(result);
+            return Ok(bets);
         }
 
         [AllowAnonymous]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllBets()
         {
-            var result = await _betsService.GetAllBets();
-            if (result == null)
+            var bets = await _betsService.GetAllBets();
+            if (bets == null || !bets.Any())
             {
                 return NoContent();
             }
 
-            return Ok(result);
+            return Ok(bets);
         }
 
         [HttpPost]
@@ -55,7 +56,7 @@ namespace BetSnooker.Controllers
             var result = await _betsService.SubmitBets(userId, bets);
             if (!result)
             {
-                return BadRequest(new { message = "Could not submit bets for current round, because it has already started." });
+                return BadRequest("Could not submit bets for current round, because it has already started.");
             }
 
             return Ok();

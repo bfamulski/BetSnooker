@@ -18,12 +18,12 @@ namespace BetSnooker.Repositories
 
         public IEnumerable<RoundBets> GetAllBets(int[] rounds)
         {
-            return _context.RoundBets.Include("MatchBets").Where(bet => rounds.Contains(bet.RoundId));
+            return _context.RoundBets.Include("MatchBets").AsNoTracking().Where(bet => rounds.Contains(bet.RoundId));
         }
 
         public async Task<RoundBets> GetUserBets(string userId, int roundId)
         {
-            return await _context.RoundBets.Include("MatchBets").SingleOrDefaultAsync(bet => bet.UserId == userId && bet.RoundId == roundId);
+            return await _context.RoundBets.Include("MatchBets").AsNoTracking().SingleOrDefaultAsync(bet => bet.UserId == userId && bet.RoundId == roundId);
         }
 
         public async Task SubmitBets(RoundBets bets)
@@ -36,13 +36,14 @@ namespace BetSnooker.Repositories
             }
             else
             {
-                _context.RoundBets.Remove(betsEntity);
-                await _context.RoundBets.AddAsync(bets);
+                betsEntity.UpdatedAt = bets.UpdatedAt;
+                foreach (var matchBet in betsEntity.MatchBets)
+                {
+                    matchBet.Score1 = bets.MatchBets.Single(m => m.MatchId == matchBet.MatchId).Score1;
+                    matchBet.Score2 = bets.MatchBets.Single(m => m.MatchId == matchBet.MatchId).Score2;
+                }
 
-                //betsEntity.UpdatedAt = bets.UpdatedAt;
-                //betsEntity.MatchBets = bets.MatchBets;
-                //_context.Entry(betsEntity).State = EntityState.Modified;
-                ////_context.RoundBets.Update(betsEntity);
+                _context.RoundBets.Update(betsEntity);
             }
 
             await _context.SaveChangesAsync();

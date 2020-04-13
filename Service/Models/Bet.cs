@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace BetSnooker.Models
+﻿namespace BetSnooker.Models
 {
     public class Bet
     {
@@ -28,8 +26,5 @@ namespace BetSnooker.Models
         public double? ScoreValue { get; set; }
 
         public int? Error { get; set; }
-
-        //public int RoundBetsID { get; set; }
-        //public RoundBets RoundBets { get; set; }
     }
 }

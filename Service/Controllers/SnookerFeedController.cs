@@ -29,7 +29,7 @@ namespace BetSnooker.Controllers
             var matches = await _snookerFeedService.GetEventMatches();
             if (matches == null || !matches.Any())
             {
-                return BadRequest("No matches available at this moment");
+                return NoContent();
             }
             
             return Ok(matches);
@@ -39,12 +39,6 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> GetCurrentRoundInfo()
         {
             var result = await _snookerFeedService.GetCurrentRound();
-            if (result == null)
-            {
-                return NoContent();
-                //return BadRequest("Current round is not yet available");
-            }
-
             return Ok(result);
         }
 

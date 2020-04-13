@@ -12,9 +12,9 @@ import { SnookerFeedService, BetsService, AuthenticationService } from '../_serv
 export class HomeComponent {
 
   private matches: Match[];
-  private roundBets: RoundBets[];
   private users: User[];
   private eventRounds: RoundInfo[];
+  private roundBets: RoundBets[];
 
   private dashboardItems: DashboardItem[] = [];
 
@@ -28,14 +28,20 @@ export class HomeComponent {
   ngOnInit() {
     this.loading = true;
 
-    const roundMatchesRequest = this.snookerFeedService.getEventMatches();
-    const usersRequest = this.authenticationService.getUsers();
     const eventRoundsRequest = this.snookerFeedService.getEventRounds();
+    const eventMatchesRequest = this.snookerFeedService.getEventMatches();
+    const usersRequest = this.authenticationService.getUsers();
 
-    forkJoin([roundMatchesRequest, usersRequest, eventRoundsRequest]).subscribe(results => {
-      this.matches = results[0];
-      this.users = results[1];
-      this.eventRounds = results[2];
+    forkJoin([eventRoundsRequest, eventMatchesRequest, usersRequest]).subscribe(results => {
+      this.eventRounds = results[0];
+      this.matches = results[1];
+      if (!this.eventRounds || !this.matches) {
+        this.error = 'No rounds or matches available for this event';
+        this.loading = false;
+        return;
+      }
+
+      this.users = results[2];
 
       this.betsService.getAllBets().subscribe(bets => {
         this.roundBets = bets;
@@ -57,7 +63,7 @@ export class HomeComponent {
             userBets: {}
           });
 
-          if (this.roundBets) {
+          if (this.users && this.roundBets) {
             this.users.forEach(user => {
               const userRoundBets = this.roundBets.filter(b => b.userId === user.username);
               userRoundBets.forEach(userRoundBet => {
@@ -70,14 +76,13 @@ export class HomeComponent {
           }
 
           this.dashboardItems.push(dashboardItem);
-          this.dashboardItems.sort((item1, item2) => item2.matchId - item1.matchId);
         });
+
+        this.loading = false;
       }, error => {
         this.error = error;
         this.loading = false;
       });
-
-      this.loading = false;
     }, error => {
       this.error = error;
       this.loading = false;

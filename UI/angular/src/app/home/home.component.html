@@ -1,14 +1,13 @@
-﻿<div class="center-container">
-  <span *ngIf="loading" class="spinner-border spinner-border-lm" style="display: inline-block; margin: 50px;"></span>
+﻿<div *ngIf="loading" class="center-container">
+  <span class="spinner-border spinner-border-lm" style="display: inline-block; margin: 50px;"></span>
 </div>
 
-<div *ngIf="!error">
+<div *ngIf="!loading && !error">
   <div *ngFor="let round of eventRounds">
     <div class="title-container" style="padding: 10px;">{{round.roundName}}</div>
-    <table class="table table-striped" *ngIf="!loading">
+    <table class="table table-sm" *ngIf="!loading">
       <thead>
         <tr style="padding: 0px;">
-          <th style="text-align: center;">ID</th>
           <th style="text-align: center;">BEST OF</th>
           <th style="text-align: right;">PLAYER 1</th>
           <th style="text-align: center;"></th>
@@ -16,27 +15,21 @@
           <th style="text-align: center;"></th>
           <th style="text-align: left;">PLAYER 2</th>
           <th style="text-align: left;">WINNER</th>
-          <th style="text-align: center;" colspan="6">BETS</th>
-        </tr>
-        <tr>
-          <th style="text-align: center;" colspan="8"></th>
-          <th *ngFor="let user of users" style="text-align: center;" colspan="3">{{user.username}}</th>
-        </tr>
+          <th *ngFor="let user of users" style="text-align: center;" colspan="5">{{user.username}}</th>
       </thead>
 
       <tbody>
         <tr mdbTableCol *ngFor="let item of dashboardItems | roundFilter: {round: round.round}">
-          <td style="text-align: center;">{{item.matchId}}</td>
-          <td style="text-align: center;">{{item.roundBestOf}}</td>
-          <td style="text-align: right;">{{item.player1Name}}</td>
-          <td style="text-align: center; font-weight: bold;">{{item.score1}}</td>
-          <td style="text-align: center; width: fit-content;">:</td>
-          <td style="text-align: center; font-weight: bold;">{{item.score2}}</td>
-          <td style="text-align: left;">{{item.player2Name}}</td>
-          <td style="text-align: left;">{{item.winnerName}}</td>
+          <td style="text-align: center; width: 80px;">{{item.roundBestOf}}</td>
+          <td style="text-align: right; width: 150px;">{{item.player1Name}}</td>
+          <td style="text-align: center; font-weight: bold; width: 20px;">{{item.score1}}</td>
+          <td style="text-align: center; width: 20px;">:</td>
+          <td style="text-align: center; font-weight: bold; width: 20px;">{{item.score2}}</td>
+          <td style="text-align: left; width: 150px;">{{item.player2Name}}</td>
+          <td style="text-align: left; width: 150px;">{{item.winnerName}}</td>
   
-          <td *ngFor="let user of users" colspan="3" style="text-align: center;">
-            <table style="text-align: center; background-color: transparent;" *ngIf="item.userBets[user.username]">
+          <td *ngFor="let user of users"  style="text-align: center; width: fit-content;">
+            <table style="text-align: center; background-color: transparent; width: fit-content;" *ngIf="item.userBets[user.username]">
               <tr style="text-align: center;">
                 <td style="text-align: center; font-weight: bold;">{{item.userBets[user.username]?.betScore1}}</td>
                 <td style="text-align: center; width: fit-content;">:</td>

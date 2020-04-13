@@ -17,6 +17,6 @@ namespace BetSnooker.Models
 
         public int Distance { get; set; }
 
-        public List<Bet> MatchBets { get; set; }
+        public ICollection<Bet> MatchBets { get; set; } = new List<Bet>();
     }
 }
