@@ -79,18 +79,37 @@ namespace BetSnooker.Services
             var eventBetsGroupedByUser = eventBets.GroupBy(b => b.UserId);
             foreach (var betsGrouped in eventBetsGroupedByUser)
             {
+                int matchesCount = 0;
                 double eventScore = 0.0;
+                int correctWinners = 0;
+                int exactScores = 0;
                 foreach (var userRoundBets in betsGrouped)
                 {
                     double roundScore = 0.0;
                     foreach (var matchBet in userRoundBets.MatchBets)
                     {
                         var eventMatch = eventMatches.Single(m => m.MatchId == matchBet.MatchId);
+                        if (eventMatch.WinnerId == 0)
+                        {
+                            continue;
+                        }
+
+                        matchesCount++;
                         CalculateScore(eventMatch, matchBet, userRoundBets.Distance);
 
                         if (matchBet.ScoreValue.HasValue)
                         {
                             roundScore += matchBet.ScoreValue.Value;
+                        }
+
+                        if (eventMatch.Score1 == matchBet.Score1 && eventMatch.Score2 == matchBet.Score2)
+                        {
+                            exactScores++;
+                        }
+
+                        if (eventMatch.WinnerId == matchBet.WinnerId)
+                        {
+                            correctWinners++;
                         }
                     }
 
@@ -98,7 +117,17 @@ namespace BetSnooker.Services
                     eventScore += userRoundBets.RoundScore.Value;
                 }
 
-                allUsersEventBets.Add(new EventBets { UserId = betsGrouped.Key, RoundBets = betsGrouped, EventScore = eventScore });
+                allUsersEventBets.Add(new EventBets
+                                      {
+                                          UserId = betsGrouped.Key,
+                                          RoundBets = betsGrouped,
+                                          MatchesFinished = matchesCount,
+                                          EventScore = eventScore,
+                                          CorrectWinners = correctWinners,
+                                          ExactScores = exactScores,
+                                          CorrectWinnersAccuracy = matchesCount != 0 ? (double)correctWinners / matchesCount : 0.0,
+                                          ExactScoresAccuracy = matchesCount != 0 ? (double)exactScores / matchesCount : 0.0
+                                      });
             }
 
             return allUsersEventBets;
@@ -203,6 +232,12 @@ namespace BetSnooker.Services
 
         private void CalculateScore(Match eventMatch, Bet matchBet, int matchDistance)
         {
+            if (eventMatch.WinnerId == 0)
+            {
+                matchBet.ScoreValue = null;
+                return;
+            }
+
             if (eventMatch.WinnerId == matchBet.WinnerId)
             {
                 var error = matchBet.WinnerId == matchBet.Player1Id

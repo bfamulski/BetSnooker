@@ -1,7 +1,12 @@
 export class EventBets {
     userId: string;
     roundBets: RoundBets[];
+    matchesFinished: number;
     eventScore: number;
+    correctWinners: number;
+    exactScores: number;
+    correctWinnersAccuracy: number;
+    exactScoresAccuracy: number;
 }
 
 export class RoundBets {
