@@ -1,7 +1,7 @@
 ﻿import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthenticationService } from './_services';
+import { AuthenticationService, SnookerFeedService } from './_services';
 import { User } from './_models';
 
 @Component({
@@ -11,11 +11,14 @@ import { User } from './_models';
 })
 export class AppComponent {
     currentUser: User;
+    currentEvent: Event;
 
     constructor(
         private router: Router,
-        private authenticationService: AuthenticationService) {
+        private authenticationService: AuthenticationService,
+        private snookerFeedService: SnookerFeedService) {
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+        this.snookerFeedService.getCurrentEvent().subscribe(event => this.currentEvent = event);
     }
 
     logout() {

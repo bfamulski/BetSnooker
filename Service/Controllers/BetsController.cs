@@ -37,10 +37,23 @@ namespace BetSnooker.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("all")]
+        [HttpGet("all/old")]
         public async Task<IActionResult> GetAllBets()
         {
             var bets = await _betsService.GetAllBets();
+            if (bets == null || !bets.Any())
+            {
+                return NoContent();
+            }
+
+            return Ok(bets);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetEventBets()
+        {
+            var bets = await _betsService.GetEventBets();
             if (bets == null || !bets.Any())
             {
                 return NoContent();
@@ -54,12 +67,17 @@ namespace BetSnooker.Controllers
         {
             var userId = GetUserIdFromRequest(Request);
             var result = await _betsService.SubmitBets(userId, bets);
-            if (!result)
+            switch (result)
             {
-                return BadRequest("Could not submit bets for current round, because it has already started.");
+                case SubmitResult.ValidationError:
+                    return BadRequest(new { message = "Invalid bets" });
+                case SubmitResult.InvalidRound:
+                    return BadRequest(new { message = "Invalid round or round already started" });
+                case SubmitResult.InternalServerError:
+                    return BadRequest(new { message = "Unexpected error while submitting bets" });
+                default:
+                    return Ok();
             }
-
-            return Ok();
         }
 
         private string GetUserIdFromRequest(HttpRequest request)

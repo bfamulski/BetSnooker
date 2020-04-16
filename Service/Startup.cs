@@ -47,8 +47,8 @@ namespace BetSnooker
             services.AddTransient<ISnookerFeedService, SnookerFeedService>();
             services.AddTransient<ISnookerApiService, SnookerApiService>();
 
-            (int eventId, int startRound, string snookerApiUrl) = GetConfigurationItems();
-            services.AddSingleton<IConfigurationService>(new ConfigurationService(eventId, startRound, snookerApiUrl));
+            (int eventId, int startRound, string snookerApiUrl, int? maxUsers) = GetConfigurationItems();
+            services.AddSingleton<IConfigurationService>(new ConfigurationService(eventId, startRound, snookerApiUrl, maxUsers));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,7 +74,7 @@ namespace BetSnooker
             });
         }
 
-        private (int eventId, int startRound, string snookerApiUrl) GetConfigurationItems()
+        private (int eventId, int startRound, string snookerApiUrl, int? maxUsers) GetConfigurationItems()
         {
             var eventIdConfig = Configuration["EventID"];
             var startRoundConfig = Configuration["StartRound"];
@@ -89,12 +89,20 @@ namespace BetSnooker
             }
 
             var snookerApiUrl = Configuration["SnookerApiUrl"];
-            if (string.IsNullOrEmpty(snookerApiUrl))
+
+            int? maxUsers = null;
+            var maxUsersConfig = Configuration["MaxUsers"];
+            if (!string.IsNullOrEmpty(maxUsersConfig))
             {
-                throw new ApplicationException("SnookerApiUrl configuration variable is not set");
+                if (!int.TryParse(maxUsersConfig, out int maxUsersOutput))
+                {
+                    throw new ApplicationException("MaxUsers configuration variable is invalid");
+                }
+
+                maxUsers = maxUsersOutput;
             }
 
-            return (eventId, startRound, snookerApiUrl);
+            return (eventId, startRound, snookerApiUrl, maxUsers);
         }
     }
 }

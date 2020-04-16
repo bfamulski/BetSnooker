@@ -1,7 +1,7 @@
 ﻿import { Component } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
-import { Match, RoundInfo, RoundBets, DashboardItem, User } from '../_models';
+import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User } from '../_models';
 import { SnookerFeedService, BetsService, AuthenticationService } from '../_services';
 
 @Component({
@@ -11,12 +11,15 @@ import { SnookerFeedService, BetsService, AuthenticationService } from '../_serv
 })
 export class HomeComponent {
 
+  private currentEvent: Event;
   private matches: Match[];
   private users: User[];
   private eventRounds: RoundInfo[];
   private roundBets: RoundBets[];
+  private eventBets: EventBets[];
 
   private dashboardItems: DashboardItem[] = [];
+  private usersScores: { [userId: string]: { eventScore: number }} = {};
 
   loading = false;
   error = '';
@@ -28,23 +31,25 @@ export class HomeComponent {
   ngOnInit() {
     this.loading = true;
 
+    const currentEventRequest = this.snookerFeedService.getCurrentEvent();
     const eventRoundsRequest = this.snookerFeedService.getEventRounds();
     const eventMatchesRequest = this.snookerFeedService.getEventMatches();
     const usersRequest = this.authenticationService.getUsers();
 
-    forkJoin([eventRoundsRequest, eventMatchesRequest, usersRequest]).subscribe(results => {
-      this.eventRounds = results[0];
-      this.matches = results[1];
+    forkJoin([currentEventRequest, eventRoundsRequest, eventMatchesRequest, usersRequest]).subscribe(results => {
+      this.currentEvent = results[0];
+      this.eventRounds = results[1];
+      this.matches = results[2];
       if (!this.eventRounds || !this.matches) {
         this.error = 'No rounds or matches available for this event';
         this.loading = false;
         return;
       }
 
-      this.users = results[2];
+      this.users = results[3];
 
-      this.betsService.getAllBets().subscribe(bets => {
-        this.roundBets = bets;
+      this.betsService.getEventBets().subscribe(bets => {
+        this.eventBets = bets;
 
         this.matches.forEach(match => {
           const dashboardItem = new DashboardItem({
@@ -63,10 +68,13 @@ export class HomeComponent {
             userBets: {}
           });
 
-          if (this.users && this.roundBets) {
+          // TODO: optimize it
+          if (this.users && this.eventBets) {
             this.users.forEach(user => {
-              const userRoundBets = this.roundBets.filter(b => b.userId === user.username);
-              userRoundBets.forEach(userRoundBet => {
+              const userEventBets = this.eventBets.filter(b => b.userId === user.username)[0];
+              this.roundBets = userEventBets.roundBets;
+              this.usersScores[user.username] = { eventScore: userEventBets.eventScore };
+              this.roundBets.forEach(userRoundBet => {
                 const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
                 if (bet) {
                   dashboardItem.userBets[user.username] = { betScore1: bet.score1, betScore2: bet.score2, scoreValue: bet.scoreValue };

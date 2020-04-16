@@ -9,29 +9,13 @@ using BetSnooker.Services.Interfaces;
 
 namespace BetSnooker.Services
 {
-    public interface ISnookerFeedService  // TODO: move to a separate file
-    {
-        // events
-        Task<Event> GetCurrentEvent();
-
-        // rounds
-        Task<IEnumerable<RoundInfo>> GetEventRounds(bool allEventRounds = false);
-        Task<RoundInfoDetails> GetCurrentRound();
-
-        // matches
-        Task<IEnumerable<MatchDetails>> GetEventMatches(bool forceRefresh = true, bool allEventMatches = false);
-        Task<IEnumerable<MatchDetails>> GetRoundMatches(int roundId);
-
-        // players
-        Task<IEnumerable<Player>> GetEventPlayers();
-    }
-
     public class SnookerFeedService : ISnookerFeedService
     {
         // TODO: implement better caching
-        private static readonly IDictionary<int, List<RoundInfo>> _cachedRounds = new Dictionary<int, List<RoundInfo>>();
+        private readonly ICacheService<RoundInfo> _cachedRounds = new CacheService<RoundInfo>(TimeSpan.FromDays(1));
+        private readonly ICacheService<Player> _cachedPlayers = new CacheService<Player>(TimeSpan.FromDays(1));
+
         private static readonly IDictionary<int, List<Match>> _cachedMatches = new ConcurrentDictionary<int, List<Match>>();
-        private static readonly IDictionary<int, List<Player>> _cachedPlayers = new Dictionary<int, List<Player>>();
 
         private readonly ISnookerApiService _snookerApiService;
         private readonly IConfigurationService _configurationService;
@@ -52,18 +36,15 @@ namespace BetSnooker.Services
             int eventId = _configurationService.EventId;
             int startRound = _configurationService.StartRound;
 
-            if (_cachedRounds.ContainsKey(eventId) && _cachedRounds[eventId].Any())
+            if (_cachedRounds.Exists())
             {
-                var rounds = _cachedRounds[eventId];
+                var rounds = _cachedRounds.Get();
                 return allEventRounds ? rounds : rounds.Where(r => r.Round >= startRound);
             }
 
             var eventRounds = await _snookerApiService.GetEventRounds(eventId);
             var filteredRounds = eventRounds.Where(r => r.NumMatches > 0);
-            if (filteredRounds.Any())
-            {
-                _cachedRounds[eventId] = filteredRounds.ToList();
-            }
+            _cachedRounds.Save(filteredRounds.ToList());
 
             return allEventRounds ? filteredRounds : filteredRounds.Where(r => r.Round >= startRound);
         }
@@ -162,16 +143,14 @@ namespace BetSnooker.Services
         public async Task<IEnumerable<Player>> GetEventPlayers()
         {
             int eventId = _configurationService.EventId;
-            if (_cachedPlayers.ContainsKey(eventId) && _cachedPlayers[eventId].Any())
+
+            if (_cachedPlayers.Exists())
             {
-                return _cachedPlayers[eventId];
+                return _cachedPlayers.Get();
             }
 
             var eventPlayers = await _snookerApiService.GetEventPlayers(eventId);
-            if (eventPlayers != null && eventPlayers.Any())
-            {
-                _cachedPlayers[eventId] = eventPlayers.ToList();
-            }
+            _cachedPlayers.Save(eventPlayers.ToList());
 
             return eventPlayers;
         }

@@ -1,3 +1,9 @@
+export class EventBets {
+    userId: string;
+    roundBets: RoundBets[];
+    eventScore: number;
+}
+
 export class RoundBets {
     id: number;
     userId: string;

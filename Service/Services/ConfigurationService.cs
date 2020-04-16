@@ -4,11 +4,15 @@ namespace BetSnooker.Services
 {
     public class ConfigurationService : IConfigurationService
     {
-        public ConfigurationService(int eventId, int startRound, string snookerApiUrl)
+        private string _defaultSnookerApiUrl = "http://api.snooker.org/";
+        private int _defaultMaxUsers = 2;
+
+        public ConfigurationService(int eventId, int startRound, string snookerApiUrl = null, int? maxUsers = null)
         {
             EventId = eventId;
             StartRound = startRound;
-            SnookerApiUrl = snookerApiUrl;
+            SnookerApiUrl = string.IsNullOrEmpty(snookerApiUrl) ? _defaultSnookerApiUrl : snookerApiUrl;
+            MaxUsers = maxUsers ?? _defaultMaxUsers;
         }
 
         public int EventId { get; }
@@ -16,5 +20,7 @@ namespace BetSnooker.Services
         public int StartRound { get; }
         
         public string SnookerApiUrl { get; }
+        
+        public int MaxUsers { get; }
     }
 }

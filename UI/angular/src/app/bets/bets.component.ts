@@ -43,7 +43,9 @@ export class BetsComponent implements OnInit {
         this.roundBets = results[1];
         this.bets = this.roundBets.matchBets;
 
-        this.lastUpdatedAt = `${this.convertToLocalTime(new Date(this.roundBets.updatedAt))}`;
+        if (this.roundBets.updatedAt) {
+          this.lastUpdatedAt = `${this.convertToLocalTime(new Date(this.roundBets.updatedAt))}`;
+        }
       } else {
         this.noBetsAvailable = true;
       }

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using BetSnooker.Services;
+using BetSnooker.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BetSnooker.Controllers

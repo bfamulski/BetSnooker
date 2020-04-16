@@ -3,22 +3,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using BetSnooker.Models;
 using BetSnooker.Repositories.Interfaces;
+using BetSnooker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetSnooker.Repositories
 {
     public class AuthenticationRepository : IAuthenticationRepository
     {
+        private readonly int _maxUsers;
         private readonly InMemoryDbContext _context;
-
-        public AuthenticationRepository(InMemoryDbContext context)
+        
+        public AuthenticationRepository(InMemoryDbContext context, IConfigurationService configurationService)
         {
             _context = context;
+            _maxUsers = configurationService.MaxUsers;
         }
 
         public async Task<bool> AddUser(User user)
         {
             if (_context.Users.FirstOrDefault(u => u.Username == user.Username) != null)
+            {
+                return false;
+            }
+
+            if (_context.Users.Count() >= _maxUsers)
             {
                 return false;
             }

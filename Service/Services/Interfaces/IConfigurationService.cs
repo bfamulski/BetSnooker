@@ -7,5 +7,7 @@
         int StartRound { get; }
 
         string SnookerApiUrl { get; }
+
+        int MaxUsers { get; }
     }
 }

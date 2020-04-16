@@ -1,20 +1,14 @@
-﻿<!-- nav -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" *ngIf="currentUser">
-    <!-- <a class="navbar-brand" href="#">BetSnooker</a> -->
-    <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" routerLink='/dashboard' routerLinkActive='active' routerLinkActiveOptions="{exact:true}">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" routerLink='/bets' routerLinkActive='active' routerLinkActiveOptions="{exact:true}">Bets</a>
-            </li>
-        </ul>
-
-        <span class="navbar-text">
-            <a class="nav-link" href="#" (click)="logout()">Logged in as: {{currentUser.username}}</a>
-        </span>
-    </div>
+﻿<!-- navbar -->
+<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #155843;" *ngIf="currentUser">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" routerLink='/dashboard' routerLinkActive='active' routerLinkActiveOptions="{exact:true}">{{currentEvent ? currentEvent.name : 'Dashboard'}}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLink='/bets' routerLinkActive='active' routerLinkActiveOptions="{exact:true}">Bets</a>
+        </li>
+    </ul>
+    <button type="button" class="btn btn-warning" style="height: 36px; margin-left: 10px;" (click)="logout()">Logout: {{currentUser.username}}</button>
 </nav>
 
 <!-- main app container -->

@@ -54,6 +54,56 @@ namespace BetSnooker.Services
             return filteredBets;
         }
 
+        public async Task<IEnumerable<EventBets>> GetEventBets()
+        {
+            var eventRounds = await _snookerFeedService.GetEventRounds();
+            var currentRound = await _snookerFeedService.GetCurrentRound();
+            if (currentRound == null)
+            {
+                return null;
+            }
+
+            var filteredRounds = currentRound.Started
+                ? eventRounds.Where(r => r.Round <= currentRound.Round)
+                : eventRounds.Where(r => r.Round < currentRound.Round);
+
+            var eventBets = await Task.Run(() => _betsRepository.GetAllBets(filteredRounds.Select(r => r.Round).ToArray()));
+            if (eventBets == null || !eventBets.Any())
+            {
+                return null;
+            }
+
+            var eventMatches = await _snookerFeedService.GetEventMatches();
+
+            var allUsersEventBets = new List<EventBets>();
+            var eventBetsGroupedByUser = eventBets.GroupBy(b => b.UserId);
+            foreach (var betsGrouped in eventBetsGroupedByUser)
+            {
+                double eventScore = 0.0;
+                foreach (var userRoundBets in betsGrouped)
+                {
+                    double roundScore = 0.0;
+                    foreach (var matchBet in userRoundBets.MatchBets)
+                    {
+                        var eventMatch = eventMatches.Single(m => m.MatchId == matchBet.MatchId);
+                        CalculateScore(eventMatch, matchBet, userRoundBets.Distance);
+
+                        if (matchBet.ScoreValue.HasValue)
+                        {
+                            roundScore += matchBet.ScoreValue.Value;
+                        }
+                    }
+
+                    userRoundBets.RoundScore = roundScore;
+                    eventScore += userRoundBets.RoundScore.Value;
+                }
+
+                allUsersEventBets.Add(new EventBets { UserId = betsGrouped.Key, RoundBets = betsGrouped, EventScore = eventScore });
+            }
+
+            return allUsersEventBets;
+        }
+
         public async Task<RoundBets> GetUserBets(string userId)
         {
             var eventId = _configurationService.EventId;
@@ -101,21 +151,35 @@ namespace BetSnooker.Services
             return roundBets;
         }
 
-        public async Task<bool> SubmitBets(string userId, RoundBets bets)
+        public async Task<SubmitResult> SubmitBets(string userId, RoundBets bets)
         {
-            var eventId = _configurationService.EventId;
-
             var canSubmitBets = await CanSubmitBets();
             if (!canSubmitBets)
             {
-                return false;
+                return SubmitResult.InvalidRound;
+            }
+
+            var betsInvalid = ValidateBets(bets);
+            if (betsInvalid)
+            {
+                return SubmitResult.ValidationError;
             }
 
             bets.UserId = userId;
-            bets.EventId = eventId;
+            bets.EventId = _configurationService.EventId;
             bets.UpdatedAt = DateTime.Now;
-            await _betsRepository.SubmitBets(bets);
-            return true;
+
+            try
+            {
+                await _betsRepository.SubmitBets(bets);
+            }
+            catch
+            {
+                // log error
+                return SubmitResult.InternalServerError;
+            }
+            
+            return SubmitResult.Success;
         }
 
         private async Task<bool> CanSubmitBets()
@@ -123,6 +187,18 @@ namespace BetSnooker.Services
             var currentRound =  await _snookerFeedService.GetCurrentRound();
             var startRound = _configurationService.StartRound;
             return currentRound != null && !currentRound.Started && currentRound.Round >= startRound;
+        }
+
+        private bool ValidateBets(RoundBets bets)
+        {
+            var maxScore = bets.Distance;
+            return bets.MatchBets.Any(bet => (bet.Score1 == null && bet.Score2 != null)
+                                             || (bet.Score1 != null && bet.Score2 == null)
+                                             || (bet.Score1 != null && bet.Score2 != null
+                                                 && (bet.Score1 == bet.Score2 
+                                                     || bet.Score1 > maxScore || bet.Score2 > maxScore
+                                                     || bet.Score1 < 0 || bet.Score2 < 0
+                                                     || (bet.Score1 < maxScore && bet.Score2 < maxScore))));
         }
 
         private void CalculateScore(Match eventMatch, Bet matchBet, int matchDistance)
