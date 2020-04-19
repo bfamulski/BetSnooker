@@ -38,7 +38,8 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                throw new Exception(response.ErrorMessage);
+                // log response.ErrorMessage
+                return null;
             }
 
             return response.Data;
@@ -58,7 +59,8 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                throw new Exception(response.ErrorMessage);
+                // log response.ErrorMessage
+                return null;
             }
 
             return response.Data.SingleOrDefault();
@@ -84,7 +86,8 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                throw new Exception(response.ErrorMessage);
+                // log response.ErrorMessage
+                return null;
             }
 
             return response.Data.SingleOrDefault();
@@ -104,7 +107,8 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                throw new Exception(response.ErrorMessage);
+                // log response.ErrorMessage
+                return null;
             }
 
             return response.Data.SingleOrDefault();
@@ -127,7 +131,8 @@ namespace BetSnooker.Services
             var eventMatchesResponse = await _restClient.Send<IEnumerable<Match>>(eventMatchesRequest);
             if (!eventMatchesResponse.Success)
             {
-                throw new Exception(eventMatchesResponse.ErrorMessage);
+                // log response.ErrorMessage
+                return null;
             }
 
             return eventMatchesResponse.Data;
@@ -150,7 +155,8 @@ namespace BetSnooker.Services
             var response = await _restClient.Send<IEnumerable<Player>>(request);
             if (!response.Success)
             {
-                throw new Exception(response.ErrorMessage);
+                // log response.ErrorMessage
+                return null;
             }
 
             return response.Data;
@@ -173,7 +179,8 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                throw new Exception(response.ErrorMessage);
+                // log response.ErrorMessage
+                return null;
             }
 
             return response.Data;

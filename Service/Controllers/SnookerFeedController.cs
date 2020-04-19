@@ -19,14 +19,14 @@ namespace BetSnooker.Controllers
         [HttpGet("events/current")]
         public async Task<IActionResult> GetCurrentEvent()
         {
-            var result = await _snookerFeedService.GetCurrentEvent();
+            var result = await Task.Run(() => _snookerFeedService.GetCurrentEvent());
             return Ok(result);
         }
 
         [HttpGet("matches/all")]
         public async Task<IActionResult> GetEventMatches()
         {
-            var matches = await _snookerFeedService.GetEventMatches();
+            var matches = await Task.Run(() => _snookerFeedService.GetEventMatches());
             if (matches == null || !matches.Any())
             {
                 return NoContent();
@@ -38,14 +38,14 @@ namespace BetSnooker.Controllers
         [HttpGet("rounds/current")]
         public async Task<IActionResult> GetCurrentRoundInfo()
         {
-            var result = await _snookerFeedService.GetCurrentRound();
+            var result = await Task.Run(() => _snookerFeedService.GetCurrentRound());
             return Ok(result);
         }
 
         [HttpGet("rounds/all")]
         public async Task<IActionResult> GetEventRounds()
         {
-            var rounds = await _snookerFeedService.GetEventRounds();
+            var rounds = await Task.Run(() => _snookerFeedService.GetEventRounds());
             if (rounds == null || !rounds.Any())
             {
                 return NoContent();

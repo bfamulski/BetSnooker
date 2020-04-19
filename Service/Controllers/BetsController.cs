@@ -37,19 +37,6 @@ namespace BetSnooker.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("all/old")]
-        public async Task<IActionResult> GetAllBets()
-        {
-            var bets = await _betsService.GetAllBets();
-            if (bets == null || !bets.Any())
-            {
-                return NoContent();
-            }
-
-            return Ok(bets);
-        }
-
-        [AllowAnonymous]
         [HttpGet("all")]
         public async Task<IActionResult> GetEventBets()
         {

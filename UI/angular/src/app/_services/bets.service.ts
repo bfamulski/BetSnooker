@@ -18,10 +18,6 @@ export class BetsService {
         return this.http.get<RoundBets>(`${environment.apiUrl}/bets`);
     }
 
-    getAllBets(): Observable<RoundBets[]> {
-        return this.http.get<RoundBets[]>(`${environment.apiUrl}/bets/all/old`);
-    }
-
     getEventBets(): Observable<EventBets[]> {
         return this.http.get<EventBets[]>(`${environment.apiUrl}/bets/all`);
     }

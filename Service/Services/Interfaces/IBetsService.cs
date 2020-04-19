@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BetSnooker.Models;
 
@@ -15,9 +14,6 @@ namespace BetSnooker.Services.Interfaces
 
     public interface IBetsService
     {
-        [Obsolete("use GetEventBets instead")]
-        Task<IEnumerable<RoundBets>> GetAllBets();
-
         Task<IEnumerable<EventBets>> GetEventBets();
 
         Task<RoundBets> GetUserBets(string userId);

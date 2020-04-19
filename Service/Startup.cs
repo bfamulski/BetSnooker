@@ -39,6 +39,9 @@ namespace BetSnooker
             // configure DI for application services
             services.AddDbContext<InMemoryDbContext>(options => options.UseInMemoryDatabase(databaseName: "BetSnooker"));
 
+            (int eventId, int startRound, string snookerApiUrl, int? maxUsers) = GetConfigurationItems();
+            services.AddSingleton<IConfigurationService>(new ConfigurationService(eventId, startRound, snookerApiUrl, maxUsers));
+
             services.AddTransient<IAsyncRestClient, AsyncRestClient>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
@@ -46,9 +49,7 @@ namespace BetSnooker
             services.AddTransient<IBetsService, BetsService>();
             services.AddTransient<ISnookerFeedService, SnookerFeedService>();
             services.AddTransient<ISnookerApiService, SnookerApiService>();
-
-            (int eventId, int startRound, string snookerApiUrl, int? maxUsers) = GetConfigurationItems();
-            services.AddSingleton<IConfigurationService>(new ConfigurationService(eventId, startRound, snookerApiUrl, maxUsers));
+            services.AddSingleton<ISnookerHubService, SnookerHubService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

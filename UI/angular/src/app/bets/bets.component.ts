@@ -95,7 +95,7 @@ export class BetsComponent implements OnInit {
   }
 
   convertToLocalTime(dateTime: Date) {
-    return `${dateTime.toISOString().slice(0, 10)} ${dateTime.toLocaleTimeString()}`;
+    return `${dateTime.toISOString().slice(0, 10)} ${dateTime.toLocaleTimeString('en-GB')}`;
   }
 
   inputChanged() {

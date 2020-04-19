@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using BetSnooker.Models;
 using BetSnooker.Models.API;
 
@@ -8,17 +7,17 @@ namespace BetSnooker.Services.Interfaces
     public interface ISnookerFeedService
     {
         // events
-        Task<Event> GetCurrentEvent();
+        Event GetCurrentEvent();
 
         // rounds
-        Task<IEnumerable<RoundInfo>> GetEventRounds(bool allEventRounds = false);
-        Task<RoundInfoDetails> GetCurrentRound();
+        IEnumerable<RoundInfo> GetEventRounds(bool allEventRounds = false);
+        RoundInfoDetails GetCurrentRound();
 
         // matches
-        Task<IEnumerable<MatchDetails>> GetEventMatches(bool forceRefresh = true, bool allEventMatches = false);
-        Task<IEnumerable<MatchDetails>> GetRoundMatches(int roundId);
+        IEnumerable<MatchDetails> GetEventMatches(bool allEventMatches = false);
+        IEnumerable<MatchDetails> GetRoundMatches(int roundId);
 
         // players
-        Task<IEnumerable<Player>> GetEventPlayers();
+        IEnumerable<Player> GetEventPlayers();
     }
 }
