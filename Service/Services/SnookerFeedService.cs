@@ -33,46 +33,57 @@ namespace BetSnooker.Services
 
         public RoundInfoDetails GetCurrentRound()
         {
-            var eventMatches = GetEventMatches(true);
-            var eventMatchesGroupedByRound = eventMatches.GroupBy(m => m.Round).OrderBy(r => r.Key);
+            var eventRounds = GetEventRounds(true).ToList();
+            var eventMatches = GetEventMatches(true).ToList();
+            if (!eventRounds.Any() || !eventMatches.Any())
+            {
+                return null;
+            }
 
             RoundInfoDetails roundInfoDetails = null;
+            var eventMatchesGroupedByRound = eventMatches.GroupBy(m => m.Round).OrderBy(r => r.Key);
             foreach (var matchesGrouped in eventMatchesGroupedByRound)
             {
-                var roundFinished = matchesGrouped.All(match => !match.Unfinished && (match.Score1 != 0 || match.Score2 != 0));
-                if (roundFinished && matchesGrouped.Count() > 1) continue; // do not null final round
+                var roundFinished = matchesGrouped.All(MatchFinished);
+                if (roundFinished && matchesGrouped.Count() > 1) continue; // always return the final if it's current round
 
-                var roundId = matchesGrouped.First().Round;
-                var roundInfo = GetRoundInfo(roundId);
-                
+                var roundId = matchesGrouped.Key; // First().Round;
+                var roundInfo = GetRoundInfo(roundId, eventRounds);
+
                 var minScheduledDate = matchesGrouped.Min(m => m.ScheduledDate);
                 roundInfoDetails = new RoundInfoDetails(roundInfo)
                 {
-                    Started = minScheduledDate.HasValue && minScheduledDate.Value.ToLocalTime() <= DateTime.Now // TODO: local time or UTC?
+                    Started = minScheduledDate.HasValue && minScheduledDate.Value.ToLocalTime() <= DateTime.Now, // TODO: local time or UTC?
+                    Finished = roundFinished
                 };
 
                 break;
             }
 
-            // TODO: dispose SnookerHub if event is finished
+            if (roundInfoDetails != null && roundInfoDetails.IsFinalRound && roundInfoDetails.Finished)
+            {
+                _snookerHubService.DisposeHub();
+            }
 
-            return roundInfoDetails.Round >= _configurationService.StartRound ? roundInfoDetails : null;
+            return roundInfoDetails?.Round >= _configurationService.StartRound ? roundInfoDetails : null;
         }
 
         public IEnumerable<MatchDetails> GetEventMatches(bool allEventMatches = false)
         {
-            IEnumerable<Match> eventMatches = _snookerHubService.GetEventMatches();
+            IEnumerable<Match> eventMatches = _snookerHubService.GetEventMatches().ToList();
+            if (!eventMatches.Any())
+            {
+                return new List<MatchDetails>();
+            }
+            
             if (allEventMatches)
             {
-                return eventMatches != null && eventMatches.Any()
-                    ? ConvertToMatchDetails(eventMatches)
-                    : new List<MatchDetails>();
+                return ConvertToMatchDetails(eventMatches);
             }
 
             var startRoundId = _configurationService.StartRound;
-            var filteredMatches = eventMatches?.Where(match => match.Round >= startRoundId);
-
-            return filteredMatches != null && filteredMatches.Any()
+            var filteredMatches = eventMatches.Where(match => match.Round >= startRoundId).ToList();
+            return filteredMatches.Any()
                 ? ConvertToMatchDetails(filteredMatches)
                 : new List<MatchDetails>();
         }
@@ -91,16 +102,22 @@ namespace BetSnooker.Services
 
         private IEnumerable<MatchDetails> ConvertToMatchDetails(IEnumerable<Match> matches)
         {
-            var players = GetEventPlayers();
-
             var matchDetailsCollection = new List<MatchDetails>();
+
+            var players = GetEventPlayers().ToList();
+            var eventRounds = GetEventRounds().ToList();
+            if (!players.Any() || !eventRounds.Any())
+            {
+                return matchDetailsCollection;
+            }
+            
             foreach (var match in matches)
             {
                 var player1 = players.Single(p => p.Id == match.Player1Id);
                 var player2 = players.Single(p => p.Id == match.Player2Id);
                 var winner = players.SingleOrDefault(p => p.Id == match.WinnerId);
 
-                var roundInfo = GetRoundInfo(match.Round);
+                var roundInfo = GetRoundInfo(match.Round, eventRounds);
                 var matchDetails = new MatchDetails(match)
                 {
                     Player1Name = player1.ToString(),
@@ -116,11 +133,14 @@ namespace BetSnooker.Services
             return matchDetailsCollection.AsEnumerable().OrderBy(m => m.Id);
         }
 
-        private RoundInfo GetRoundInfo(int roundId)
+        private RoundInfo GetRoundInfo(int roundId, IEnumerable<RoundInfo> eventRounds)
         {
-            var eventRounds = GetEventRounds(true);
-            var round = eventRounds.SingleOrDefault(r => r.Round == roundId);
-            return new RoundInfoDetails(round);
+            return eventRounds.SingleOrDefault(r => r.Round == roundId);
+        }
+
+        private bool MatchFinished(MatchDetails match)
+        {
+            return !match.Unfinished && (match.Score1 != 0 || match.Score2 != 0 || match.Walkover1 || match.Walkover2); // TODO: WinnerId != 0?
         }
     }
 }

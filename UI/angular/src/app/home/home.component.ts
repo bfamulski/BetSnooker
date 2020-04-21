@@ -57,13 +57,15 @@ export class HomeComponent {
           player1Id: match.player1Id,
           player1Name: match.player1Name,
           score1: match.score1,
+          walkover1: match.walkover1,
           player2Id: match.player2Id,
           player2Name: match.player2Name,
           score2: match.score2,
+          walkover2: match.walkover2,
           winnerId: match.winnerId,
           winnerName: match.winnerName,
-          roundName: match.roundName,
-          roundBestOf: match.distance * 2 - 1,
+          roundName: match.roundName, // TODO: is it needed?
+          roundBestOf: match.distance * 2 - 1, // TODO: is it needed?
           userBets: {}
         });
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -11,6 +12,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BetSnooker.Controllers
 {
+    /// <summary>
+    /// Bets controller.
+    /// </summary>
+    /// <remarks>
+    /// Only authorized users are allowed.
+    /// </remarks>
     [Authorize]
     [ApiController]
     [Route("[controller]")]
@@ -23,7 +30,13 @@ namespace BetSnooker.Controllers
             _betsService = betsService;
         }
 
+        /// <summary>
+        /// Get all user bets.
+        /// </summary>
+        /// <returns>User bets</returns>
         [HttpGet]
+        [ProducesResponseType(200, Type = typeof(RoundBets))]
+        [ProducesResponseType(204)]
         public async Task<IActionResult> GetUserBets()
         { 
             var userId = GetUserIdFromRequest(Request);
@@ -36,8 +49,17 @@ namespace BetSnooker.Controllers
             return Ok(bets);
         }
 
+        /// <summary>
+        /// Get all bets from all users. Bets for finished or ongoing rounds are returned.
+        /// </summary>
+        /// <returns>All bets</returns>
+        /// <remarks>
+        /// This method is not authorized - any user can call it.
+        /// </remarks>
         [AllowAnonymous]
         [HttpGet("all")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<EventBets>))]
+        [ProducesResponseType(204)]
         public async Task<IActionResult> GetEventBets()
         {
             var bets = await _betsService.GetEventBets();
@@ -49,7 +71,14 @@ namespace BetSnooker.Controllers
             return Ok(bets);
         }
 
+        /// <summary>
+        /// Submit user bets.
+        /// </summary>
+        /// <param name="bets">User bets</param>
+        /// <returns>Submit result</returns>
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> Submit([FromBody] RoundBets bets)
         {
             var userId = GetUserIdFromRequest(Request);

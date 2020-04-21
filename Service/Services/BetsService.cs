@@ -24,16 +24,20 @@ namespace BetSnooker.Services
 
         public async Task<IEnumerable<EventBets>> GetEventBets()
         {
-            var eventRounds = _snookerFeedService.GetEventRounds();
             var currentRound = _snookerFeedService.GetCurrentRound();
             if (currentRound == null)
             {
                 return null;
             }
 
+            var eventRounds = _snookerFeedService.GetEventRounds();
             var filteredRounds = currentRound.Started
-                ? eventRounds.Where(r => r.Round <= currentRound.Round)
-                : eventRounds.Where(r => r.Round < currentRound.Round);
+                ? eventRounds.Where(r => r.Round <= currentRound.Round).ToList()
+                : eventRounds.Where(r => r.Round < currentRound.Round).ToList();
+            if (!filteredRounds.Any())
+            {
+                return null;
+            }
 
             var eventBets = await Task.Run(() => _betsRepository.GetAllBets(filteredRounds.Select(r => r.Round).ToArray()));
             if (eventBets == null || !eventBets.Any())
@@ -42,7 +46,6 @@ namespace BetSnooker.Services
             }
 
             var eventMatches = _snookerFeedService.GetEventMatches();
-
             var allUsersEventBets = new List<EventBets>();
             var eventBetsGroupedByUser = eventBets.GroupBy(b => b.UserId);
             foreach (var betsGrouped in eventBetsGroupedByUser)
@@ -57,7 +60,7 @@ namespace BetSnooker.Services
                     foreach (var matchBet in userRoundBets.MatchBets)
                     {
                         var eventMatch = eventMatches.Single(m => m.MatchId == matchBet.MatchId);
-                        if (eventMatch.WinnerId == 0)
+                        if (eventMatch.WinnerId == 0 || eventMatch.Walkover1 || eventMatch.Walkover2)
                         {
                             continue;
                         }
@@ -117,8 +120,8 @@ namespace BetSnooker.Services
                 return result;
             }
 
-            var matches = _snookerFeedService.GetRoundMatches(roundInfo.Round);
-            var players = _snookerFeedService.GetEventPlayers();
+            var matches = _snookerFeedService.GetRoundMatches(roundInfo.Round).ToList();
+            var players = _snookerFeedService.GetEventPlayers().ToList();
 
             var roundBets = new RoundBets
             {
@@ -200,7 +203,7 @@ namespace BetSnooker.Services
 
         private void CalculateScore(Match eventMatch, Bet matchBet, int matchDistance)
         {
-            if (eventMatch.WinnerId == 0)
+            if (eventMatch.WinnerId == 0 || eventMatch.Walkover1 || eventMatch.Walkover2)
             {
                 matchBet.ScoreValue = null;
                 return;

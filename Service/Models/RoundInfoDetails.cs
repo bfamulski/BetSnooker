@@ -18,5 +18,9 @@ namespace BetSnooker.Models
         }
 
         public bool Started { get; set; }
+
+        public bool Finished { get; set; }
+
+        public bool IsFinalRound => NumMatches == 1;
     }
 }

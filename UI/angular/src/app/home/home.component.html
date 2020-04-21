@@ -54,9 +54,9 @@
       <tbody>
         <tr mdbTableCol *ngFor="let item of dashboardItems | roundFilter: {round: round.round}">
           <td [ngClass]="{'winner-item': item.player1Id === item.winnerId}" style="text-align: right; width: 400px;">{{item.player1Name}}</td>
-          <td style="text-align: right; font-weight: bold; width: 20px;">{{item.score1}}</td>
+          <td style="text-align: right; font-weight: bold; width: 20px;">{{item.walkover1 ? 'w/o' : (item.walkover2 ? '...' : item.score1)}}</td>
           <td style="text-align: center; width: 20px;">:</td>
-          <td style="text-align: left; font-weight: bold; width: 20px;">{{item.score2}}</td>
+          <td style="text-align: left; font-weight: bold; width: 20px;">{{item.walkover2 ? 'w/o' : (item.walkover1 ? '...' : item.score2)}}</td>
           <td [ngClass]="{'winner-item': item.player2Id === item.winnerId}" style="text-align: left; width: 400px;">{{item.player2Name}}</td>
           <td></td>
           <td *ngFor="let user of users" style="width: 100px;  padding-left: 18px;">

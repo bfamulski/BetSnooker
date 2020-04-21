@@ -18,7 +18,9 @@ namespace BetSnooker.Repositories
 
         public IEnumerable<RoundBets> GetAllBets(int[] rounds)
         {
-            return _context.RoundBets.Include("MatchBets").AsNoTracking().Where(bet => rounds.Contains(bet.RoundId));
+            return rounds == null || rounds.Length == 0
+                ? _context.RoundBets.Include("MatchBets").AsNoTracking()
+                : _context.RoundBets.Include("MatchBets").AsNoTracking().Where(bet => rounds.Contains(bet.RoundId));
         }
 
         public async Task<RoundBets> GetUserBets(string userId, int roundId)

@@ -7,16 +7,6 @@ using BetSnooker.Services.Interfaces;
 
 namespace BetSnooker.Services
 {
-    public interface ISnookerHubService
-    {
-        Event GetEvent();
-        IEnumerable<Match> GetEventMatches();
-        IEnumerable<Player> GetEventPlayers();
-        IEnumerable<RoundInfo> GetEventRounds();
-
-        void DisposeHub();
-    }
-
     public class SnookerHubService : ISnookerHubService
     {
         private static readonly int MatchesTimerPeriod = (int)TimeSpan.FromSeconds(30).TotalMilliseconds; // TODO: change it back to 10
@@ -137,10 +127,12 @@ namespace BetSnooker.Services
             {
                 _event = @event;
             }
-
-            lock (_event)
+            else
             {
-                _event = @event;
+                lock (_event)
+                {
+                    _event = @event;
+                }
             }
         }
     }

@@ -6,7 +6,7 @@ namespace BetSnooker.Models.API
     {
         public int Id { get; set; } // TODO: this ID changes with requests
 
-        public int WorldSnookerId { get; set; }
+        public int WorldSnookerId { get; set; } // TODO: this is probably useless (verify on live event)
 
         public int EventId { get; set; }
 
