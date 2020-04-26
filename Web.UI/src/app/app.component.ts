@@ -2,7 +2,7 @@
 import { Router } from '@angular/router';
 
 import { AuthenticationService, SnookerFeedService } from './_services';
-import { User } from './_models';
+import { User, Event } from './_models';
 
 @Component({
     selector: 'app-root',

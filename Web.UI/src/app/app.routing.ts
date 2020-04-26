@@ -11,7 +11,7 @@ const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     { path: 'dashboard', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'bets', component: BetsComponent, canActivate: [AuthGuard] },
-
+    { path: '', redirectTo: '/dashboard', pathMatch: 'full' }, // redirect to `dashboard`
     // otherwise redirect to home
     { path: '**', redirectTo: 'dashboard' }
 ];

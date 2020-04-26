@@ -35,6 +35,7 @@ namespace TestSnookerApi.Repositories
 
         public async Task SetPlayers(Player[] players)
         {
+            _context.Players.RemoveRange(_context.Players);
             await _context.Players.AddRangeAsync(players);
             await _context.SaveChangesAsync();
         }

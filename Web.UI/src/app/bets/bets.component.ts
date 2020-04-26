@@ -10,9 +10,9 @@ import { SnookerFeedService, BetsService } from '../_services';
   styleUrls: ['./bets.component.less']
 })
 export class BetsComponent implements OnInit {
-  private roundBets: RoundBets;
-  private bets: Bet[];
-  private roundInfo: RoundInfo;
+  roundBets: RoundBets;
+  bets: Bet[];
+  roundInfo: RoundInfo;
 
   loading = false;
   successfulSubmit = false;

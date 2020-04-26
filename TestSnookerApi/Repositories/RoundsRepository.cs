@@ -28,6 +28,7 @@ namespace TestSnookerApi.Repositories
 
         public async Task SetRounds(RoundInfo[] rounds)
         {
+            _context.Rounds.RemoveRange(_context.Rounds);
             await _context.Rounds.AddRangeAsync(rounds);
             await _context.SaveChangesAsync();
         }

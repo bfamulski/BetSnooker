@@ -16,8 +16,6 @@ namespace TestSnookerApi.Repositories
         Task SetMatches(Match[] matches);
 
         Task UpdateMatches(Match[] matches);
-
-        Task DeleteAllMatches();
     }
 
     public class MatchesRepository : IMatchesRepository
@@ -46,6 +44,7 @@ namespace TestSnookerApi.Repositories
 
         public async Task SetMatches(Match[] matches)
         {
+            _context.Matches.RemoveRange(_context.Matches);
             await _context.Matches.AddRangeAsync(matches);
             await _context.SaveChangesAsync();
         }
@@ -53,13 +52,6 @@ namespace TestSnookerApi.Repositories
         public async Task UpdateMatches(Match[] matches)
         {
             _context.Matches.UpdateRange(matches);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAllMatches()
-        {
-            var all = _context.Matches.Select(m => m);
-            _context.Matches.RemoveRange(all);
             await _context.SaveChangesAsync();
         }
     }

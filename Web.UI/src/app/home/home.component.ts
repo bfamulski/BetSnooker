@@ -1,7 +1,7 @@
 ﻿import { Component } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
-import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User, UserStats } from '../_models';
+import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User, UserStats, Event } from '../_models';
 import { SnookerFeedService, BetsService, AuthenticationService } from '../_services';
 
 @Component({
@@ -11,15 +11,15 @@ import { SnookerFeedService, BetsService, AuthenticationService } from '../_serv
 })
 export class HomeComponent {
 
-  private currentEvent: Event;
-  private matches: Match[];
-  private users: User[];
-  private eventRounds: RoundInfo[];
-  private roundBets: RoundBets[];
-  private eventBets: EventBets[];
+  currentEvent: Event;
+  matches: Match[];
+  users: User[];
+  eventRounds: RoundInfo[];
+  roundBets: RoundBets[];
+  eventBets: EventBets[];
 
-  private dashboardItems: DashboardItem[] = [];
-  private usersScores: { [userId: string]: UserStats } = {};
+  dashboardItems: DashboardItem[] = [];
+  usersScores: { [userId: string]: UserStats } = {};
 
   loading = false;
   error = '';
@@ -56,20 +56,16 @@ export class HomeComponent {
           matchId: match.matchId,
           player1Id: match.player1Id,
           player1Name: match.player1Name,
-          score1: match.score1,
-          walkover1: match.walkover1,
+          score1: match.walkover1 ? 'w/o' : (match.walkover2 ? '...' : match.score1.toString()),
           player2Id: match.player2Id,
           player2Name: match.player2Name,
-          score2: match.score2,
-          walkover2: match.walkover2,
+          score2: match.walkover2 ? 'w/o' : (match.walkover1 ? '...' : match.score2.toString()),
           winnerId: match.winnerId,
           winnerName: match.winnerName,
-          roundName: match.roundName, // TODO: is it needed?
-          roundBestOf: match.distance * 2 - 1, // TODO: is it needed?
+          roundDistance: match.distance,
           userBets: {}
         });
 
-        // TODO: optimize it
         if (this.users && this.eventBets) {
           this.users.forEach(user => {
             const userEventBets = this.eventBets.filter(b => b.userId === user.username)[0];
@@ -79,8 +75,8 @@ export class HomeComponent {
                 eventScore: userEventBets.eventScore,
                 correctWinners: userEventBets.correctWinners,
                 exactScores: userEventBets.exactScores,
-                correctWinnersAccuracy: Number((userEventBets.correctWinnersAccuracy * 100).toFixed(2)).toString(),
-                exactScoresAccuracy: Number((userEventBets.exactScoresAccuracy * 100).toFixed(2)).toString()
+                correctWinnersAccuracy: this.formatAccuracyValue(userEventBets.correctWinnersAccuracy),
+                exactScoresAccuracy: this.formatAccuracyValue(userEventBets.exactScoresAccuracy),
               };
 
               this.roundBets = userEventBets.roundBets;
@@ -102,5 +98,9 @@ export class HomeComponent {
       this.error = error;
       this.loading = false;
     });
+  }
+
+  formatAccuracyValue(accuracyValue: number) {
+    return Number((accuracyValue * 100).toFixed(2)).toString();
   }
 }

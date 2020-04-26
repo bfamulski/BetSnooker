@@ -35,6 +35,7 @@ namespace TestSnookerApi.Repositories
 
         public async Task SetEvents(Event[] events)
         {
+            _context.Events.RemoveRange(_context.Events);
             await _context.Events.AddRangeAsync(events);
             await _context.SaveChangesAsync();
         }

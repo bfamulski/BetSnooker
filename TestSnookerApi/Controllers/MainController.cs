@@ -130,12 +130,5 @@ namespace TestSnookerApi.Controllers
             await _matchesRepository.UpdateMatches(matches);
             return Ok();
         }
-
-        [HttpDelete("matches")]
-        public async Task<IActionResult> DeleteMatches()
-        {
-            await _matchesRepository.DeleteAllMatches();
-            return Ok();
-        }
     }
 }

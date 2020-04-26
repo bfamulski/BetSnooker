@@ -3,18 +3,13 @@ export class DashboardItem {
   matchId: number;
   player1Id: number;
   player1Name: string;
-  score1: number;
-  walkover1: boolean;
+  score1: string;
   player2Id: number;
   player2Name: string;
-  score2: number;
-  walkover2: boolean;
+  score2: string;
   winnerId: number;
   winnerName: string;
-  //scheduledDate: Date;
-  //unfinished: boolean;
-  roundName: string; // TODO: is it needed?
-  roundBestOf: number; // TODO: is it needed?
+  roundDistance: number;
 
   userBets: { [userId: string]: { betScore1?: number, betScore2?: number, scoreValue?: number } };
 

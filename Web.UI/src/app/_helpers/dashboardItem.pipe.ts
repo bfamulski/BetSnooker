@@ -6,7 +6,7 @@ import { DashboardItem, RoundInfo } from '../_models';
     pure: false
 })
 export class DashboardItemRoundFilterPipe implements PipeTransform {
-    transform(items: DashboardItem[], filter: RoundInfo): any {
+    transform(items: DashboardItem[], filter: any): any {
         if (!items || !filter) {
             return items;
         }

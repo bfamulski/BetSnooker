@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Match, RoundInfo } from '../_models';
+import { Match, RoundInfo, Event } from '../_models';
 
 @Injectable({ providedIn: 'root' })
 export class SnookerFeedService {

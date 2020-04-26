@@ -1,0 +1,472 @@
+{
+	"info": {
+		"_postman_id": "c2bc7d19-292a-4497-9e38-1640f927eb43",
+		"name": "api.snooker.org",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Events in a season",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSnookerUrl}}?t=5&s=2019",
+					"host": [
+						"{{apiSnookerUrl}}"
+					],
+					"query": [
+						{
+							"key": "t",
+							"value": "5"
+						},
+						{
+							"key": "s",
+							"value": "2019"
+						}
+					]
+				},
+				"description": "URL format: api.snooker.org/?t=5&s=[Season]\r\nExample: api.snooker.org/?t=5&s=2015 (2019/2020)\r\nOutput: Event info as JSON (two-dimensional)\r\nNote: All seasons: -1\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Event",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSnookerUrl}}?e={{eventId}}",
+					"host": [
+						"{{apiSnookerUrl}}"
+					],
+					"query": [
+						{
+							"key": "e",
+							"value": "{{eventId}}"
+						}
+					]
+				},
+				"description": "URL format: api.snooker.org/?e=[Event ID]\r\nExample: api.snooker.org/?e=398 (Shanghai Masters Qualifiers 2015)\r\nOutput: Event info as JSON (one-dimensional)\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Match",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSnookerUrl}}?e={{eventId}}&r=13&n=2",
+					"host": [
+						"{{apiSnookerUrl}}"
+					],
+					"query": [
+						{
+							"key": "e",
+							"value": "{{eventId}}"
+						},
+						{
+							"key": "r",
+							"value": "13"
+						},
+						{
+							"key": "n",
+							"value": "2"
+						}
+					]
+				},
+				"description": "URL format: api.snooker.org/?e=[Event ID]&r=[Round ID]&n=[Match number]\r\nExample: api.snooker.org/?e=397&r=1&n=5 (Riga Open 2015, qual round 1, Mulholland v Arpat)\r\nOutput: Match info as JSON (one-dimensional)\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Player",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSnookerUrl}}?p=12",
+					"host": [
+						"{{apiSnookerUrl}}"
+					],
+					"query": [
+						{
+							"key": "p",
+							"value": "12"
+						}
+					]
+				},
+				"description": "URL format: api.snooker.org/?p=[Player ID]\r\nExample: api.snooker.org/?p=1 (Mark J Williams)\r\nOutput: Player info as JSON (one-dimensional)\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Matches of an event",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSnookerUrl}}?t=6&e={{eventId}}",
+					"host": [
+						"{{apiSnookerUrl}}"
+					],
+					"query": [
+						{
+							"key": "t",
+							"value": "6"
+						},
+						{
+							"key": "e",
+							"value": "{{eventId}}"
+						}
+					]
+				},
+				"description": "URL format: api.snooker.org/?t=6&e=[Event ID]\r\nExample: api.snooker.org/?t=6&e=398 (Shanghai Masters qualifiers)\r\nOutput: Match info as JSON (two-dimensional)\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Ongoing matches (including those between sessions)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSnookerUrl}}?t=7",
+					"host": [
+						"{{apiSnookerUrl}}"
+					],
+					"query": [
+						{
+							"key": "t",
+							"value": "7"
+						}
+					]
+				},
+				"description": "URL format: api.snooker.org/?t=7\r\nExample: api.snooker.org/?t=7\r\nOutput: Match info as JSON (two-dimensional)\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Players in an event",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSnookerUrl}}?t=9&e={{eventId}}",
+					"host": [
+						"{{apiSnookerUrl}}"
+					],
+					"query": [
+						{
+							"key": "t",
+							"value": "9"
+						},
+						{
+							"key": "e",
+							"value": "{{eventId}}"
+						}
+					]
+				},
+				"description": "URL format: api.snooker.org/?t=9&e=[Event ID]\r\nExample: api.snooker.org/?t=9&e=403 (Shanghai Masters 2015)\r\nOutput: Player info as JSON (two-dimensional)\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Round info for an event",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiSnookerUrl}}?t=12&e={{eventId}}",
+					"host": [
+						"{{apiSnookerUrl}}"
+					],
+					"query": [
+						{
+							"key": "t",
+							"value": "12"
+						},
+						{
+							"key": "e",
+							"value": "{{eventId}}"
+						}
+					]
+				},
+				"description": "URL format: api.snooker.org/?t=12&e=[Event ID]\r\nExample: api.snooker.org/?t=12&e=403 (Shanghai Masters 2015)\r\nOutput: Round info as JSON (two-dimensional)\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Events in a season",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"ID\": 869,\r\n        \"Name\": \"British Seniors Open\",\r\n        \"StartDate\": \"2020-04-03\",\r\n        \"EndDate\": \"2020-04-04\",\r\n        \"Sponsor\": \"\",\r\n        \"Season\": 2019,\r\n        \"Type\": \"Seniors Event\",\r\n        \"Num\": 0,\r\n        \"Venue\": \"Plymouth Pavilions\",\r\n        \"City\": \"Plymouth\",\r\n        \"Country\": \"England\",\r\n        \"Discipline\": \"snooker\",\r\n        \"Main\": 869,\r\n        \"Sex\": \"Both\",\r\n        \"AgeGroup\": \"S\",\r\n        \"Url\": \"\",\r\n        \"Related\": \"seniors\",\r\n        \"Stage\": \"F\",\r\n        \"ValueType\": \"\",\r\n        \"ShortName\": \"\",\r\n        \"WorldSnookerId\": 0,\r\n        \"RankingType\": \"\",\r\n        \"EventPredictionID\": 0,\r\n        \"Team\": false,\r\n        \"Format\": 1,\r\n        \"Twitter\": \"\",\r\n        \"HashTag\": \"\",\r\n        \"ConversionRate\": 1,\r\n        \"AllRoundsAdded\": true,\r\n        \"PhotoURLs\": \"\",\r\n        \"NumCompetitors\": 8,\r\n        \"NumUpcoming\": 0,\r\n        \"NumActive\": 0,\r\n        \"NumResults\": 0,\r\n        \"Note\": \"\",\r\n        \"CommonNote\": \"\",\r\n        \"DefendingChampion\": 0,\r\n        \"PreviousEdition\": 0\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiSnookerUrl}}events",
+					"host": [
+						"{{apiSnookerUrl}}events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Matches of an event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"ID\": 6021745,\r\n        \"EventID\": 869,\r\n        \"Round\": 15,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 376,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 376,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:55Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:16Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021743,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 376,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 376,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021744,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 376,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 376,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021739,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 20,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 204,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021740,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 408,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 470,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021741,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 3,\r\n        \"Player1ID\": 469,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 181,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021742,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 4,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 468,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiSnookerUrl}}matches",
+					"host": [
+						"{{apiSnookerUrl}}matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Matches of an event - start",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"ID\": 6021745,\r\n        \"EventID\": 869,\r\n        \"Round\": 15,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 376,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 376,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:55Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:16Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021743,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 376,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 376,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021744,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 376,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 376,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021739,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 20,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 204,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021740,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 408,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 470,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021741,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 3,\r\n        \"Player1ID\": 469,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 181,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021742,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 4,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 468,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T11:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiSnookerUrl}}matches",
+					"host": [
+						"{{apiSnookerUrl}}matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Matches of an event - step 2",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"ID\": 6021745,\r\n        \"EventID\": 869,\r\n        \"Round\": 15,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 376,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 376,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:55Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:16Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021743,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 469,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021744,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 470,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 20,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021739,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 20,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 204,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 20,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021740,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 408,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 470,\r\n        \"Score2\": 3,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 470,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021741,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 3,\r\n        \"Player1ID\": 469,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 181,\r\n        \"Score2\": 2,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 469,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021742,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 4,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 468,\r\n        \"Score2\": 1,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 153,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiSnookerUrl}}matches",
+					"host": [
+						"{{apiSnookerUrl}}matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Matches of an event - step 2 (w/o)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"ID\": 6021745,\r\n        \"EventID\": 869,\r\n        \"Round\": 15,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 376,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 376,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:55Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:16Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021743,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 469,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021744,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 470,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 20,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021739,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 20,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 204,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 20,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021740,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 408,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 470,\r\n        \"Score2\": 3,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 470,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021741,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 3,\r\n        \"Player1ID\": 469,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 181,\r\n        \"Score2\": 2,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 469,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021742,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 4,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": true,\r\n        \"Player2ID\": 468,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 153,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiSnookerUrl}}matches",
+					"host": [
+						"{{apiSnookerUrl}}matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Matches of an event - step 3",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"ID\": 6021745,\r\n        \"EventID\": 869,\r\n        \"Round\": 15,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 20,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 0,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:55Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:16Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021743,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 469,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 153,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021744,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 470,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 20,\r\n        \"Score2\": 3,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 20,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021739,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 20,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 204,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 20,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021740,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 408,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 470,\r\n        \"Score2\": 3,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 470,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021741,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 3,\r\n        \"Player1ID\": 469,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 181,\r\n        \"Score2\": 2,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 469,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021742,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 4,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 468,\r\n        \"Score2\": 1,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 153,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiSnookerUrl}}matches",
+					"host": [
+						"{{apiSnookerUrl}}matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Matches of an event - step 4",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"ID\": 6021745,\r\n        \"EventID\": 869,\r\n        \"Round\": 15,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 2,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 20,\r\n        \"Score2\": 4,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 20,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:55Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:16Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021743,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 469,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 153,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021744,\r\n        \"EventID\": 869,\r\n        \"Round\": 14,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 470,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 20,\r\n        \"Score2\": 3,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 20,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:43Z\",\r\n        \"ModDate\": \"2020-03-25T13:48:03Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021739,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 1,\r\n        \"Player1ID\": 20,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 204,\r\n        \"Score2\": 0,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 20,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021740,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 2,\r\n        \"Player1ID\": 408,\r\n        \"Score1\": 0,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 470,\r\n        \"Score2\": 3,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 470,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021741,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 3,\r\n        \"Player1ID\": 469,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 181,\r\n        \"Score2\": 2,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 469,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 6021742,\r\n        \"EventID\": 869,\r\n        \"Round\": 13,\r\n        \"Number\": 4,\r\n        \"Player1ID\": 153,\r\n        \"Score1\": 3,\r\n        \"Walkover1\": false,\r\n        \"Player2ID\": 468,\r\n        \"Score2\": 1,\r\n        \"Walkover2\": false,\r\n        \"WinnerID\": 153,\r\n        \"Unfinished\": false,\r\n        \"OnBreak\": false,\r\n        \"WorldSnookerID\": 0,\r\n        \"LiveUrl\": \"\",\r\n        \"DetailsUrl\": \"\",\r\n        \"PointsDropped\": false,\r\n        \"ShowCommonNote\": false,\r\n        \"Estimated\": false,\r\n        \"Type\": 1,\r\n        \"TableNo\": 0,\r\n        \"VideoURL\": \"\",\r\n        \"InitDate\": \"2019-12-19T15:01:08Z\",\r\n        \"ModDate\": \"2020-03-25T13:47:33Z\",\r\n        \"StartDate\": \"\",\r\n        \"EndDate\": \"\",\r\n        \"ScheduledDate\": \"2020-04-08T08:47:33Z\",\r\n        \"FrameScores\": \"\",\r\n        \"Sessions\": \"\",\r\n        \"Note\": \"\",\r\n        \"ExtendedNote\": \"\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiSnookerUrl}}matches",
+					"host": [
+						"{{apiSnookerUrl}}matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Players in an event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"ID\": 20,\r\n        \"Type\": 1,\r\n        \"FirstName\": \"Jimmy\",\r\n        \"MiddleName\": \"\",\r\n        \"LastName\": \"White\",\r\n        \"TeamName\": \"\",\r\n        \"TeamNumber\": 0,\r\n        \"TeamSeason\": 0,\r\n        \"ShortName\": \"J White\",\r\n        \"Nationality\": \"England\",\r\n        \"Sex\": \"M\",\r\n        \"BioPage\": \"http://snooker.org/plr/bio/jwhite.shtml\",\r\n        \"Born\": \"1962-05-02\",\r\n        \"Twitter\": \"jimmywhite147\",\r\n        \"SurnameFirst\": false,\r\n        \"License\": \"\",\r\n        \"Club\": \"\",\r\n        \"URL\": \"jimmywhitesnooker.com\",\r\n        \"Photo\": \"http://snooker.org/img/players/Jimmy White.png\",\r\n        \"PhotoSource\": \"\",\r\n        \"FirstSeasonAsPro\": 1980,\r\n        \"LastSeasonAsPro\": 0,\r\n        \"Info\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 153,\r\n        \"Type\": 1,\r\n        \"FirstName\": \"Stephen\",\r\n        \"MiddleName\": \"\",\r\n        \"LastName\": \"Hendry\",\r\n        \"TeamName\": \"\",\r\n        \"TeamNumber\": 0,\r\n        \"TeamSeason\": 0,\r\n        \"ShortName\": \"S Hendry\",\r\n        \"Nationality\": \"Scotland\",\r\n        \"Sex\": \"M\",\r\n        \"BioPage\": \"http://snooker.org/plr/bio/shendry.shtml\",\r\n        \"Born\": \"1969-01-13\",\r\n        \"Twitter\": \"SHendry775\",\r\n        \"SurnameFirst\": false,\r\n        \"License\": \"\",\r\n        \"Club\": \"\",\r\n        \"URL\": \"\",\r\n        \"Photo\": \"\",\r\n        \"PhotoSource\": \"\",\r\n        \"FirstSeasonAsPro\": 1985,\r\n        \"LastSeasonAsPro\": 2015,\r\n        \"Info\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 181,\r\n        \"Type\": 1,\r\n        \"FirstName\": \"Tony\",\r\n        \"MiddleName\": \"\",\r\n        \"LastName\": \"Knowles\",\r\n        \"TeamName\": \"\",\r\n        \"TeamNumber\": 0,\r\n        \"TeamSeason\": 0,\r\n        \"ShortName\": \"\",\r\n        \"Nationality\": \"England\",\r\n        \"Sex\": \"M\",\r\n        \"BioPage\": \"\",\r\n        \"Born\": \"1955-06-13\",\r\n        \"Twitter\": \"tonyknowles8\",\r\n        \"SurnameFirst\": false,\r\n        \"License\": \"\",\r\n        \"Club\": \"\",\r\n        \"URL\": \"\",\r\n        \"Photo\": \"\",\r\n        \"PhotoSource\": \"\",\r\n        \"FirstSeasonAsPro\": 0,\r\n        \"LastSeasonAsPro\": 0,\r\n        \"Info\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 204,\r\n        \"Type\": 1,\r\n        \"FirstName\": \"Michael\",\r\n        \"MiddleName\": \"\",\r\n        \"LastName\": \"Judge\",\r\n        \"TeamName\": \"\",\r\n        \"TeamNumber\": 0,\r\n        \"TeamSeason\": 0,\r\n        \"ShortName\": \"M Judge\",\r\n        \"Nationality\": \"Ireland\",\r\n        \"Sex\": \"M\",\r\n        \"BioPage\": \"\",\r\n        \"Born\": \"1975-01-12\",\r\n        \"Twitter\": \"\",\r\n        \"SurnameFirst\": false,\r\n        \"License\": \"\",\r\n        \"Club\": \"\",\r\n        \"URL\": \"\",\r\n        \"Photo\": \"\",\r\n        \"PhotoSource\": \"\",\r\n        \"FirstSeasonAsPro\": 1992,\r\n        \"LastSeasonAsPro\": 2010,\r\n        \"Info\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 376,\r\n        \"Type\": 1,\r\n        \"FirstName\": \"TBD\",\r\n        \"MiddleName\": \"\",\r\n        \"LastName\": \" \",\r\n        \"TeamName\": \"\",\r\n        \"TeamNumber\": 0,\r\n        \"TeamSeason\": 0,\r\n        \"ShortName\": \"\",\r\n        \"Nationality\": \"\",\r\n        \"Sex\": \"\",\r\n        \"BioPage\": \"\",\r\n        \"Born\": \"\",\r\n        \"Twitter\": \"\",\r\n        \"SurnameFirst\": false,\r\n        \"License\": \"\",\r\n        \"Club\": \"\",\r\n        \"URL\": \"\",\r\n        \"Photo\": \"\",\r\n        \"PhotoSource\": \"\",\r\n        \"FirstSeasonAsPro\": 0,\r\n        \"LastSeasonAsPro\": 0,\r\n        \"Info\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 408,\r\n        \"Type\": 1,\r\n        \"FirstName\": \"John\",\r\n        \"MiddleName\": \"\",\r\n        \"LastName\": \"Parrott\",\r\n        \"TeamName\": \"\",\r\n        \"TeamNumber\": 0,\r\n        \"TeamSeason\": 0,\r\n        \"ShortName\": \"\",\r\n        \"Nationality\": \"England\",\r\n        \"Sex\": \"M\",\r\n        \"BioPage\": \"http://snooker.org/plr/bio/jparrott.shtml\",\r\n        \"Born\": \"1964-05-11\",\r\n        \"Twitter\": \"\",\r\n        \"SurnameFirst\": false,\r\n        \"License\": \"\",\r\n        \"Club\": \"\",\r\n        \"URL\": \"\",\r\n        \"Photo\": \"\",\r\n        \"PhotoSource\": \"\",\r\n        \"FirstSeasonAsPro\": 0,\r\n        \"LastSeasonAsPro\": 0,\r\n        \"Info\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 468,\r\n        \"Type\": 1,\r\n        \"FirstName\": \"Dennis\",\r\n        \"MiddleName\": \"\",\r\n        \"LastName\": \"Taylor\",\r\n        \"TeamName\": \"\",\r\n        \"TeamNumber\": 0,\r\n        \"TeamSeason\": 0,\r\n        \"ShortName\": \"Dennis Taylor\",\r\n        \"Nationality\": \"Northern Ireland\",\r\n        \"Sex\": \"M\",\r\n        \"BioPage\": \"\",\r\n        \"Born\": \"1949-01-19\",\r\n        \"Twitter\": \"dennistaylor147\",\r\n        \"SurnameFirst\": false,\r\n        \"License\": \"\",\r\n        \"Club\": \"\",\r\n        \"URL\": \"\",\r\n        \"Photo\": \"\",\r\n        \"PhotoSource\": \"\",\r\n        \"FirstSeasonAsPro\": 0,\r\n        \"LastSeasonAsPro\": 0,\r\n        \"Info\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 469,\r\n        \"Type\": 1,\r\n        \"FirstName\": \"Joe\",\r\n        \"MiddleName\": \"\",\r\n        \"LastName\": \"Johnson\",\r\n        \"TeamName\": \"\",\r\n        \"TeamNumber\": 0,\r\n        \"TeamSeason\": 0,\r\n        \"ShortName\": \"\",\r\n        \"Nationality\": \"England\",\r\n        \"Sex\": \"M\",\r\n        \"BioPage\": \"\",\r\n        \"Born\": \"1952-07-29\",\r\n        \"Twitter\": \"JoeJohnson86\",\r\n        \"SurnameFirst\": false,\r\n        \"License\": \"\",\r\n        \"Club\": \"\",\r\n        \"URL\": \"joejohnson.co.uk\",\r\n        \"Photo\": \"\",\r\n        \"PhotoSource\": \"\",\r\n        \"FirstSeasonAsPro\": 0,\r\n        \"LastSeasonAsPro\": 0,\r\n        \"Info\": \"\"\r\n    },\r\n    {\r\n        \"ID\": 470,\r\n        \"Type\": 1,\r\n        \"FirstName\": \"Cliff\",\r\n        \"MiddleName\": \"\",\r\n        \"LastName\": \"Thorburn\",\r\n        \"TeamName\": \"\",\r\n        \"TeamNumber\": 0,\r\n        \"TeamSeason\": 0,\r\n        \"ShortName\": \"\",\r\n        \"Nationality\": \"Canada\",\r\n        \"Sex\": \"M\",\r\n        \"BioPage\": \"\",\r\n        \"Born\": \"1948-01-16\",\r\n        \"Twitter\": \"CliffThorburn\",\r\n        \"SurnameFirst\": false,\r\n        \"License\": \"\",\r\n        \"Club\": \"\",\r\n        \"URL\": \"\",\r\n        \"Photo\": \"\",\r\n        \"PhotoSource\": \"\",\r\n        \"FirstSeasonAsPro\": 0,\r\n        \"LastSeasonAsPro\": 0,\r\n        \"Info\": \"\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiSnookerUrl}}players",
+					"host": [
+						"{{apiSnookerUrl}}players"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rounds for an event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"Round\": 13,\r\n        \"RoundName\": \"Quarterfinals\",\r\n        \"EventID\": 869,\r\n        \"MainEvent\": 869,\r\n        \"Distance\": 3,\r\n        \"NumLeft\": 8,\r\n        \"NumMatches\": 4,\r\n        \"Note\": \"\",\r\n        \"ValueType\": \"\",\r\n        \"Rank\": 30,\r\n        \"Money\": 0,\r\n        \"SeedGetsHalf\": 0,\r\n        \"ActualMoney\": 0,\r\n        \"Currency\": \"\",\r\n        \"ConversionRate\": 1,\r\n        \"Points\": 0,\r\n        \"SeedPoints\": 0\r\n    },\r\n    {\r\n        \"Round\": 14,\r\n        \"RoundName\": \"Semifinals\",\r\n        \"EventID\": 869,\r\n        \"MainEvent\": 869,\r\n        \"Distance\": 3,\r\n        \"NumLeft\": 4,\r\n        \"NumMatches\": 2,\r\n        \"Note\": \"\",\r\n        \"ValueType\": \"\",\r\n        \"Rank\": 20,\r\n        \"Money\": 0,\r\n        \"SeedGetsHalf\": 0,\r\n        \"ActualMoney\": 0,\r\n        \"Currency\": \"\",\r\n        \"ConversionRate\": 1,\r\n        \"Points\": 0,\r\n        \"SeedPoints\": 0\r\n    },\r\n    {\r\n        \"Round\": 15,\r\n        \"RoundName\": \"Final\",\r\n        \"EventID\": 869,\r\n        \"MainEvent\": 869,\r\n        \"Distance\": 4,\r\n        \"NumLeft\": 2,\r\n        \"NumMatches\": 1,\r\n        \"Note\": \"\",\r\n        \"ValueType\": \"\",\r\n        \"Rank\": 10,\r\n        \"Money\": 0,\r\n        \"SeedGetsHalf\": 0,\r\n        \"ActualMoney\": 0,\r\n        \"Currency\": \"\",\r\n        \"ConversionRate\": 1,\r\n        \"Points\": 0,\r\n        \"SeedPoints\": 0\r\n    },\r\n    {\r\n        \"Round\": 17,\r\n        \"RoundName\": \"Final\",\r\n        \"EventID\": 869,\r\n        \"MainEvent\": 869,\r\n        \"Distance\": 0,\r\n        \"NumLeft\": 1,\r\n        \"NumMatches\": 0,\r\n        \"Note\": \"\",\r\n        \"ValueType\": \"\",\r\n        \"Rank\": 5,\r\n        \"Money\": 0,\r\n        \"SeedGetsHalf\": 0,\r\n        \"ActualMoney\": 0,\r\n        \"Currency\": \"\",\r\n        \"ConversionRate\": 1,\r\n        \"Points\": 0,\r\n        \"SeedPoints\": 0\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiSnookerUrl}}rounds",
+					"host": [
+						"{{apiSnookerUrl}}rounds"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
