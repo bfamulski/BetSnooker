@@ -1,4 +1,7 @@
 using System;
+using System.IO;
+using System.Reflection;
+using BetSnooker.Configuration;
 using BetSnooker.Helpers;
 using BetSnooker.HttpHelper;
 using BetSnooker.Repositories;
@@ -12,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using AuthenticationService = BetSnooker.Services.AuthenticationService;
 using IAuthenticationService = BetSnooker.Services.Interfaces.IAuthenticationService;
 
@@ -36,11 +40,26 @@ namespace BetSnooker
             services.AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo { Title = "BetSnooker API", Version = "v1", Description = "BetSnooker REST API", Contact = new OpenApiContact
+                    {
+                        Name = "Bogus³aw Famulski",
+                        Email = "boguslaw.famulski@gmail.com"
+                    }});
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+            });
+
             // configure DI for application services
             services.AddDbContext<InMemoryDbContext>(options => options.UseInMemoryDatabase(databaseName: "BetSnooker"));
 
-            (int eventId, int startRound, string snookerApiUrl, int? maxUsers) = GetConfigurationItems();
-            services.AddSingleton<IConfigurationService>(new ConfigurationService(eventId, startRound, snookerApiUrl, maxUsers));
+            services.AddSingleton<IConfigurationService>(new ConfigurationService(Configuration));
 
             services.AddTransient<IAsyncRestClient, AsyncRestClient>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
@@ -63,6 +82,9 @@ namespace BetSnooker
             // global cors policy
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("./v1/swagger.json", "BetSnooker API v1"));
+
             app.UseHttpsRedirection();
             app.UseRouting();
 
@@ -73,37 +95,6 @@ namespace BetSnooker
             {
                 endpoints.MapControllers();
             });
-        }
-
-        private (int eventId, int startRound, string snookerApiUrl, int? maxUsers) GetConfigurationItems()
-        {
-            var eventIdConfig = Configuration["EventID"];
-            var startRoundConfig = Configuration["StartRound"];
-            if (string.IsNullOrEmpty(eventIdConfig) || string.IsNullOrEmpty(startRoundConfig))
-            {
-                throw new ApplicationException("EventID and/or StartRound configuration variable is not set");
-            }
-
-            if (!int.TryParse(eventIdConfig, out int eventId) || !int.TryParse(startRoundConfig, out int startRound))
-            {
-                throw new ApplicationException("EventID and/or StartRound configuration variable is invalid");
-            }
-
-            var snookerApiUrl = Configuration["SnookerApiUrl"];
-
-            int? maxUsers = null;
-            var maxUsersConfig = Configuration["MaxUsers"];
-            if (!string.IsNullOrEmpty(maxUsersConfig))
-            {
-                if (!int.TryParse(maxUsersConfig, out int maxUsersOutput))
-                {
-                    throw new ApplicationException("MaxUsers configuration variable is invalid");
-                }
-
-                maxUsers = maxUsersOutput;
-            }
-
-            return (eventId, startRound, snookerApiUrl, maxUsers);
         }
     }
 }

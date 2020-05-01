@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BetSnooker.Configuration;
 using BetSnooker.Models;
 using BetSnooker.Models.API;
 using BetSnooker.Services.Interfaces;
@@ -25,7 +26,7 @@ namespace BetSnooker.Services
 
         public IEnumerable<RoundInfo> GetEventRounds(bool allEventRounds = false)
         {
-            int startRound = _configurationService.StartRound;
+            int startRound = _configurationService.Settings.StartRound;
             var eventRounds = _snookerHubService.GetEventRounds();
             var validRounds = eventRounds.Where(r => r.NumMatches > 0);
             return allEventRounds ? validRounds : validRounds.Where(r => r.Round >= startRound);
@@ -65,7 +66,7 @@ namespace BetSnooker.Services
                 _snookerHubService.DisposeHub();
             }
 
-            return roundInfoDetails?.Round >= _configurationService.StartRound ? roundInfoDetails : null;
+            return roundInfoDetails?.Round >= _configurationService.Settings.StartRound ? roundInfoDetails : null;
         }
 
         public IEnumerable<MatchDetails> GetEventMatches(bool allEventMatches = false)
@@ -81,7 +82,7 @@ namespace BetSnooker.Services
                 return ConvertToMatchDetails(eventMatches);
             }
 
-            var startRoundId = _configurationService.StartRound;
+            var startRoundId = _configurationService.Settings.StartRound;
             var filteredMatches = eventMatches.Where(match => match.Round >= startRoundId).ToList();
             return filteredMatches.Any()
                 ? ConvertToMatchDetails(filteredMatches)

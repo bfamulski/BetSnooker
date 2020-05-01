@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BetSnooker.Configuration;
 using BetSnooker.Models;
 using BetSnooker.Repositories.Interfaces;
-using BetSnooker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetSnooker.Repositories
@@ -16,7 +16,7 @@ namespace BetSnooker.Repositories
         public AuthenticationRepository(InMemoryDbContext context, IConfigurationService configurationService)
         {
             _context = context;
-            _maxUsers = configurationService.MaxUsers;
+            _maxUsers = configurationService.Settings.MaxUsers;
         }
 
         public async Task<bool> AddUser(User user)

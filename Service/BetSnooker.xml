@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BetSnooker</name>
+    </assembly>
+    <members>
+        <member name="T:BetSnooker.Controllers.AuthenticationController">
+            <summary>
+            Authentication controller.
+            </summary>
+        </member>
+        <member name="M:BetSnooker.Controllers.AuthenticationController.Register(BetSnooker.Models.User)">
+            <summary>
+            Register new user.
+            </summary>
+            <param name="user">New user data</param>
+            <returns>Registered user data</returns>
+        </member>
+        <member name="M:BetSnooker.Controllers.AuthenticationController.Login(BetSnooker.Models.Credentials)">
+            <summary>
+            Log in user.
+            </summary>
+            <param name="credentials">User credentials</param>
+            <returns>Logged in user data</returns>
+        </member>
+        <member name="M:BetSnooker.Controllers.AuthenticationController.GetUsers">
+            <summary>
+            Get registered users.
+            </summary>
+            <returns>Collection of registered users</returns>
+        </member>
+        <member name="T:BetSnooker.Controllers.BetsController">
+            <summary>
+            Bets controller.
+            </summary>
+            <remarks>
+            Only authorized users are allowed.
+            </remarks>
+        </member>
+        <member name="M:BetSnooker.Controllers.BetsController.GetUserBets">
+            <summary>
+            Get all user bets.
+            </summary>
+            <returns>User bets</returns>
+        </member>
+        <member name="M:BetSnooker.Controllers.BetsController.GetEventBets">
+            <summary>
+            Get all bets from all users. Bets for finished or ongoing rounds are returned.
+            </summary>
+            <returns>All bets</returns>
+            <remarks>
+            This method is not authorized - any user can call it.
+            </remarks>
+        </member>
+        <member name="M:BetSnooker.Controllers.BetsController.Submit(BetSnooker.Models.RoundBets)">
+            <summary>
+            Submit user bets.
+            </summary>
+            <param name="bets">User bets</param>
+            <returns>Submit result</returns>
+        </member>
+        <member name="T:BetSnooker.Controllers.SnookerFeedController">
+            <summary>
+            SnookerFeed controller.
+            </summary>
+        </member>
+        <member name="M:BetSnooker.Controllers.SnookerFeedController.GetCurrentEvent">
+            <summary>
+            Get current event data.
+            </summary>
+            <returns>Event object</returns>
+        </member>
+        <member name="M:BetSnooker.Controllers.SnookerFeedController.GetEventMatches">
+            <summary>
+            Get event matches starting from provided start round.
+            </summary>
+            <returns>Collection of matches</returns>
+        </member>
+        <member name="M:BetSnooker.Controllers.SnookerFeedController.GetCurrentRoundInfo">
+            <summary>
+            Get current event round.
+            </summary>
+            <returns>RoundInfo details</returns>
+        </member>
+        <member name="M:BetSnooker.Controllers.SnookerFeedController.GetEventRounds">
+            <summary>
+            Get event rounds starting from provided start round.
+            </summary>
+            <returns>Collection of rounds</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:BetSnooker.HttpHelper.AsyncRestClient" -->
+        <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetEvents(System.Int32)" -->
+        <member name="M:BetSnooker.Services.SnookerApiService.GetEvent(System.Int32)">
+            <summary>
+            URL format: api.snooker.org/?e=[Event ID]
+            Example: api.snooker.org/?e=398 (Shanghai Masters Qualifiers 2015)
+            Output: Event info as JSON (one-dimensional)
+            </summary>
+            <param name="eventId">Event ID</param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetMatch(System.Int32,System.Int32,System.Int32)" -->
+        <member name="M:BetSnooker.Services.SnookerApiService.GetPlayer(System.Int32)">
+            <summary>
+            URL format: api.snooker.org/?p=[Player ID]
+            Example: api.snooker.org/?p=1 (Mark J Williams)
+            Output: Player info as JSON (one-dimensional)
+            </summary>
+            <param name="playerId">Player ID</param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetEventMatches(System.Int32)" -->
+        <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetEventPlayers(System.Int32)" -->
+        <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetEventRounds(System.Int32)" -->
+    </members>
+</doc>

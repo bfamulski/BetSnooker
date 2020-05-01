@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BetSnooker.Configuration;
 using BetSnooker.HttpHelper;
 using BetSnooker.Models.API;
 using BetSnooker.Services.Interfaces;
@@ -14,7 +15,7 @@ namespace BetSnooker.Services
 
         public SnookerApiService(IAsyncRestClient restClient, IConfigurationService configurationService)
         {
-            var snookerApiUrl = configurationService.SnookerApiUrl;
+            var snookerApiUrl = configurationService.Settings.SnookerApiUrl;
 
             _restClient = restClient;
             _restClient.BaseAddress = new Uri(snookerApiUrl);

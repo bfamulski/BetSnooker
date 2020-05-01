@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BetSnooker.Configuration;
 using BetSnooker.Models;
 using BetSnooker.Models.API;
 using BetSnooker.Repositories.Interfaces;
@@ -106,7 +107,7 @@ namespace BetSnooker.Services
 
         public async Task<RoundBets> GetUserBets(string userId)
         {
-            var eventId = _configurationService.EventId;
+            var eventId = _configurationService.Settings.EventId;
 
             RoundInfoDetails roundInfo = _snookerFeedService.GetCurrentRound();
             if (roundInfo == null || roundInfo.Started)
@@ -166,7 +167,7 @@ namespace BetSnooker.Services
             }
 
             bets.UserId = userId;
-            bets.EventId = _configurationService.EventId;
+            bets.EventId = _configurationService.Settings.EventId;
             bets.UpdatedAt = DateTime.Now;
 
             try
@@ -185,7 +186,7 @@ namespace BetSnooker.Services
         private bool CanSubmitBets()
         {
             var currentRound =  _snookerFeedService.GetCurrentRound();
-            var startRound = _configurationService.StartRound;
+            var startRound = _configurationService.Settings.StartRound;
             return currentRound != null && !currentRound.Started && currentRound.Round >= startRound;
         }
 

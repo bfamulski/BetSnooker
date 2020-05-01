@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using BetSnooker.Configuration;
 using BetSnooker.Models.API;
 using BetSnooker.Services.Interfaces;
 
@@ -9,10 +10,10 @@ namespace BetSnooker.Services
 {
     public class SnookerHubService : ISnookerHubService
     {
-        private static readonly int MatchesTimerPeriod = (int)TimeSpan.FromSeconds(30).TotalMilliseconds; // TODO: change it back to 10
-        private static readonly int RoundsTimerPeriod = (int)TimeSpan.FromDays(1).TotalMilliseconds;
-        private static readonly int PlayersTimerPeriod = (int)TimeSpan.FromDays(1).TotalMilliseconds;
-        private static readonly int EventTimerPeriod = (int)TimeSpan.FromDays(1).TotalMilliseconds;
+        private static readonly TimeSpan GetMatchesTimerPeriod = TimeSpan.FromSeconds(30); // TODO: change it back to 10
+        private static readonly TimeSpan GetRoundsTimerPeriod = TimeSpan.FromDays(1);
+        private static readonly TimeSpan GetPlayersTimerPeriod = TimeSpan.FromDays(1);
+        private static readonly TimeSpan GetEventTimerPeriod = TimeSpan.FromDays(1);
 
         private static List<Match> _eventMatches = new List<Match>();
         private static List<RoundInfo> _eventRounds = new List<RoundInfo>();
@@ -29,13 +30,13 @@ namespace BetSnooker.Services
 
         public SnookerHubService(IConfigurationService configurationService, ISnookerApiService snookerApiService)
         {
-            _eventId = configurationService.EventId;
+            _eventId = configurationService.Settings.EventId;
             _snookerApiService = snookerApiService;
 
-            _matchesTimer = new Timer(MatchesTimerEvent, null, 0, MatchesTimerPeriod);
-            _roundsTimer = new Timer(RoundsTimerEvent, null, 0, RoundsTimerPeriod);
-            _playersTimer = new Timer(PlayersTimerEvent, null, 0, PlayersTimerPeriod);
-            _eventTimer = new Timer(EventTimerEvent, null, 0, EventTimerPeriod);
+            _matchesTimer = new Timer(GetMatchesTimerEvent, null, TimeSpan.Zero, GetMatchesTimerPeriod);
+            _roundsTimer = new Timer(GetRoundsTimerEvent, null, TimeSpan.Zero, GetRoundsTimerPeriod);
+            _playersTimer = new Timer(GetPlayersTimerEvent, null, TimeSpan.Zero, GetPlayersTimerPeriod);
+            _eventTimer = new Timer(GetEventTimerEvent, null, TimeSpan.Zero, GetEventTimerPeriod);
         }
 
         public Event GetEvent()
@@ -83,7 +84,7 @@ namespace BetSnooker.Services
             _eventTimer?.Dispose();
         }
 
-        private async void MatchesTimerEvent(object obj)
+        private async void GetMatchesTimerEvent(object obj)
         {
             var eventMatches = await _snookerApiService.GetEventMatches(_eventId);
             if (eventMatches != null)
@@ -95,7 +96,7 @@ namespace BetSnooker.Services
             }
         }
 
-        private async void RoundsTimerEvent(object obj)
+        private async void GetRoundsTimerEvent(object obj)
         {
             var eventRounds = await _snookerApiService.GetEventRounds(_eventId);
             if (eventRounds != null)
@@ -107,7 +108,7 @@ namespace BetSnooker.Services
             }
         }
 
-        private async void PlayersTimerEvent(object obj)
+        private async void GetPlayersTimerEvent(object obj)
         {
             var eventPlayers = await _snookerApiService.GetEventPlayers(_eventId);
             if (eventPlayers != null)
@@ -119,7 +120,7 @@ namespace BetSnooker.Services
             }
         }
 
-        private async void EventTimerEvent(object obj)
+        private async void GetEventTimerEvent(object obj)
         {
             var @event = await _snookerApiService.GetEvent(_eventId);
 
