@@ -17,15 +17,15 @@
       </thead>
       <tbody>
         <tr mdbTableCol *ngFor="let user of users">
-          <td style="text-align: left; font-weight: bold; width: 540px;">{{user.username}}</td>
-          <td style="text-align: right; width: 80px;">{{usersScores[user.username] ? usersScores[user.username].matchesFinished : 0}}</td>
-          <td style="text-align: right; width: 80px;">{{usersScores[user.username] ? usersScores[user.username].correctWinners : 0}}</td>
-          <td style="text-align: right; width: 80px;">{{usersScores[user.username] ? usersScores[user.username].exactScores : 0}}</td>
-          <td style="text-align: right; width: 140px;">
+          <td style="text-align: left; font-weight: bold; width: 60pc;"><span *ngIf="usersScores[user.username]?.isWinner">&#9734;</span> {{user.username}}</td>
+          <td style="text-align: right; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].matchesFinished : 0}}</td>
+          <td style="text-align: right; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].correctWinners : 0}}</td>
+          <td style="text-align: right; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].exactScores : 0}}</td>
+          <td style="text-align: right; width: 8pc;">
             {{usersScores[user.username] ? usersScores[user.username].correctWinnersAccuracy : 0.0}}% 
             ({{usersScores[user.username] ? usersScores[user.username].exactScoresAccuracy : 0.0}}%)
           </td>
-          <td style="text-align: right; width: 50px; font-weight: bold;">{{usersScores[user.username] ? usersScores[user.username].eventScore : 0.0}}</td>
+          <td style="text-align: right; width: 8pc; font-weight: bold;">{{usersScores[user.username] ? usersScores[user.username].eventScore : 0.0}}</td>
         </tr>
       </tbody>
     </table>
@@ -35,41 +35,39 @@
   <div *ngFor="let round of eventRounds">
     <table class="table table-responsive" *ngIf="!loading">
       <thead class="table-header">
-        <tr style="padding: 0px;">
+        <tr>
           <th style="text-align: center;" colspan="5">{{round.roundName}} ({{round.distance * 2 - 1}})</th>
-          <th *ngFor="let user of users" colspan="4"></th>
+          <th *ngFor="let user of users" style="border-width: 1px; border-style: solid; border-color: #e0e0e0;"></th>
         </tr>
       </thead>
       <thead class="table-sub-header">
-        <tr style="padding: 0px;">
+        <tr>
           <th style="text-align: right;">PLAYER 1</th>
           <th style="text-align: right;"></th> <!--SCORE1-->
           <th style="text-align: center;"></th> <!-- : -->
           <th style="text-align: left;"></th> <!--SCORE2-->
           <th style="text-align: left;">PLAYER 2</th>
-          <th></th>
-          <th *ngFor="let user of users" style="text-align: center;">{{user.username}}</th>
+          <th *ngFor="let user of users" class="bordered">{{user.username}}</th>
       </thead>
 
       <tbody>
         <tr mdbTableCol *ngFor="let item of dashboardItems | roundFilter: {round: round.round}">
-          <td [ngClass]="{'winner-item': item.player1Id === item.winnerId}" style="text-align: right; width: 400px;">{{item.player1Name}}</td>
-          <td style="text-align: right; font-weight: bold; width: 20px;">{{item.score1}}</td>
-          <td style="text-align: center; width: 20px;">:</td>
-          <td style="text-align: left; font-weight: bold; width: 20px;">{{item.score2}}</td>
-          <td [ngClass]="{'winner-item': item.player2Id === item.winnerId}" style="text-align: left; width: 400px;">{{item.player2Name}}</td>
-          <td></td>
-          <td *ngFor="let user of users" style="width: 100px;  padding-left: 18px;">
-            <table style="margin: -5px;" *ngIf="item.userBets[user.username]">
-              <tr>
-                <td style="text-align: center; font-weight: bold;">{{item.userBets[user.username]?.betScore1}}</td>
-                <td style="text-align: center;">:</td>
-                <td style="text-align: center; font-weight: bold; padding-right: 8px;">{{item.userBets[user.username]?.betScore2}}</td>
-                <td *ngIf="item.userBets[user.username]?.scoreValue != null"
-                    [ngClass]="{'max-points': item.userBets[user.username]?.scoreValue === item.roundDistance,
+          <td [ngClass]="{'winner-item': item.player1Id === item.winnerId}" style="text-align: right; width: 405px">{{item.player1Name}}</td>
+          <td style="text-align: right; font-weight: bold; width: 22px;">{{item.score1}}</td>
+          <td style="text-align: center; width: 8px;">:</td>
+          <td style="text-align: left; font-weight: bold; width: 22px;">{{item.score2}}</td>
+          <td [ngClass]="{'winner-item': item.player2Id === item.winnerId}" style="text-align: left; width: 405px">{{item.player2Name}}</td>
+          <td *ngFor="let user of users" class="bordered" style="padding: 0px; width: 120px">
+            <table style="margin-top: -1px;" *ngIf="item.userBets[user.username]">
+              <tr style="padding: 0px">
+                <td style="text-align: right; font-weight: bold; width: 22px;">{{item.userBets[user.username]?.betScore1}}</td>
+                <td style="text-align: center; width: 8px;">:</td>
+                <td style="text-align: left; font-weight: bold; width: 22px;">{{item.userBets[user.username]?.betScore2}}</td>
+                <td [ngClass]="{'max-points': item.userBets[user.username]?.scoreValue === item.roundDistance,
                                 'zero-points': item.userBets[user.username]?.scoreValue === 0,
+                                'no-points': item.userBets[user.username]?.scoreValue === null,
                                 'in-between-points': item.userBets[user.username]?.scoreValue !== item.roundDistance && item.userBets[user.username]?.scoreValue !== 0}" 
-                    style="text-align: center; font-weight: bold; width: 35px; min-width: 35px;">{{item.userBets[user.username]?.scoreValue}}</td>
+                    style="text-align: center; font-weight: bold; width: 48px;">{{item.userBets[user.username]?.scoreValue}}</td>
               </tr>
             </table>
           </td>
@@ -79,7 +77,4 @@
   </div>
 </div>
 
-<div *ngIf="error" class="alert alert-danger mt-3 mb-0 alert-dismissible">
-  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-  {{error}}
-</div>
+<div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>

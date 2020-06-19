@@ -37,6 +37,7 @@ namespace BetSnooker.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(RoundBets))]
         [ProducesResponseType(204)]
+        [ProducesResponseType(401)]
         public async Task<IActionResult> GetUserBets()
         { 
             var userId = GetUserIdFromRequest(Request);
@@ -79,6 +80,7 @@ namespace BetSnooker.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         public async Task<IActionResult> Submit([FromBody] RoundBets bets)
         {
             var userId = GetUserIdFromRequest(Request);

@@ -1,12 +1,28 @@
-.table td, .table th {
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+th, td {
+  overflow: hidden;
+  //text-overflow: ellipsis;
+  white-space: nowrap;
   padding: 4px;
   vertical-align: top;
-  border-top: 1px solid #dee2e6;
+}
+
+.bordered {
+  text-align: center;
+  border-color: #e0e0e0;
+  border-left-style: solid;
+  border-right-style: solid;
+  border-left-width: 1px;
+  border-right-width: 1px;
 }
 
 .table-header {
   font-size: small;
-  background-color: lightgray; // lightgrey;
+  background-color: #e0e0e0;
 }
 
 .table-sub-header {
@@ -49,5 +65,10 @@
 
 .in-between-points {
   background-color: darkseagreen;
+  color: white;
+}
+
+.no-points {
+  background-color: #f1f1f1;
   color: white;
 }

@@ -102,6 +102,16 @@ namespace BetSnooker.Services
                                       });
             }
 
+            // mark the winner/s
+            if (currentRound.IsFinalRound && currentRound.Finished)
+            {
+                var maxScore = allUsersEventBets.Max(b => b.EventScore);
+                foreach (var bet in allUsersEventBets.Where(bet => bet.EventScore == maxScore))
+                {
+                    bet.IsWinner = true;
+                }
+            }
+
             return allUsersEventBets;
         }
 

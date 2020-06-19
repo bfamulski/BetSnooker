@@ -48,6 +48,10 @@ export class HomeComponent {
       }
 
       this.users = results[3];
+      if (this.users == null) {
+        this.authenticationService.logout();
+      }
+
       this.eventBets = results[4];
 
       this.matches.forEach(match => {
@@ -66,26 +70,30 @@ export class HomeComponent {
           userBets: {}
         });
 
-        if (this.users && this.eventBets) {
+        if (this.users) {
           this.users.forEach(user => {
-            const userEventBets = this.eventBets.filter(b => b.userId === user.username)[0];
-            if (userEventBets) {
-              this.usersScores[user.username] = {
-                matchesFinished: userEventBets.matchesFinished,
-                eventScore: userEventBets.eventScore,
-                correctWinners: userEventBets.correctWinners,
-                exactScores: userEventBets.exactScores,
-                correctWinnersAccuracy: this.formatAccuracyValue(userEventBets.correctWinnersAccuracy),
-                exactScoresAccuracy: this.formatAccuracyValue(userEventBets.exactScoresAccuracy),
-              };
+            dashboardItem.userBets[user.username] = { betScore1: null, betScore2: null, scoreValue: null };
+            if (this.eventBets) {
+              const userEventBets = this.eventBets.filter(b => b.userId === user.username)[0];
+              if (userEventBets) {
+                this.usersScores[user.username] = {
+                  isWinner: userEventBets.isWinner,
+                  matchesFinished: userEventBets.matchesFinished,
+                  eventScore: userEventBets.eventScore,
+                  correctWinners: userEventBets.correctWinners,
+                  exactScores: userEventBets.exactScores,
+                  correctWinnersAccuracy: this.formatAccuracyValue(userEventBets.correctWinnersAccuracy),
+                  exactScoresAccuracy: this.formatAccuracyValue(userEventBets.exactScoresAccuracy),
+                };
 
-              this.roundBets = userEventBets.roundBets;
-              this.roundBets.forEach(userRoundBet => {
-                const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
-                if (bet) {
-                  dashboardItem.userBets[user.username] = { betScore1: bet.score1, betScore2: bet.score2, scoreValue: bet.scoreValue };
-                }
-              });
+                this.roundBets = userEventBets.roundBets;
+                this.roundBets.forEach(userRoundBet => {
+                  const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
+                  if (bet) {
+                    dashboardItem.userBets[user.username] = { betScore1: bet.score1, betScore2: bet.score2, scoreValue: bet.scoreValue };
+                  }
+                });
+              }
             }
           });
         }

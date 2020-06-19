@@ -1,5 +1,6 @@
 export class EventBets {
     userId: string;
+    isWinner: boolean;
     roundBets: RoundBets[];
     matchesFinished: number;
     eventScore: number;

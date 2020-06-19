@@ -6,6 +6,8 @@ namespace BetSnooker.Models
     {
         public string UserId { get; set; }
 
+        public bool IsWinner { get; set; }
+
         public IEnumerable<RoundBets> RoundBets { get; set; }
 
         public int MatchesFinished { get; set; }

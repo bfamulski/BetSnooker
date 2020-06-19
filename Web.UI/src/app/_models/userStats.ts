@@ -1,4 +1,5 @@
 export class UserStats {
+    isWinner: boolean;
     matchesFinished: number;
     eventScore: number;
     correctWinners: number;

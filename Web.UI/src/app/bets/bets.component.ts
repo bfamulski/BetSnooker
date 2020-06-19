@@ -101,4 +101,15 @@ export class BetsComponent implements OnInit {
   inputChanged() {
     this.betsChanged = true;
   }
+
+  dismissSubmissionAlert() {
+    this.successfulSubmit = false;
+  }
+
+  dismissValidationError(error: string) {
+    const index = this.validationErrors.indexOf(error, 0);
+    if (index > -1) {
+      this.validationErrors.splice(index, 1);
+    }
+  }
 }
