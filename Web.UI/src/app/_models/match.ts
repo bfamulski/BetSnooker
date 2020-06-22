@@ -15,6 +15,7 @@ export class Match {
     walkover2: boolean;
     winnerId: number;
     winnerName: string;
-    scheduledDate: Date;
     unfinished: boolean;
+    onBreak: boolean;
+    actualStartDate: Date;
 }

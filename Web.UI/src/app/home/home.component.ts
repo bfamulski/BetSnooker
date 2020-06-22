@@ -3,6 +3,7 @@ import { forkJoin } from 'rxjs';
 
 import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User, UserStats, Event } from '../_models';
 import { SnookerFeedService, BetsService, AuthenticationService } from '../_services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +12,7 @@ import { SnookerFeedService, BetsService, AuthenticationService } from '../_serv
 })
 export class HomeComponent {
 
-  currentEvent: Event;
+  currentEvent: Event; // TODO: this is not needed here
   matches: Match[];
   users: User[];
   eventRounds: RoundInfo[];
@@ -26,7 +27,8 @@ export class HomeComponent {
 
   constructor(private snookerFeedService: SnookerFeedService,
               private betsService: BetsService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private router: Router) { }
 
   ngOnInit() {
     this.loading = true;
@@ -41,15 +43,18 @@ export class HomeComponent {
       this.currentEvent = results[0];
       this.eventRounds = results[1];
       this.matches = results[2];
+      this.users = results[3];
+
+      if (this.users == null) {
+        this.authenticationService.logout();
+        this.router.navigate(['/login']);
+        return;
+      }
+
       if (!this.eventRounds || !this.matches) {
         this.error = 'No rounds or matches available for this event';
         this.loading = false;
         return;
-      }
-
-      this.users = results[3];
-      if (this.users == null) {
-        this.authenticationService.logout();
       }
 
       this.eventBets = results[4];

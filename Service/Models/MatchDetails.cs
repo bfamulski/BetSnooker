@@ -1,4 +1,5 @@
-﻿using BetSnooker.Models.API;
+﻿using System;
+using BetSnooker.Models.API;
 
 namespace BetSnooker.Models
 {
@@ -18,9 +19,15 @@ namespace BetSnooker.Models
             Score2 = match.Score2;
             Walkover2 = match.Walkover2;
             WinnerId = match.WinnerId;
-            ScheduledDate = match.ScheduledDate;
             Unfinished = match.Unfinished;
+            OnBreak = match.OnBreak;
+            ScheduledDate = match.ScheduledDate;
+            StartDate = match.StartDate;
+            EndDate = match.EndDate;
+            Sessions = match.Sessions;
         }
+
+        public string MatchId => $"{EventId}_{Round}_{Number}";
 
         public string RoundName { get; set; }
 
@@ -31,5 +38,7 @@ namespace BetSnooker.Models
         public string Player2Name { get; set; }
 
         public string WinnerName { get; set; }
+
+        public DateTime? ActualStartDate => StartDate ?? ScheduledDate;
     }
 }

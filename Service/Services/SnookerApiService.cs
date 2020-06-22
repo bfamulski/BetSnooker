@@ -6,19 +6,22 @@ using BetSnooker.Configuration;
 using BetSnooker.HttpHelper;
 using BetSnooker.Models.API;
 using BetSnooker.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace BetSnooker.Services
 {
     public class SnookerApiService :  ISnookerApiService
     {
         private readonly IAsyncRestClient _restClient;
+        private readonly ILogger _logger;
 
-        public SnookerApiService(IAsyncRestClient restClient, IConfigurationService configurationService)
+        public SnookerApiService(IAsyncRestClient restClient, ISettings settings, ILogger<SnookerApiService> logger)
         {
-            var snookerApiUrl = configurationService.Settings.SnookerApiUrl;
+            var snookerApiUrl = settings.SnookerApiUrl;
 
             _restClient = restClient;
             _restClient.BaseAddress = new Uri(snookerApiUrl);
+            _logger = logger;
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                // log response.ErrorMessage
+                _logger.LogError(response.ErrorMessage);
                 return null;
             }
 
@@ -60,7 +63,7 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                // log response.ErrorMessage
+                _logger.LogError(response.ErrorMessage);
                 return null;
             }
 
@@ -87,7 +90,7 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                // log response.ErrorMessage
+                _logger.LogError(response.ErrorMessage);
                 return null;
             }
 
@@ -108,7 +111,7 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                // log response.ErrorMessage
+                _logger.LogError(response.ErrorMessage);
                 return null;
             }
 
@@ -132,7 +135,7 @@ namespace BetSnooker.Services
             var eventMatchesResponse = await _restClient.Send<IEnumerable<Match>>(eventMatchesRequest);
             if (!eventMatchesResponse.Success)
             {
-                // log response.ErrorMessage
+                _logger.LogError(eventMatchesResponse.ErrorMessage);
                 return null;
             }
 
@@ -156,7 +159,7 @@ namespace BetSnooker.Services
             var response = await _restClient.Send<IEnumerable<Player>>(request);
             if (!response.Success)
             {
-                // log response.ErrorMessage
+                _logger.LogError(response.ErrorMessage);
                 return null;
             }
 
@@ -180,7 +183,7 @@ namespace BetSnooker.Services
 
             if (!response.Success)
             {
-                // log response.ErrorMessage
+                _logger.LogError(response.ErrorMessage);
                 return null;
             }
 

@@ -4,4 +4,9 @@ export class Event {
     season: number;
     startDate: Date;
     endDate: Date;
+    sponsor: string;
+    type: string;
+    venue: string;
+    city: string;
+    country: string;
 }

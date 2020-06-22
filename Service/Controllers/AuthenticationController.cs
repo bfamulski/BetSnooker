@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BetSnooker.Models;
 using BetSnooker.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace BetSnooker.Controllers
 {
@@ -16,10 +17,12 @@ namespace BetSnooker.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly ILogger _logger;
 
-        public AuthenticationController(IAuthenticationService authenticationService)
+        public AuthenticationController(IAuthenticationService authenticationService, ILogger<AuthenticationController> logger)
         {
             _authenticationService = authenticationService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -32,12 +35,17 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Register([Required, FromBody] User user)
         {
+            _logger.LogInformation($"Registering new user: {user.Username}");
+            
             var result = await _authenticationService.Register(user);
             if (result == null)
             {
-                return BadRequest(new { message = "Could not register user" });
+                var errorMessage = "Could not register user";
+                _logger.LogError(errorMessage);
+                return BadRequest(new { message = errorMessage });
             }
 
+            _logger.LogInformation($"User '{result.Username}' registered successfully");
             return Ok(result);
         }
 
@@ -51,12 +59,17 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Login([Required, FromBody] Credentials credentials)
         {
+            _logger.LogInformation($"Logging in user: {credentials.Username}");
+
             var user = await _authenticationService.Login(credentials);
             if (user == null)
             {
-                return BadRequest(new { message = "Username or password is incorrect" });
+                var errorMessage = "Username or password is incorrect";
+                _logger.LogError(errorMessage);
+                return BadRequest(new { message = errorMessage });
             }
 
+            _logger.LogInformation($"User '{user.Username}' logged in successfully");
             return Ok(user);
         }
 
@@ -69,12 +82,16 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> GetUsers()
         {
+            _logger.LogDebug("Getting users");
+
             var users = await _authenticationService.GetUsers();
             if (users == null || !users.Any())
             {
+                _logger.LogWarning("No users available");
                 return NoContent();
             }
 
+            _logger.LogDebug($"Found users: {string.Join(',', users.Select(u => u.Username))}");
             return Ok(users);
         }
     }

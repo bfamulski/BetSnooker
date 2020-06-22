@@ -6,16 +6,19 @@ using BetSnooker.Helpers;
 using BetSnooker.Models;
 using BetSnooker.Repositories.Interfaces;
 using BetSnooker.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace BetSnooker.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IAuthenticationRepository _authenticationRepository;
+        private readonly ILogger _logger;
 
-        public AuthenticationService(IAuthenticationRepository authenticationRepository)
+        public AuthenticationService(IAuthenticationRepository authenticationRepository, ILogger<AuthenticationService> logger)
         {
             _authenticationRepository = authenticationRepository;
+            _logger = logger;
         }
 
         public async Task<User> Register(User user)
@@ -27,8 +30,9 @@ namespace BetSnooker.Services
                 var result = await _authenticationRepository.AddUser(user);
                 return result ? user : null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, ex.Message);
                 return null;
             }
         }

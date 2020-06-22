@@ -9,6 +9,7 @@ using BetSnooker.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace BetSnooker.Controllers
 {
@@ -24,10 +25,12 @@ namespace BetSnooker.Controllers
     public class BetsController : ControllerBase
     {
         private readonly IBetsService _betsService;
+        private readonly ILogger _logger;
 
-        public BetsController(IBetsService betsService)
+        public BetsController(IBetsService betsService, ILogger<BetsController> logger)
         {
             _betsService = betsService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -39,8 +42,10 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> GetUserBets()
-        { 
+        {
             var userId = GetUserIdFromRequest(Request);
+            _logger.LogDebug($"Getting all bets for user: {userId}");
+
             var bets = await _betsService.GetUserBets(userId);
             if (bets == null || !bets.MatchBets.Any())
             {
@@ -63,6 +68,7 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> GetEventBets()
         {
+            _logger.LogDebug("Getting all bets for all users");
             var bets = await _betsService.GetEventBets();
             if (bets == null || !bets.Any())
             {
@@ -84,16 +90,22 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> Submit([FromBody] RoundBets bets)
         {
             var userId = GetUserIdFromRequest(Request);
+            _logger.LogInformation($"Submitting round bets (round ID: {bets.RoundId}) for user: {userId}");
+            
             var result = await _betsService.SubmitBets(userId, bets);
             switch (result)
             {
                 case SubmitResult.ValidationError:
+                    _logger.LogError($"Invalid bets (round ID: {bets.RoundId}, user: {userId})");
                     return BadRequest(new { message = "Invalid bets" });
                 case SubmitResult.InvalidRound:
+                    _logger.LogError($"Invalid round or round already started (round ID: {bets.RoundId}, user: {userId})");
                     return BadRequest(new { message = "Invalid round or round already started" });
                 case SubmitResult.InternalServerError:
+                    _logger.LogError($"Unexpected error while submitting bets (round ID: {bets.RoundId}, user: {userId})");
                     return BadRequest(new { message = "Unexpected error while submitting bets" });
                 default:
+                    _logger.LogInformation($"Bets submitted successfully (round ID: {bets.RoundId}, user: {userId})");
                     return Ok();
             }
         }

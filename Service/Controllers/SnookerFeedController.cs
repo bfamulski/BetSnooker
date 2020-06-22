@@ -5,6 +5,7 @@ using BetSnooker.Models;
 using BetSnooker.Models.API;
 using BetSnooker.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace BetSnooker.Controllers
 {
@@ -16,10 +17,12 @@ namespace BetSnooker.Controllers
     public class SnookerFeedController : ControllerBase
     {
         private readonly ISnookerFeedService _snookerFeedService;
+        private readonly ILogger _logger;
 
-        public SnookerFeedController(ISnookerFeedService snookerFeedService)
+        public SnookerFeedController(ISnookerFeedService snookerFeedService, ILogger<SnookerFeedController> logger)
         {
             _snookerFeedService = snookerFeedService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -30,6 +33,7 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(200, Type = typeof(Event))]
         public async Task<IActionResult> GetCurrentEvent()
         {
+            _logger.LogDebug("Getting current event");
             var result = await Task.Run(() => _snookerFeedService.GetCurrentEvent());
             return Ok(result);
         }
@@ -43,6 +47,7 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> GetEventMatches()
         {
+            _logger.LogDebug("Getting event matches");
             var matches = await Task.Run(() => _snookerFeedService.GetEventMatches());
             if (matches == null || !matches.Any())
             {
@@ -60,6 +65,7 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(200, Type = typeof(RoundInfoDetails))]
         public async Task<IActionResult> GetCurrentRoundInfo()
         {
+            _logger.LogDebug("Getting current round");
             var result = await Task.Run(() => _snookerFeedService.GetCurrentRound());
             return Ok(result);
         }
@@ -73,6 +79,7 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> GetEventRounds()
         {
+            _logger.LogDebug("Getting event rounds");
             var rounds = await Task.Run(() => _snookerFeedService.GetEventRounds());
             if (rounds == null || !rounds.Any())
             {

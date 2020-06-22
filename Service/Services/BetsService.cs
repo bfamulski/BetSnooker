@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using BetSnooker.Configuration;
 using BetSnooker.Models;
-using BetSnooker.Models.API;
 using BetSnooker.Repositories.Interfaces;
 using BetSnooker.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace BetSnooker.Services
 {
@@ -14,13 +14,15 @@ namespace BetSnooker.Services
     {
         private readonly IBetsRepository _betsRepository;
         private readonly ISnookerFeedService _snookerFeedService;
-        private readonly IConfigurationService _configurationService;
+        private readonly ISettings _settings;
+        private readonly ILogger _logger;
 
-        public BetsService(IBetsRepository betsRepository, ISnookerFeedService snookerFeedService, IConfigurationService configurationService)
+        public BetsService(IBetsRepository betsRepository, ISnookerFeedService snookerFeedService, ISettings settings, ILogger<BetsService> logger)
         {
             _betsRepository = betsRepository;
             _snookerFeedService = snookerFeedService;
-            _configurationService = configurationService;
+            _settings = settings;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<EventBets>> GetEventBets()
@@ -117,7 +119,7 @@ namespace BetSnooker.Services
 
         public async Task<RoundBets> GetUserBets(string userId)
         {
-            var eventId = _configurationService.Settings.EventId;
+            var eventId = _settings.EventId;
 
             RoundInfoDetails roundInfo = _snookerFeedService.GetCurrentRound();
             if (roundInfo == null || roundInfo.Started)
@@ -177,16 +179,16 @@ namespace BetSnooker.Services
             }
 
             bets.UserId = userId;
-            bets.EventId = _configurationService.Settings.EventId;
+            bets.EventId = _settings.EventId;
             bets.UpdatedAt = DateTime.Now;
 
             try
             {
                 await _betsRepository.SubmitBets(bets);
             }
-            catch
+            catch (Exception ex)
             {
-                // log error
+                _logger.LogError(ex, ex.Message);
                 return SubmitResult.InternalServerError;
             }
             
@@ -195,8 +197,8 @@ namespace BetSnooker.Services
 
         private bool CanSubmitBets()
         {
-            var currentRound =  _snookerFeedService.GetCurrentRound();
-            var startRound = _configurationService.Settings.StartRound;
+            var currentRound = _snookerFeedService.GetCurrentRound();
+            var startRound = _settings.StartRound;
             return currentRound != null && !currentRound.Started && currentRound.Round >= startRound;
         }
 
@@ -212,7 +214,7 @@ namespace BetSnooker.Services
                                                      || (bet.Score1 < maxScore && bet.Score2 < maxScore))));
         }
 
-        private void CalculateScore(Match eventMatch, Bet matchBet, int matchDistance)
+        private void CalculateScore(MatchDetails eventMatch, Bet matchBet, int matchDistance)
         {
             if (eventMatch.WinnerId == 0 || eventMatch.Walkover1 || eventMatch.Walkover2)
             {

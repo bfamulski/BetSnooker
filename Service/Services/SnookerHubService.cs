@@ -5,12 +5,12 @@ using System.Threading;
 using BetSnooker.Configuration;
 using BetSnooker.Models.API;
 using BetSnooker.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace BetSnooker.Services
 {
     public class SnookerHubService : ISnookerHubService
     {
-        private static readonly TimeSpan GetMatchesTimerPeriod = TimeSpan.FromSeconds(30); // TODO: change it back to 10
         private static readonly TimeSpan GetRoundsTimerPeriod = TimeSpan.FromDays(1);
         private static readonly TimeSpan GetPlayersTimerPeriod = TimeSpan.FromDays(1);
         private static readonly TimeSpan GetEventTimerPeriod = TimeSpan.FromDays(1);
@@ -27,13 +27,15 @@ namespace BetSnooker.Services
         
         private readonly int _eventId;
         private readonly ISnookerApiService _snookerApiService;
+        private readonly ILogger _logger;
 
-        public SnookerHubService(IConfigurationService configurationService, ISnookerApiService snookerApiService)
+        public SnookerHubService(ISnookerApiService snookerApiService, ISettings settings, ILogger<SnookerHubService> logger)
         {
-            _eventId = configurationService.Settings.EventId;
+            _eventId = settings.EventId;
             _snookerApiService = snookerApiService;
+            _logger = logger;
 
-            _matchesTimer = new Timer(GetMatchesTimerEvent, null, TimeSpan.Zero, GetMatchesTimerPeriod);
+            _matchesTimer = new Timer(GetMatchesTimerEvent, null, TimeSpan.Zero, settings.GetMatchesInterval);
             _roundsTimer = new Timer(GetRoundsTimerEvent, null, TimeSpan.Zero, GetRoundsTimerPeriod);
             _playersTimer = new Timer(GetPlayersTimerEvent, null, TimeSpan.Zero, GetPlayersTimerPeriod);
             _eventTimer = new Timer(GetEventTimerEvent, null, TimeSpan.Zero, GetEventTimerPeriod);
@@ -78,10 +80,12 @@ namespace BetSnooker.Services
 
         public void DisposeHub()
         {
+            _logger.LogInformation("Disposing Snooker Hub");
             _matchesTimer?.Dispose();
             _roundsTimer?.Dispose();
             _playersTimer?.Dispose();
             _eventTimer?.Dispose();
+            _logger.LogInformation("Snooker Hub disposed");
         }
 
         private async void GetMatchesTimerEvent(object obj)

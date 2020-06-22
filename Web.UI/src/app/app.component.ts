@@ -12,13 +12,17 @@ import { User, Event } from './_models';
 export class AppComponent {
     currentUser: User;
     currentEvent: Event;
+    currentEventFullName: string;
 
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
         private snookerFeedService: SnookerFeedService) {
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
-        this.snookerFeedService.getCurrentEvent().subscribe(event => this.currentEvent = event);
+        this.snookerFeedService.getCurrentEvent().subscribe(event => {
+            this.currentEvent = event;
+            this.currentEventFullName = `${event.sponsor} ${event.name}`.trim();
+        });
     }
 
     logout() {

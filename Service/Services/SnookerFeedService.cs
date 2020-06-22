@@ -5,18 +5,21 @@ using BetSnooker.Configuration;
 using BetSnooker.Models;
 using BetSnooker.Models.API;
 using BetSnooker.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace BetSnooker.Services
 {
     public class SnookerFeedService : ISnookerFeedService
     {
-        private readonly IConfigurationService _configurationService;
+        private readonly ISettings _settings;
         private readonly ISnookerHubService _snookerHubService;
+        private readonly ILogger _logger;
 
-        public SnookerFeedService(IConfigurationService configurationService, ISnookerHubService snookerHubService)
+        public SnookerFeedService(ISnookerHubService snookerHubService, ISettings settings, ILogger<SnookerFeedService> logger)
         {
-            _configurationService = configurationService;
             _snookerHubService = snookerHubService;
+            _settings = settings;
+            _logger = logger;
         }
 
         public Event GetCurrentEvent()
@@ -26,7 +29,7 @@ namespace BetSnooker.Services
 
         public IEnumerable<RoundInfo> GetEventRounds(bool allEventRounds = false)
         {
-            int startRound = _configurationService.Settings.StartRound;
+            int startRound = _settings.StartRound;
             var eventRounds = _snookerHubService.GetEventRounds();
             var validRounds = eventRounds.Where(r => r.NumMatches > 0);
             return allEventRounds ? validRounds : validRounds.Where(r => r.Round >= startRound);
@@ -38,6 +41,7 @@ namespace BetSnooker.Services
             var eventMatches = GetEventMatches(true).ToList();
             if (!eventRounds.Any() || !eventMatches.Any())
             {
+                _logger.LogWarning("Could not get current round");
                 return null;
             }
 
@@ -48,10 +52,10 @@ namespace BetSnooker.Services
                 var roundFinished = matchesGrouped.All(MatchFinished);
                 if (roundFinished && matchesGrouped.Count() > 1) continue; // always return the final if it's current round
 
-                var roundId = matchesGrouped.Key; // First().Round;
+                var roundId = matchesGrouped.Key;
                 var roundInfo = GetRoundInfo(roundId, eventRounds);
 
-                var minScheduledDate = matchesGrouped.Min(m => m.ScheduledDate);
+                var minScheduledDate = matchesGrouped.Min(m => m.ActualStartDate);
                 roundInfoDetails = new RoundInfoDetails(roundInfo)
                 {
                     Started = minScheduledDate.HasValue && minScheduledDate.Value.ToLocalTime() <= DateTime.Now, // TODO: local time or UTC?
@@ -63,10 +67,11 @@ namespace BetSnooker.Services
 
             if (roundInfoDetails != null && roundInfoDetails.IsFinalRound && roundInfoDetails.Finished)
             {
+                _logger.LogInformation("Event finished. Disposing Snooker Hub");
                 _snookerHubService.DisposeHub();
             }
 
-            return roundInfoDetails?.Round >= _configurationService.Settings.StartRound ? roundInfoDetails : null;
+            return roundInfoDetails?.Round >= _settings.StartRound ? roundInfoDetails : null;
         }
 
         public IEnumerable<MatchDetails> GetEventMatches(bool allEventMatches = false)
@@ -74,6 +79,7 @@ namespace BetSnooker.Services
             IEnumerable<Match> eventMatches = _snookerHubService.GetEventMatches().ToList();
             if (!eventMatches.Any())
             {
+                _logger.LogWarning("Could not get any event matches");
                 return new List<MatchDetails>();
             }
             
@@ -82,7 +88,7 @@ namespace BetSnooker.Services
                 return ConvertToMatchDetails(eventMatches);
             }
 
-            var startRoundId = _configurationService.Settings.StartRound;
+            var startRoundId = _settings.StartRound;
             var filteredMatches = eventMatches.Where(match => match.Round >= startRoundId).ToList();
             return filteredMatches.Any()
                 ? ConvertToMatchDetails(filteredMatches)

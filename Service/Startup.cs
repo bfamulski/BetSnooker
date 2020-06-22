@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using AuthenticationService = BetSnooker.Services.AuthenticationService;
 using IAuthenticationService = BetSnooker.Services.Interfaces.IAuthenticationService;
@@ -33,6 +34,8 @@ namespace BetSnooker
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging();
+
             services.AddCors();
             services.AddControllers();
 
@@ -59,7 +62,7 @@ namespace BetSnooker
             // configure DI for application services
             services.AddDbContext<InMemoryDbContext>(options => options.UseInMemoryDatabase(databaseName: "BetSnooker"));
 
-            services.AddSingleton<IConfigurationService>(new ConfigurationService(Configuration));
+            services.AddSingleton<ISettings, Settings>();
 
             services.AddTransient<IAsyncRestClient, AsyncRestClient>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
@@ -72,7 +75,7 @@ namespace BetSnooker
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -95,6 +98,8 @@ namespace BetSnooker
             {
                 endpoints.MapControllers();
             });
+
+            logger.LogInformation("Service started successfully");
         }
     }
 }
