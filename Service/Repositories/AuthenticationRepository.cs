@@ -11,9 +11,9 @@ namespace BetSnooker.Repositories
     public class AuthenticationRepository : IAuthenticationRepository
     {
         private readonly int _maxUsers;
-        private readonly InMemoryDbContext _context;
+        private readonly DatabaseContext _context;
         
-        public AuthenticationRepository(InMemoryDbContext context, ISettings settings)
+        public AuthenticationRepository(DatabaseContext context, ISettings settings)
         {
             _context = context;
             _maxUsers = settings.MaxUsers;

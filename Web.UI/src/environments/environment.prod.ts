@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://betsnooker.azurewebsites.net/'
+    apiUrl: 'https://betsnookerapi.azurewebsites.net/'
 };

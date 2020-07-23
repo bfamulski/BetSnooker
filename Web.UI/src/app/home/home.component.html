@@ -31,17 +31,30 @@
     </table>
   </div>
 
+  <!-- Event details -->
+  <div class="center-container" style="margin-bottom: 10px;">
+    <div style="font-weight: bold;">{{eventName}}</div>
+    <div>{{eventVenue}}</div>
+  </div>
+
   <!-- Rounds and matches -->
   <div *ngFor="let round of eventRounds">
     <table class="table table-responsive" *ngIf="!loading">
       <thead class="table-header">
         <tr>
+          <th style="border-width: 1px; border-style: solid; border-color: #e0e0e0;"></th>
           <th style="text-align: center;" colspan="5">{{round.roundName}} ({{round.distance * 2 - 1}})</th>
           <th *ngFor="let user of users" style="border-width: 1px; border-style: solid; border-color: #e0e0e0;"></th>
+        </tr>
+        <tr>
+          <th style="padding: 0px; border-width: 1px; border-style: solid; border-color: #e0e0e0;"></th>
+          <th style="text-align: center; font-size: x-small; padding: 0px;" colspan="5">Start date: {{round.startDate}}</th>
+          <th *ngFor="let user of users" style="padding: 0px; border-width: 1px; border-style: solid; border-color: #e0e0e0;"></th>
         </tr>
       </thead>
       <thead class="table-sub-header">
         <tr>
+          <th style="text-align: left;">STATUS / SCHEDULE</th>
           <th style="text-align: right;">PLAYER 1</th>
           <th style="text-align: right;"></th> <!--SCORE1-->
           <th style="text-align: center;"></th> <!-- : -->
@@ -52,6 +65,7 @@
 
       <tbody>
         <tr mdbTableCol *ngFor="let item of dashboardItems | roundFilter: {round: round.round}">
+          <td style="text-align: left; width: 100px; font-size: small; padding-top: 6px;">{{item.status}}</td>
           <td [ngClass]="{'winner-item': item.player1Id === item.winnerId}" style="text-align: right; width: 405px">{{item.player1Name}}</td>
           <td style="text-align: right; font-weight: bold; width: 22px;">{{item.score1}}</td>
           <td style="text-align: center; width: 8px;">:</td>
@@ -60,9 +74,9 @@
           <td *ngFor="let user of users" class="bordered" style="padding: 0px; width: 120px">
             <table style="margin-top: -1px;" *ngIf="item.userBets[user.username]">
               <tr style="padding: 0px">
-                <td style="text-align: right; font-weight: bold; width: 22px;">{{item.userBets[user.username]?.betScore1}}</td>
+                <td style="text-align: right; font-weight: bold; width: 28px;">{{item.userBets[user.username]?.betScore1}}</td>
                 <td style="text-align: center; width: 8px;">:</td>
-                <td style="text-align: left; font-weight: bold; width: 22px;">{{item.userBets[user.username]?.betScore2}}</td>
+                <td style="text-align: left; font-weight: bold; width: 28px;">{{item.userBets[user.username]?.betScore2}}</td>
                 <td [ngClass]="{'max-points': item.userBets[user.username]?.scoreValue === item.roundDistance,
                                 'zero-points': item.userBets[user.username]?.scoreValue === 0,
                                 'no-points': item.userBets[user.username]?.scoreValue === null,

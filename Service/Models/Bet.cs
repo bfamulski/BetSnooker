@@ -8,13 +8,13 @@
 
         public int Player1Id { get; set; }
 
-        public string Player1Name { get; set; } // TODO: do we need player name?
+        public string Player1Name { get; set; }
 
         public int? Score1 { get; set; }
 
         public int Player2Id { get; set; }
 
-        public string Player2Name { get; set; } // TODO: do we need player name?
+        public string Player2Name { get; set; }
 
         public int? Score2 { get; set; }
 

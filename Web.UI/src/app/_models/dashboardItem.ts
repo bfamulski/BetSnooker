@@ -10,6 +10,7 @@ export class DashboardItem {
   winnerId: number;
   winnerName: string;
   roundDistance: number;
+  status: string;
 
   userBets: { [userId: string]: { betScore1?: number, betScore2?: number, scoreValue?: number } };
 

@@ -17,5 +17,8 @@ export class Match {
     winnerName: string;
     unfinished: boolean;
     onBreak: boolean;
+    scheduledDate: Date;
+    startDate: Date;
+    endDate: Date;
     actualStartDate: Date;
 }

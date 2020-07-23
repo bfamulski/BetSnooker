@@ -4,4 +4,11 @@ export class RoundInfo {
     eventId: number;
     distance: number;
     numMatches: number;
+    actualStartDate: Date;
+    started: boolean;
+    finished: boolean;
+    isFinalRound: boolean;
+
+    // this is only to format actualStartDate
+    startDate: string;
 }

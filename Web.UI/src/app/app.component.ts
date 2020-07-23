@@ -18,6 +18,7 @@ export class AppComponent {
         private router: Router,
         private authenticationService: AuthenticationService,
         private snookerFeedService: SnookerFeedService) {
+
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
         this.snookerFeedService.getCurrentEvent().subscribe(event => {
             this.currentEvent = event;

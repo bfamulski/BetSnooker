@@ -9,9 +9,9 @@ namespace BetSnooker.Repositories
 {
     public class BetsRepository : IBetsRepository
     {
-        private readonly InMemoryDbContext _context;
+        private readonly DatabaseContext _context;
 
-        public BetsRepository(InMemoryDbContext context)
+        public BetsRepository(DatabaseContext context)
         {
             _context = context;
         }

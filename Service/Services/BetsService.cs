@@ -25,6 +25,7 @@ namespace BetSnooker.Services
             _logger = logger;
         }
 
+        // TODO: refactor this method
         public async Task<IEnumerable<EventBets>> GetEventBets()
         {
             var currentRound = _snookerFeedService.GetCurrentRound();
@@ -49,6 +50,7 @@ namespace BetSnooker.Services
             }
 
             var eventMatches = _snookerFeedService.GetEventMatches();
+
             var allUsersEventBets = new List<EventBets>();
             var eventBetsGroupedByUser = eventBets.GroupBy(b => b.UserId);
             foreach (var betsGrouped in eventBetsGroupedByUser)
@@ -108,7 +110,7 @@ namespace BetSnooker.Services
             if (currentRound.IsFinalRound && currentRound.Finished)
             {
                 var maxScore = allUsersEventBets.Max(b => b.EventScore);
-                foreach (var bet in allUsersEventBets.Where(bet => bet.EventScore == maxScore))
+                foreach (var bet in allUsersEventBets.Where(bet => AreEqual(bet.EventScore, maxScore)))
                 {
                     bet.IsWinner = true;
                 }
@@ -180,7 +182,7 @@ namespace BetSnooker.Services
 
             bets.UserId = userId;
             bets.EventId = _settings.EventId;
-            bets.UpdatedAt = DateTime.Now;
+            bets.UpdatedAt = DateTime.Now; // TODO: UtcNow?
 
             try
             {
@@ -236,6 +238,16 @@ namespace BetSnooker.Services
                 matchBet.ScoreValue = 0.0;
                 matchBet.Error = null;
             }
+        }
+
+        private bool AreEqual(double? val1, double? val2)
+        {
+            if (!val1.HasValue || !val2.HasValue)
+            {
+                return false;
+            }
+
+            return Math.Abs(val1.Value - val2.Value) <= double.Epsilon;
         }
     }
 }

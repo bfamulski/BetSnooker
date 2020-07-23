@@ -12,7 +12,10 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent {
 
-  currentEvent: Event; // TODO: this is not needed here
+  currentEvent: Event;
+  eventName: string;
+  eventVenue: string;
+
   matches: Match[];
   users: User[];
   eventRounds: RoundInfo[];
@@ -33,19 +36,23 @@ export class HomeComponent {
   ngOnInit() {
     this.loading = true;
 
-    const currentEventRequest = this.snookerFeedService.getCurrentEvent();
+    this.snookerFeedService.getCurrentEvent().subscribe(event => {
+      this.currentEvent = event;
+      this.eventName = `${event.sponsor} ${event.name}`.trim();
+      this.eventVenue = `${event.venue}, ${event.city} (${event.country})`;
+    });
+
     const eventRoundsRequest = this.snookerFeedService.getEventRounds();
     const eventMatchesRequest = this.snookerFeedService.getEventMatches();
     const usersRequest = this.authenticationService.getUsers();
     const eventBetsRequest = this.betsService.getEventBets();
 
-    forkJoin([currentEventRequest, eventRoundsRequest, eventMatchesRequest, usersRequest, eventBetsRequest]).subscribe(results => {
-      this.currentEvent = results[0];
-      this.eventRounds = results[1];
-      this.matches = results[2];
-      this.users = results[3];
+    forkJoin([eventRoundsRequest, eventMatchesRequest, usersRequest, eventBetsRequest]).subscribe(results => {
+      this.eventRounds = results[0];
+      this.matches = results[1];
+      this.users = results[2];
 
-      if (this.users == null) {
+      if (!this.users) {
         this.authenticationService.logout();
         this.router.navigate(['/login']);
         return;
@@ -57,7 +64,11 @@ export class HomeComponent {
         return;
       }
 
-      this.eventBets = results[4];
+      this.eventBets = results[3];
+
+      this.eventRounds.forEach(round => {
+        round.startDate = this.convertToLocalDate(round.actualStartDate);
+      });
 
       this.matches.forEach(match => {
         const dashboardItem = new DashboardItem({
@@ -72,6 +83,7 @@ export class HomeComponent {
           winnerId: match.winnerId,
           winnerName: match.winnerName,
           roundDistance: match.distance,
+          status: this.formatStatus(match),
           userBets: {}
         });
 
@@ -115,5 +127,35 @@ export class HomeComponent {
 
   formatAccuracyValue(accuracyValue: number) {
     return Number((accuracyValue * 100).toFixed(2)).toString();
+  }
+
+  formatStatus(match: Match) {
+    if (match.endDate) {
+      return 'FINISHED';
+    }
+
+    if (match.startDate == null) {
+      if (match.scheduledDate == null || (!match.player1Name && !match.player2Name)) {
+        return 'TBD';
+      }
+
+      return this.convertToLocalDateTime(match.scheduledDate);
+    }
+
+    if (match.onBreak) {
+      return `${this.convertToLocalDateTime(match.scheduledDate)} (BREAK)`;
+    }
+
+    return 'ONGOING';
+  }
+
+  convertToLocalDate(dateTime: Date) {
+    const date = new Date(dateTime);
+    return `${date.toISOString().slice(0, 10)}`;
+  }
+
+  convertToLocalDateTime(dateTime: Date) {
+    const localDateTime = new Date(dateTime);
+    return `${localDateTime.toISOString().slice(0, 10)} ${localDateTime.toLocaleTimeString('en-GB', {hour: 'numeric', minute: 'numeric'})}`;
   }
 }

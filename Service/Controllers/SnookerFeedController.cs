@@ -75,7 +75,7 @@ namespace BetSnooker.Controllers
         /// </summary>
         /// <returns>Collection of rounds</returns>
         [HttpGet("rounds/all")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<RoundInfo>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<RoundInfoDetails>))]
         [ProducesResponseType(204)]
         public async Task<IActionResult> GetEventRounds()
         {

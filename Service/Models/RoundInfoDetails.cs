@@ -1,13 +1,10 @@
-﻿using BetSnooker.Models.API;
+﻿using System;
+using BetSnooker.Models.API;
 
 namespace BetSnooker.Models
 {
     public class RoundInfoDetails : RoundInfo
     {
-        public RoundInfoDetails()
-        {
-        }
-
         public RoundInfoDetails(RoundInfo roundInfo)
         {
             Round = roundInfo.Round;
@@ -16,6 +13,8 @@ namespace BetSnooker.Models
             Distance = roundInfo.Distance;
             NumMatches = roundInfo.NumMatches;
         }
+
+        public DateTime? ActualStartDate { get; set; }
 
         public bool Started { get; set; }
 

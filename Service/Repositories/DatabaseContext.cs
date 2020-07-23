@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BetSnooker.Repositories
 {
-    public class InMemoryDbContext : DbContext
+    public class DatabaseContext : DbContext
     {
-        public InMemoryDbContext(DbContextOptions<InMemoryDbContext> options)
+        public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)
         {
         }
