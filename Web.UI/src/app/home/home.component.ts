@@ -1,16 +1,17 @@
-﻿import { Component } from '@angular/core';
-import { forkJoin } from 'rxjs';
+﻿import { Component, OnInit } from '@angular/core';
+import { forkJoin, Subscription, interval } from 'rxjs';
 
 import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User, UserStats, Event, MatchStatus, EMatchStatus } from '../_models';
 import { SnookerFeedService, BetsService, AuthenticationService } from '../_services';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.less']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   currentEvent: Event;
   eventName: string;
@@ -28,12 +29,29 @@ export class HomeComponent {
   loading = false;
   error = '';
 
+  private updateSubscription: Subscription;
+  updateIntervalMs = 1000 * 60 * 5; // 5 minutes
+  lastRefreshAt = '';
+
+  version = environment.version;
+
   constructor(private snookerFeedService: SnookerFeedService,
               private betsService: BetsService,
               private authenticationService: AuthenticationService,
               private router: Router) { }
 
   ngOnInit() {
+    this.loadData();
+    this.lastRefreshAt = `${this.convertToLocalTime(new Date(Date.now()))}`;
+
+    this.updateSubscription = interval(this.updateIntervalMs).subscribe(val => {
+      console.log('Page refreshed');
+      this.loadData();
+      this.lastRefreshAt = `${this.convertToLocalTime(new Date(Date.now()))}`;
+    });
+  }
+
+  loadData() {
     this.loading = true;
 
     this.snookerFeedService.getCurrentEvent().subscribe(event => {
@@ -166,5 +184,9 @@ export class HomeComponent {
     const month = (localDateTime.getMonth() + 1).toString().padStart(2, '0');
     const time = localDateTime.toLocaleTimeString('en-GB', {hour: 'numeric', minute: 'numeric'});
     return `${day}/${month} ${time}`;
+  }
+
+  convertToLocalTime(dateTime: Date) {
+    return `${dateTime.toISOString().slice(0, 10)} ${dateTime.toLocaleTimeString('en-GB')}`;
   }
 }
