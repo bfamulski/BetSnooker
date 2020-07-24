@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
   roundBets: RoundBets[];
   eventBets: EventBets[];
 
-  dashboardItems: DashboardItem[] = [];
+  dashboardItems: DashboardItem[];
   usersScores: { [userId: string]: UserStats } = {};
 
   loading = false;
@@ -88,6 +88,7 @@ export class HomeComponent implements OnInit {
         round.startDate = this.convertToLocalDate(round.actualStartDate);
       });
 
+      this.dashboardItems = [];
       this.matches.forEach(match => {
         const dashboardItem = new DashboardItem({
           roundId: match.round,
