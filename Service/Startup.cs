@@ -35,6 +35,7 @@ namespace BetSnooker
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
+            services.AddApplicationInsightsTelemetry();
 
             services.AddCors();
             services.AddControllers();
@@ -49,7 +50,7 @@ namespace BetSnooker
                     "v1",
                     new OpenApiInfo { Title = "BetSnooker API", Version = "v1", Description = "BetSnooker REST API", Contact = new OpenApiContact
                     {
-                        Name = "Bogus³aw Famulski",
+                        Name = "Bogusï¿½aw Famulski",
                         Email = "boguslaw.famulski@gmail.com"
                     }});
 
@@ -60,7 +61,8 @@ namespace BetSnooker
             });
 
             // configure DI for application services
-            services.AddDbContext<InMemoryDbContext>(options => options.UseInMemoryDatabase(databaseName: "BetSnooker"));
+            services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "BetSnooker"));
+            //services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BetSnookerDatabase")));
 
             services.AddSingleton<ISettings, Settings>();
 
