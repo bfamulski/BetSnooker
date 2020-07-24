@@ -8,7 +8,13 @@
             <a class="nav-link" routerLink='/bets' routerLinkActive='active' routerLinkActiveOptions="{exact:true}">Bets</a>
         </li>
     </ul>
-    <button type="button" class="btn btn-warning" style="height: 36px; margin-left: 10px;" (click)="logout()">Logout: {{currentUser.username}}</button>
+
+    <div class="dropdown">
+        <button (click)="showDropdown()" id="dropdownbtn" class="dropbtn"><span class="fa fa-user fa-lg"></span> {{currentUser.username}}</button>
+        <div id="userDropdown" class="dropdown-content">
+            <a href="#" (click)="logout()">Logout</a>
+        </div>
+    </div>
 </nav>
 
 <!-- main app container -->

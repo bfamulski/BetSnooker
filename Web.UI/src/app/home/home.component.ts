@@ -1,7 +1,7 @@
 ﻿import { Component } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
-import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User, UserStats, Event } from '../_models';
+import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User, UserStats, Event, MatchStatus, EMatchStatus } from '../_models';
 import { SnookerFeedService, BetsService, AuthenticationService } from '../_services';
 import { Router } from '@angular/router';
 
@@ -131,22 +131,28 @@ export class HomeComponent {
 
   formatStatus(match: Match) {
     if (match.endDate) {
-      return 'FINISHED';
+      return new MatchStatus({ status: EMatchStatus.Finished });
     }
 
     if (match.startDate == null) {
       if (match.scheduledDate == null || (!match.player1Name && !match.player2Name)) {
-        return 'TBD';
+        return new MatchStatus({ status: EMatchStatus.NotStarted });
       }
 
-      return this.convertToLocalDateTime(match.scheduledDate);
+      return new MatchStatus({
+        status: EMatchStatus.NotStarted,
+        description: `${this.convertToLocalDateTime(match.scheduledDate)}`
+      });
     }
 
     if (match.onBreak) {
-      return `${this.convertToLocalDateTime(match.scheduledDate)} (BREAK)`;
+      return new MatchStatus({
+        status: EMatchStatus.NotStarted,
+        description: `${this.convertToLocalDateTime(match.scheduledDate)} (BREAK)`
+      });
     }
 
-    return 'ONGOING';
+    return new MatchStatus({ status: EMatchStatus.Ongoing });
   }
 
   convertToLocalDate(dateTime: Date) {
@@ -156,6 +162,9 @@ export class HomeComponent {
 
   convertToLocalDateTime(dateTime: Date) {
     const localDateTime = new Date(dateTime);
-    return `${localDateTime.toISOString().slice(0, 10)} ${localDateTime.toLocaleTimeString('en-GB', {hour: 'numeric', minute: 'numeric'})}`;
+    const day = localDateTime.getDate().toString().padStart(2, '0');
+    const month = (localDateTime.getMonth() + 1).toString().padStart(2, '0');
+    const time = localDateTime.toLocaleTimeString('en-GB', {hour: 'numeric', minute: 'numeric'});
+    return `${day}/${month} ${time}`;
   }
 }

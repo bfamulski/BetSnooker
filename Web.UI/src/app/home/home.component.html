@@ -65,7 +65,14 @@
 
       <tbody>
         <tr mdbTableCol *ngFor="let item of dashboardItems | roundFilter: {round: round.round}">
-          <td style="text-align: left; width: 100px; font-size: small; padding-top: 6px;">{{item.status}}</td>
+          <td style="text-align: center">
+            <span [ngClass]="{'status-ongoing': item.status.status === 2,
+                              'status-finished': item.status.status === 3}">
+            </span>
+            <span *ngIf="item.status.status === 1" style="text-align: left; width: 100px; font-size: small; padding-top: 6px;">
+              {{item.status.description}}
+            </span>
+          </td>
           <td [ngClass]="{'winner-item': item.player1Id === item.winnerId}" style="text-align: right; width: 405px">{{item.player1Name}}</td>
           <td style="text-align: right; font-weight: bold; width: 22px;">{{item.score1}}</td>
           <td style="text-align: center; width: 8px;">:</td>
@@ -88,6 +95,18 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- Legend -->
+  <div>
+    <div>
+      <span class="status-finished"></span>
+      <span> - match finished</span>
+    </div>
+    <div>
+      <span class="status-ongoing"></span>
+      <span> - match ongoing</span>
+    </div>
   </div>
 </div>
 

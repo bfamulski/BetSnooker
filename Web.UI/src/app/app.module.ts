@@ -10,7 +10,7 @@ import { appRoutingModule } from './app.routing';
 import { BasicAuthInterceptor, ErrorInterceptor, DashboardItemRoundFilterPipe } from './_helpers';
 import { HomeComponent } from './home';
 import { LoginComponent } from './login';
-import { BetsComponent } from './bets';;
+import { BetsComponent } from './bets';
 import { RegisterComponent } from './register/register.component';
 
 @NgModule({
