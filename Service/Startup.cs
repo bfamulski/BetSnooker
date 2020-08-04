@@ -50,7 +50,7 @@ namespace BetSnooker
                     "v1",
                     new OpenApiInfo { Title = "BetSnooker API", Version = "v1", Description = "BetSnooker REST API", Contact = new OpenApiContact
                     {
-                        Name = "Bogus�aw Famulski",
+                        Name = "Bogusław Famulski",
                         Email = "boguslaw.famulski@gmail.com"
                     }});
 
@@ -73,6 +73,7 @@ namespace BetSnooker
             services.AddTransient<IBetsService, BetsService>();
             services.AddTransient<ISnookerFeedService, SnookerFeedService>();
             services.AddTransient<ISnookerApiService, SnookerApiService>();
+
             services.AddSingleton<ISnookerHubService, SnookerHubService>();
         }
 

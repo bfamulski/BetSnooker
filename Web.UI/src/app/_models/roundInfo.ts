@@ -9,6 +9,5 @@ export class RoundInfo {
     finished: boolean;
     isFinalRound: boolean;
 
-    // this is only to format actualStartDate
-    startDate: string;
+    startDate: string; // this is only to format actualStartDate
 }

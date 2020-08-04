@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
   error = '';
 
   private updateSubscription: Subscription;
-  updateIntervalMs = 1000 * 60 * 5; // 5 minutes
+  updateIntervalMs = 1000 * 60 * 10; // 10 minutes
   lastRefreshAt = '';
 
   version = environment.version;
@@ -41,25 +41,30 @@ export class HomeComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
+    this.loading = true;
+    this.getCurrentEvent();
     this.loadData();
     this.lastRefreshAt = `${this.convertToLocalTime(new Date(Date.now()))}`;
 
     this.updateSubscription = interval(this.updateIntervalMs).subscribe(val => {
-      console.log('Page refreshed');
+      this.loading = true;
       this.loadData();
       this.lastRefreshAt = `${this.convertToLocalTime(new Date(Date.now()))}`;
     });
   }
 
-  loadData() {
-    this.loading = true;
-
+  getCurrentEvent() {
     this.snookerFeedService.getCurrentEvent().subscribe(event => {
       this.currentEvent = event;
       this.eventName = `${event.sponsor} ${event.name}`.trim();
       this.eventVenue = `${event.venue}, ${event.city} (${event.country})`;
+    }, error => {
+      this.error = error;
+      this.loading = false;
     });
+  }
 
+  loadData() {
     const eventRoundsRequest = this.snookerFeedService.getEventRounds();
     const eventMatchesRequest = this.snookerFeedService.getEventMatches();
     const usersRequest = this.authenticationService.getUsers();
@@ -126,7 +131,11 @@ export class HomeComponent implements OnInit {
                 this.roundBets.forEach(userRoundBet => {
                   const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
                   if (bet) {
-                    dashboardItem.userBets[user.username] = { betScore1: bet.score1, betScore2: bet.score2, scoreValue: bet.scoreValue };
+                    dashboardItem.userBets[user.username] = {
+                      betScore1: bet.score1 ? bet.score1.toString() : (bet.betPlaced ? '?' : null),
+                      betScore2: bet.score2 ? bet.score2.toString() : (bet.betPlaced ? '?' : null),
+                      scoreValue: bet.scoreValue
+                    };
                   }
                 });
               }

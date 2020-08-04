@@ -39,6 +39,8 @@ namespace BetSnooker.Services
             _roundsTimer = new Timer(GetRoundsTimerEvent, null, TimeSpan.Zero, GetRoundsTimerPeriod);
             _playersTimer = new Timer(GetPlayersTimerEvent, null, TimeSpan.Zero, GetPlayersTimerPeriod);
             _eventTimer = new Timer(GetEventTimerEvent, null, TimeSpan.Zero, GetEventTimerPeriod);
+
+            _logger.LogInformation("Snooker Hub started");
         }
 
         public Event GetEvent()
@@ -90,6 +92,7 @@ namespace BetSnooker.Services
 
         private async void GetMatchesTimerEvent(object obj)
         {
+            _logger.LogInformation("Snooker Hub: get event matches");
             var eventMatches = await _snookerApiService.GetEventMatches(_eventId);
             if (eventMatches != null)
             {
@@ -102,6 +105,7 @@ namespace BetSnooker.Services
 
         private async void GetRoundsTimerEvent(object obj)
         {
+            _logger.LogInformation("Snooker Hub: get event rounds");
             var eventRounds = await _snookerApiService.GetEventRounds(_eventId);
             if (eventRounds != null)
             {
@@ -114,6 +118,7 @@ namespace BetSnooker.Services
 
         private async void GetPlayersTimerEvent(object obj)
         {
+            _logger.LogInformation("Snooker Hub: get event players");
             var eventPlayers = await _snookerApiService.GetEventPlayers(_eventId);
             if (eventPlayers != null)
             {
@@ -126,6 +131,7 @@ namespace BetSnooker.Services
 
         private async void GetEventTimerEvent(object obj)
         {
+            _logger.LogInformation("Snooker Hub: get event");
             var @event = await _snookerApiService.GetEvent(_eventId);
 
             if (_event == null)

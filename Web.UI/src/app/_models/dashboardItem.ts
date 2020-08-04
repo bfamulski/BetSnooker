@@ -13,7 +13,7 @@ export class DashboardItem {
 
   status: MatchStatus;
 
-  userBets: { [userId: string]: { betScore1?: number, betScore2?: number, scoreValue?: number } };
+  userBets: { [userId: string]: { betScore1: string, betScore2: string, scoreValue?: number } };
 
   public constructor(fields?: Partial<DashboardItem>) {
     Object.assign(this, fields);
