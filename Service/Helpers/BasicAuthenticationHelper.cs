@@ -31,7 +31,7 @@ namespace BetSnooker.Helpers
         {
             if (!Request.Headers.ContainsKey("Authorization"))
             {
-                return AuthenticateResult.Fail("Missing Authorization Header");
+                return AuthenticateResult.Fail("Missing authorization header");
             }
 
             User user;
@@ -46,12 +46,12 @@ namespace BetSnooker.Helpers
             }
             catch
             {
-                return AuthenticateResult.Fail("Invalid Authorization Header");
+                return AuthenticateResult.Fail("Invalid authorization header");
             }
 
             if (user == null)
             {
-                return AuthenticateResult.Fail("Invalid Username or Password");
+                return AuthenticateResult.Fail("Invalid username or password");
             }
 
             var claims = new[]

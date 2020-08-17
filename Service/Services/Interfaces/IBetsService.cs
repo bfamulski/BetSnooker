@@ -16,8 +16,9 @@ namespace BetSnooker.Services.Interfaces
     {
         Task<IEnumerable<EventBets>> GetEventBets();
 
-        Task<RoundBets> GetUserBets(string userId);
+        Task<IEnumerable<RoundBets>> GetUserBets(string userId);
 
         Task<SubmitResult> SubmitBets(string userId, RoundBets bets);
+        Task<SubmitResult> SubmitBetsV2(string userId, IEnumerable<RoundBets> bets);
     }
 }

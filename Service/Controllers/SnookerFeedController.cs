@@ -66,7 +66,7 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> GetCurrentRoundInfo()
         {
             _logger.LogDebug("Getting current round");
-            var result = await Task.Run(() => _snookerFeedService.GetCurrentRound());
+            var result = await Task.Run(() => _snookerFeedService.GetCurrentRound(null));
             return Ok(result);
         }
 

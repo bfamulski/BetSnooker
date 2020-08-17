@@ -14,15 +14,15 @@ export class BetsService {
 
     constructor(private http: HttpClient) { }
 
-    getUserBets(): Observable<RoundBets> {
-        return this.http.get<RoundBets>(`${environment.apiUrl}/bets`);
+    getUserBets(): Observable<RoundBets[]> {
+        return this.http.get<RoundBets[]>(`${environment.apiUrl}/bets`);
     }
 
     getEventBets(): Observable<EventBets[]> {
         return this.http.get<EventBets[]>(`${environment.apiUrl}/bets/all`);
     }
 
-    submitBets(bets: RoundBets) {
+    submitBets(bets: RoundBets[]) {
         const body = JSON.stringify(bets);
         return this.http.post(`${environment.apiUrl}/bets`, body , this.httpOptions);
     }

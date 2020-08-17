@@ -10,8 +10,9 @@ namespace BetSnooker.Services.Interfaces
         Event GetCurrentEvent();
 
         // rounds
-        IEnumerable<RoundInfoDetails> GetEventRounds(bool allEventRounds = false);
-        RoundInfoDetails GetCurrentRound();
+        IEnumerable<RoundInfoDetails> GetEventRounds();
+        RoundInfoDetails GetCurrentRound(IEnumerable<RoundInfoDetails> rounds);
+        RoundInfoDetails GetNextRound(RoundInfoDetails currentRound);
 
         // matches
         IEnumerable<MatchDetails> GetEventMatches(bool allEventMatches = false);

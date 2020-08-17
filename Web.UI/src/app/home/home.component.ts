@@ -89,6 +89,24 @@ export class HomeComponent implements OnInit {
 
       this.eventBets = results[3];
 
+      if (this.eventBets) {
+        this.users.forEach(user => {
+          const userEventBets = this.eventBets.filter(b => b.userId === user.username)[0];
+          if (userEventBets) {
+            this.usersScores[user.username] = {
+              isWinner: userEventBets.isWinner,
+              matchesFinished: userEventBets.matchesFinished,
+              eventScore: userEventBets.eventScore,
+              correctWinners: userEventBets.correctWinners,
+              exactScores: userEventBets.exactScores,
+              correctWinnersAccuracy: this.formatAccuracyValue(userEventBets.correctWinnersAccuracy),
+              exactScoresAccuracy: this.formatAccuracyValue(userEventBets.exactScoresAccuracy),
+              averageError: this.formatAverageError(userEventBets.averageError)
+            };
+          }
+        });
+      }
+
       this.eventRounds.forEach(round => {
         round.startDate = this.convertToLocalDate(round.actualStartDate);
       });
@@ -111,37 +129,25 @@ export class HomeComponent implements OnInit {
           userBets: {}
         });
 
-        if (this.users) {
-          this.users.forEach(user => {
-            dashboardItem.userBets[user.username] = { betScore1: null, betScore2: null, scoreValue: null };
-            if (this.eventBets) {
-              const userEventBets = this.eventBets.filter(b => b.userId === user.username)[0];
-              if (userEventBets) {
-                this.usersScores[user.username] = {
-                  isWinner: userEventBets.isWinner,
-                  matchesFinished: userEventBets.matchesFinished,
-                  eventScore: userEventBets.eventScore,
-                  correctWinners: userEventBets.correctWinners,
-                  exactScores: userEventBets.exactScores,
-                  correctWinnersAccuracy: this.formatAccuracyValue(userEventBets.correctWinnersAccuracy),
-                  exactScoresAccuracy: this.formatAccuracyValue(userEventBets.exactScoresAccuracy),
-                };
-
-                this.roundBets = userEventBets.roundBets;
-                this.roundBets.forEach(userRoundBet => {
-                  const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
-                  if (bet) {
-                    dashboardItem.userBets[user.username] = {
-                      betScore1: bet.score1 ? bet.score1.toString() : (bet.betPlaced ? '?' : null),
-                      betScore2: bet.score2 ? bet.score2.toString() : (bet.betPlaced ? '?' : null),
-                      scoreValue: bet.scoreValue
-                    };
-                  }
-                });
-              }
+        this.users.forEach(user => {
+          dashboardItem.userBets[user.username] = { betScore1: null, betScore2: null, scoreValue: null };
+          if (this.eventBets) {
+            const userEventBets = this.eventBets.filter(b => b.userId === user.username)[0];
+            if (userEventBets) {
+              this.roundBets = userEventBets.roundBets;
+              this.roundBets.forEach(userRoundBet => {
+                const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
+                if (bet) {
+                  dashboardItem.userBets[user.username] = {
+                    betScore1: bet.score1 ? bet.score1.toString() : (bet.betPlaced ? '?' : null),
+                    betScore2: bet.score2 ? bet.score2.toString() : (bet.betPlaced ? '?' : null),
+                    scoreValue: bet.scoreValue
+                  };
+                }
+              });
             }
-          });
-        }
+          }
+        });
 
         this.dashboardItems.push(dashboardItem);
       });
@@ -155,6 +161,14 @@ export class HomeComponent implements OnInit {
 
   formatAccuracyValue(accuracyValue: number) {
     return Number((accuracyValue * 100).toFixed(2)).toString();
+  }
+
+  formatAverageError(averageError: number) {
+    if (averageError) {
+      return averageError.toFixed(2);
+    } else {
+      return '-';
+    }
   }
 
   formatStatus(match: Match) {
@@ -183,12 +197,12 @@ export class HomeComponent implements OnInit {
     return new MatchStatus({ status: EMatchStatus.Ongoing });
   }
 
-  convertToLocalDate(dateTime: Date) {
+  private convertToLocalDate(dateTime: Date) {
     const date = new Date(dateTime);
     return `${date.toISOString().slice(0, 10)}`;
   }
 
-  convertToLocalDateTime(dateTime: Date) {
+  private convertToLocalDateTime(dateTime: Date) {
     const localDateTime = new Date(dateTime);
     const day = localDateTime.getDate().toString().padStart(2, '0');
     const month = (localDateTime.getMonth() + 1).toString().padStart(2, '0');
@@ -196,7 +210,7 @@ export class HomeComponent implements OnInit {
     return `${day}/${month} ${time}`;
   }
 
-  convertToLocalTime(dateTime: Date) {
+  private convertToLocalTime(dateTime: Date) {
     return `${dateTime.toISOString().slice(0, 10)} ${dateTime.toLocaleTimeString('en-GB')}`;
   }
 }

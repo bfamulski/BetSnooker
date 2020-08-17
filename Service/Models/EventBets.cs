@@ -21,5 +21,7 @@ namespace BetSnooker.Models
         public double CorrectWinnersAccuracy { get; set; }
 
         public double ExactScoresAccuracy { get; set; }
+
+        public double? AverageError { get; set; }
     }
 }

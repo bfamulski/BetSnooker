@@ -13,6 +13,7 @@
           <th style="text-align: right;">WINNER</th>
           <th style="text-align: right;">EX. SCORE</th>
           <th style="text-align: right;">ACCURACY</th>
+          <th style="text-align: right;">AV. ERR.</th>
           <th style="text-align: right;">SCORE</th>
       </thead>
       <tbody>
@@ -25,6 +26,7 @@
             {{usersScores[user.username] ? usersScores[user.username].correctWinnersAccuracy : 0.0}}% 
             ({{usersScores[user.username] ? usersScores[user.username].exactScoresAccuracy : 0.0}}%)
           </td>
+          <td style="text-align: right; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].averageError : '-'}}</td>
           <td style="text-align: right; width: 8pc; font-weight: bold;">{{usersScores[user.username] ? usersScores[user.username].eventScore : 0.0}}</td>
         </tr>
       </tbody>

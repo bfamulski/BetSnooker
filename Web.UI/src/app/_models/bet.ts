@@ -8,6 +8,7 @@ export class EventBets {
     exactScores: number;
     correctWinnersAccuracy: number;
     exactScoresAccuracy: number;
+    averageError: number;
 }
 
 export class RoundBets {
@@ -27,6 +28,7 @@ export class RoundBets {
 export class Bet {
     id: number;
     matchId: number;
+    active: boolean;
     player1Id: number;
     player1Name: string;
     score1?: number;
@@ -35,4 +37,8 @@ export class Bet {
     score2?: number;
     scoreValue: number;
     error: number;
+    betPlaced: boolean;
+    matchStartDate: Date;
+
+    formattedStartDate: string;
 }

@@ -39,10 +39,19 @@ namespace BetSnooker.Repositories
             else
             {
                 betsEntity.UpdatedAt = bets.UpdatedAt;
-                foreach (var matchBet in betsEntity.MatchBets)
+
+                foreach (var matchBet in bets.MatchBets)
                 {
-                    matchBet.Score1 = bets.MatchBets.Single(m => m.MatchId == matchBet.MatchId).Score1;
-                    matchBet.Score2 = bets.MatchBets.Single(m => m.MatchId == matchBet.MatchId).Score2;
+                    var bet = betsEntity.MatchBets.SingleOrDefault(m => m.MatchId == matchBet.MatchId);
+                    if (bet != null)
+                    {
+                        bet.Score1 = matchBet.Score1;
+                        bet.Score2 = matchBet.Score2;
+                    }
+                    else
+                    {
+                        betsEntity.MatchBets.Add(matchBet);
+                    }
                 }
 
                 _context.RoundBets.Update(betsEntity);

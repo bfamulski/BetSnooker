@@ -6,4 +6,5 @@ export class UserStats {
     exactScores: number;
     correctWinnersAccuracy: string;
     exactScoresAccuracy: string;
+    averageError: string;
 }

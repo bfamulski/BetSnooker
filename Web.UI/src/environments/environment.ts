@@ -5,7 +5,7 @@
 export const environment = {
     production: false,
     apiUrl: 'https://localhost:5001',
-    version: '1.0-rc2'
+    version: '1.1'
 };
 
 /*
