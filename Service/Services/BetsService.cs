@@ -31,6 +31,8 @@ namespace BetSnooker.Services
         // TODO: refactor this method
         public async Task<IEnumerable<EventBets>> GetEventBets()
         {
+            var eventId = _settings.EventId;
+
             var eventRounds = _snookerFeedService.GetEventRounds().ToList();
             if (!eventRounds.Any())
             {
@@ -45,7 +47,7 @@ namespace BetSnooker.Services
                 return null;
             }
 
-            var eventBets = await Task.Run(() => _betsRepository.GetAllBets(eventRounds.Select(r => r.Round).ToArray()));
+            var eventBets = await Task.Run(() => _betsRepository.GetAllBets(eventId, eventRounds.Select(r => r.Round).ToArray()));
             if (eventBets == null || !eventBets.Any())
             {
                 _logger.LogInformation("No event bets available");
@@ -203,7 +205,7 @@ namespace BetSnooker.Services
 
             bets.UserId = userId;
             bets.EventId = _settings.EventId;
-            bets.UpdatedAt = DateTime.Now;
+            bets.UpdatedAt = DateTime.UtcNow;
 
             try
             {
@@ -237,7 +239,7 @@ namespace BetSnooker.Services
 
                 roundBets.UserId = userId;
                 roundBets.EventId = _settings.EventId;
-                roundBets.UpdatedAt = DateTime.Now;
+                roundBets.UpdatedAt = DateTime.UtcNow;
 
                 try
                 {
@@ -301,7 +303,7 @@ namespace BetSnooker.Services
 
             var userBets = new RoundBets();
 
-            var result = await _betsRepository.GetUserBets(userId, round.Round);
+            var result = await _betsRepository.GetUserBets(userId, eventId, round.Round);
             if (result != null)
             {
                 userBets.UserId = result.UserId;

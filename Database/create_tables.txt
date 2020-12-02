@@ -1,0 +1,34 @@
+CREATE TABLE [Users] (
+Id int IDENTITY(1,1) PRIMARY KEY,
+FirstName nvarchar(255),
+LastName nvarchar(255),
+Username nvarchar(255) NOT NULL,
+Password nvarchar(255) NOT NULL
+);
+
+CREATE TABLE [RoundBets] (
+Id int IDENTITY(1,1) PRIMARY KEY,
+UserId nvarchar(255) NOT NULL,
+UpdatedAt datetime NULL,
+EventId int NOT NULL,
+RoundId int NOT NULL,
+Distance int NOT NULL,
+RoundScore real NULL,
+);
+
+CREATE TABLE [MatchBets] (
+Id int IDENTITY(1,1) PRIMARY KEY,
+RoundBetsId int NOT NULL FOREIGN KEY REFERENCES RoundBets(Id),
+MatchId varchar(16) NOT NULL,
+Active bit NOT NULL,
+Player1Id int NOT NULL,
+Player1Name nvarchar(255) NOT NULL,
+Score1 int NULL,
+Player2Id int NOT NULL,
+Player2Name nvarchar(255) NOT NULL,
+Score2 int NULL,
+ScoreValue real NULL,
+Error int NULL,
+BetPlaced bit NOT NULL,
+MatchStartDate datetime NULL
+);

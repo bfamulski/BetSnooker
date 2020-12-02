@@ -58,13 +58,14 @@ export class BetsComponent implements OnInit {
           this.nextRoundBets = this.roundBets[1];
           this.nextRoundInfo = eventRounds.find(r => r.round === this.nextRoundBets.roundId);
 
-          this.nextRoundMatchBets = this.nextRoundBets.matchBets;
+          this.nextRoundMatchBets = this.nextRoundBets.matchBets.sort(this.compareBets);
           this.nextRoundMatchBetsAvailable = this.nextRoundMatchBets.filter(bet => bet.player1Name && bet.player2Name).length > 0;
+
           if (this.nextRoundMatchBetsAvailable) {
             this.nextRoundMatchBets.forEach(bet => bet.formattedStartDate = this.convertToLocalDateTime(bet.matchStartDate));
-            this.currentRoundMatchBets = this.currentRoundBets.matchBets.filter(bet => bet.active);
+            this.currentRoundMatchBets = this.currentRoundBets.matchBets.filter(bet => bet.active).sort(this.compareBets);
           } else {
-            this.currentRoundMatchBets = this.currentRoundBets.matchBets;
+            this.currentRoundMatchBets = this.currentRoundBets.matchBets.sort(this.compareBets);
           }
 
           // TODO: this piece of code could be extracted to a separate method
@@ -84,7 +85,7 @@ export class BetsComponent implements OnInit {
           }
           // end of TODO
         } else {
-          this.currentRoundMatchBets = this.currentRoundBets.matchBets;
+          this.currentRoundMatchBets = this.currentRoundBets.matchBets.sort(this.compareBets);
 
           if (this.currentRoundBets.updatedAt) {
             this.lastUpdatedAt = `${this.convertToLocalTime(new Date(this.currentRoundBets.updatedAt))}`;
@@ -132,7 +133,7 @@ export class BetsComponent implements OnInit {
 
     this.betsService.submitBets(roundBets).subscribe(() => {
       this.successfulSubmit = true;
-      this.lastUpdatedAt = `${this.convertToLocalTime(new Date())}`;
+      this.lastUpdatedAt = `${this.convertToLocalTime(new Date(Date.now()))}`;
       this.betsChanged = false;
     }, error => {
       this.error = error;
@@ -159,15 +160,23 @@ export class BetsComponent implements OnInit {
   }
 
   private convertToLocalTime(dateTime: Date) {
-    return `${dateTime.toISOString().slice(0, 10)} ${dateTime.toLocaleTimeString('en-GB')}`;
+    if (dateTime) {
+      return `${dateTime.toISOString().slice(0, 10)} ${dateTime.toLocaleTimeString('en-GB')}`;
+    } else {
+      return 'N/A';
+    }
   }
 
   private convertToLocalDateTime(dateTime: Date) {
-    const localDateTime = new Date(dateTime);
-    const day = localDateTime.getDate().toString().padStart(2, '0');
-    const month = (localDateTime.getMonth() + 1).toString().padStart(2, '0');
-    const time = localDateTime.toLocaleTimeString('en-GB', {hour: 'numeric', minute: 'numeric'});
-    return `${day}/${month} ${time}`;
+    if (dateTime) {
+      const localDateTime = new Date(dateTime);
+      const day = localDateTime.getDate().toString().padStart(2, '0');
+      const month = (localDateTime.getMonth() + 1).toString().padStart(2, '0');
+      const time = localDateTime.toLocaleTimeString('en-GB', {hour: 'numeric', minute: 'numeric'});
+      return `${day}/${month} ${time}`;
+    } else {
+      return 'N/A';
+    }
   }
 
   inputChanged() {
@@ -176,5 +185,15 @@ export class BetsComponent implements OnInit {
 
   dismissSubmissionAlert() {
     this.successfulSubmit = false;
+  }
+
+  private compareBets(bet1: Bet, bet2: Bet) {
+    if (bet1.matchStartDate < bet2.matchStartDate) {
+      return -1;
+    }
+    if (bet1.matchStartDate > bet2.matchStartDate) {
+      return 1;
+    }
+    return 0;
   }
 }

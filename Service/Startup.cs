@@ -61,8 +61,8 @@ namespace BetSnooker
             });
 
             // configure DI for application services
-            services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "BetSnooker"));
-            //services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BetSnookerDatabase")));
+            //services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "BetSnooker"));
+            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BetSnookerDatabase")));
 
             services.AddSingleton<ISettings, Settings>();
 

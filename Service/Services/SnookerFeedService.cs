@@ -159,16 +159,19 @@ namespace BetSnooker.Services
                 var winner = players.SingleOrDefault(p => p.Id == match.WinnerId);
 
                 var roundInfo = eventRounds.SingleOrDefault(r => r.Round == match.Round);
-                var matchDetails = new MatchDetails(match)
+                if (roundInfo != null)
                 {
-                    Player1Name = player1.ToString(),
-                    Player2Name = player2.ToString(),
-                    WinnerName = winner != null ? winner.ToString() : string.Empty,
-                    RoundName = roundInfo.RoundName,
-                    Distance = roundInfo.Distance
-                };
+                    var matchDetails = new MatchDetails(match)
+                    {
+                        Player1Name = player1.ToString(),
+                        Player2Name = player2.ToString(),
+                        WinnerName = winner != null ? winner.ToString() : string.Empty,
+                        RoundName = roundInfo.RoundName,
+                        Distance = roundInfo.Distance
+                    };
 
-                matchDetailsCollection.Add(matchDetails);
+                    matchDetailsCollection.Add(matchDetails);
+                }
             }
 
             return matchDetailsCollection.AsEnumerable().OrderBy(m => m.Id);
@@ -176,10 +179,9 @@ namespace BetSnooker.Services
 
         private List<RoundInfo> GetEventRoundInfos()
         {
-            int startRound = _settings.StartRound;
             var eventRounds = _snookerHubService.GetEventRounds();
             var validRounds = eventRounds.Where(r => r.NumMatches > 0);
-            return validRounds.Where(r => r.Round >= startRound).ToList();
+            return validRounds.ToList();
         }
 
         private bool MatchFinished(MatchDetails match)

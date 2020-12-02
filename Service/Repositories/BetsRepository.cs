@@ -16,16 +16,17 @@ namespace BetSnooker.Repositories
             _context = context;
         }
 
-        public IEnumerable<RoundBets> GetAllBets(int[] rounds)
+        public IEnumerable<RoundBets> GetAllBets(int eventId, int[] rounds)
         {
             return rounds == null || rounds.Length == 0
                 ? _context.RoundBets.Include("MatchBets").AsNoTracking()
-                : _context.RoundBets.Include("MatchBets").AsNoTracking().Where(bet => rounds.Contains(bet.RoundId));
+                : _context.RoundBets.Include("MatchBets").AsNoTracking().Where(bet => bet.EventId == eventId && rounds.Contains(bet.RoundId));
         }
 
-        public async Task<RoundBets> GetUserBets(string userId, int roundId)
+        public async Task<RoundBets> GetUserBets(string userId, int eventId, int roundId)
         {
-            return await _context.RoundBets.Include("MatchBets").AsNoTracking().SingleOrDefaultAsync(bet => bet.UserId == userId && bet.RoundId == roundId);
+            return await _context.RoundBets.Include("MatchBets").AsNoTracking().FirstOrDefaultAsync(bet =>
+                bet.UserId == userId && bet.EventId == eventId && bet.RoundId == roundId);
         }
 
         public async Task SubmitBets(RoundBets bets)

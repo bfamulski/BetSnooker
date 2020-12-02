@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
 
   matches: Match[];
   users: User[];
+  usersSorted: User[];
   eventRounds: RoundInfo[];
   roundBets: RoundBets[];
   eventBets: EventBets[];
@@ -103,15 +104,21 @@ export class HomeComponent implements OnInit {
               exactScoresAccuracy: this.formatAccuracyValue(userEventBets.exactScoresAccuracy),
               averageError: this.formatAverageError(userEventBets.averageError)
             };
+
+            user.eventScore = this.usersScores[user.username].eventScore;
           }
         });
       }
+
+      this.usersSorted = this.users.slice(0);
+      this.usersSorted.sort(this.compareUsers);
 
       this.eventRounds.forEach(round => {
         round.startDate = this.convertToLocalDate(round.actualStartDate);
       });
 
       this.dashboardItems = [];
+      this.matches.sort(this.compareMatches);
       this.matches.forEach(match => {
         const dashboardItem = new DashboardItem({
           roundId: match.round,
@@ -139,8 +146,8 @@ export class HomeComponent implements OnInit {
                 const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
                 if (bet) {
                   dashboardItem.userBets[user.username] = {
-                    betScore1: bet.score1 ? bet.score1.toString() : (bet.betPlaced ? '?' : null),
-                    betScore2: bet.score2 ? bet.score2.toString() : (bet.betPlaced ? '?' : null),
+                    betScore1: bet.score1 != null ? bet.score1.toString() : (bet.betPlaced ? '?' : null),
+                    betScore2: bet.score2 != null ? bet.score2.toString() : (bet.betPlaced ? '?' : null),
                     scoreValue: bet.scoreValue
                   };
                 }
@@ -198,19 +205,53 @@ export class HomeComponent implements OnInit {
   }
 
   private convertToLocalDate(dateTime: Date) {
-    const date = new Date(dateTime);
-    return `${date.toISOString().slice(0, 10)}`;
+    if (dateTime) {
+      const date = new Date(dateTime);
+      return `${date.toISOString().slice(0, 10)}`;
+    } else {
+      return 'N/A';
+    }
   }
 
   private convertToLocalDateTime(dateTime: Date) {
-    const localDateTime = new Date(dateTime);
-    const day = localDateTime.getDate().toString().padStart(2, '0');
-    const month = (localDateTime.getMonth() + 1).toString().padStart(2, '0');
-    const time = localDateTime.toLocaleTimeString('en-GB', {hour: 'numeric', minute: 'numeric'});
-    return `${day}/${month} ${time}`;
+    console.log(dateTime);
+    if (dateTime != null) {
+      const localDateTime = new Date(dateTime);
+      const day = localDateTime.getDate().toString().padStart(2, '0');
+      const month = (localDateTime.getMonth() + 1).toString().padStart(2, '0');
+      const time = localDateTime.toLocaleTimeString('en-GB', {hour: 'numeric', minute: 'numeric'});
+      return `${day}/${month} ${time}`;
+    } else {
+      return 'N/A';
+    }
   }
 
   private convertToLocalTime(dateTime: Date) {
-    return `${dateTime.toISOString().slice(0, 10)} ${dateTime.toLocaleTimeString('en-GB')}`;
+    console.log(dateTime);
+    if (dateTime) {
+      return `${dateTime.toISOString().slice(0, 10)} ${dateTime.toLocaleTimeString('en-GB')}`;
+    } else {
+      return 'N/A';
+    }
+  }
+
+  private compareUsers(user1: User, user2: User) {
+    if (user1.eventScore > user2.eventScore) {
+      return -1;
+    }
+    if (user1.eventScore < user2.eventScore) {
+      return 1;
+    }
+    return 0;
+  }
+
+  private compareMatches(match1: Match, match2: Match) {
+    if (match1.scheduledDate < match2.scheduledDate) {
+      return -1;
+    }
+    if (match1.scheduledDate > match2.scheduledDate) {
+      return 1;
+    }
+    return 0;
   }
 }
