@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
-import { RoundInfo, Bet, RoundBets } from '../_models';
+import { Event, RoundInfo, Bet, RoundBets } from '../_models';
 import { SnookerFeedService, BetsService } from '../_services';
 
 @Component({
@@ -10,6 +10,9 @@ import { SnookerFeedService, BetsService } from '../_services';
   styleUrls: ['./bets.component.less']
 })
 export class BetsComponent implements OnInit {
+  currentEvent: Event;
+  eventName: string;
+
   roundBets: RoundBets[];
   currentRoundBets: RoundBets;
   nextRoundBets: RoundBets;
@@ -37,6 +40,8 @@ export class BetsComponent implements OnInit {
     this.successfulSubmit = false;
     this.error = '';
     this.noBetsAvailable = false;
+
+    this.getCurrentEvent();
 
     const eventRoundsRequest = this.snookerFeedService.getEventRounds();
     const betsRequest = this.betsService.getUserBets();
@@ -102,6 +107,16 @@ export class BetsComponent implements OnInit {
       }
 
       this.loading = false;
+    }, error => {
+      this.error = error;
+      this.loading = false;
+    });
+  }
+
+  getCurrentEvent() {
+    this.snookerFeedService.getCurrentEvent(false).subscribe(event => {
+      this.currentEvent = event;
+      this.eventName = `${event.sponsor} ${event.name}`.trim();
     }, error => {
       this.error = error;
       this.loading = false;

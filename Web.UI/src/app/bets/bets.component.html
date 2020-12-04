@@ -8,6 +8,11 @@
     Bets have been submitted successfully
   </div>
 
+  <!-- Event details -->
+  <div class="center-container" style="margin-top: 10px;">
+    <div style="font-weight: bold;">{{eventName}}</div>
+  </div>
+
   <!-- Next round bets -->
   <div *ngIf="nextRoundMatchBetsAvailable">
     <div class="title-container" style="padding-top: 10px;">{{nextRoundInfo?.roundName}}</div>

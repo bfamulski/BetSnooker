@@ -58,6 +58,25 @@ namespace BetSnooker.Controllers
         }
 
         /// <summary>
+        /// Get ongoing matches.
+        /// </summary>
+        /// <returns>Collection of matches</returns>
+        [HttpGet("matches/ongoing")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<MatchDetails>))]
+        [ProducesResponseType(204)]
+        public async Task<IActionResult> GetOngoingMatches()
+        {
+            _logger.LogDebug("Getting ongoing matches");
+            var matches = await Task.Run(() => _snookerFeedService.GetOngoingMatches());
+            if (matches == null || !matches.Any())
+            {
+                return NoContent();
+            }
+
+            return Ok(matches);
+        }
+
+        /// <summary>
         /// Get current event round.
         /// </summary>
         /// <returns>RoundInfo details</returns>

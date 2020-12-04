@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BetSnooker.Configuration;
 using BetSnooker.Models;
 using BetSnooker.Models.API;
@@ -13,11 +14,13 @@ namespace BetSnooker.Services
     {
         private readonly ISettings _settings;
         private readonly ISnookerHubService _snookerHubService;
+        private readonly ISnookerApiService _snookerApiService;
         private readonly ILogger _logger;
 
-        public SnookerFeedService(ISnookerHubService snookerHubService, ISettings settings, ILogger<SnookerFeedService> logger)
+        public SnookerFeedService(ISnookerHubService snookerHubService, ISnookerApiService snookerApiService, ISettings settings, ILogger<SnookerFeedService> logger)
         {
             _snookerHubService = snookerHubService;
+            _snookerApiService = snookerApiService;
             _settings = settings;
             _logger = logger;
         }
@@ -124,6 +127,21 @@ namespace BetSnooker.Services
 
             var startRoundId = _settings.StartRound;
             var filteredMatches = eventMatches.Where(match => match.Round >= startRoundId).ToList();
+            return filteredMatches.Any()
+                ? ConvertToMatchDetails(filteredMatches)
+                : new List<MatchDetails>();
+        }
+
+        public async Task<IEnumerable<MatchDetails>> GetOngoingMatches()
+        {
+            IEnumerable<Match> ongoingMatches = await _snookerApiService.GetOngoingMatches();
+            if (ongoingMatches == null || !ongoingMatches.Any())
+            {
+                return null;
+            }
+
+            var startRoundId = _settings.StartRound;
+            var filteredMatches = ongoingMatches.Where(match => match.Round >= startRoundId).ToList();
             return filteredMatches.Any()
                 ? ConvertToMatchDetails(filteredMatches)
                 : new List<MatchDetails>();

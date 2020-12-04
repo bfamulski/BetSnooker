@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BetSnooker.Models;
 using BetSnooker.Models.API;
 
@@ -17,6 +18,7 @@ namespace BetSnooker.Services.Interfaces
         // matches
         IEnumerable<MatchDetails> GetEventMatches(bool allEventMatches = false);
         IEnumerable<MatchDetails> GetRoundMatches(int roundId);
+        Task<IEnumerable<MatchDetails>> GetOngoingMatches();
 
         // players
         IEnumerable<Player> GetEventPlayers();

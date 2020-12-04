@@ -12,22 +12,32 @@ export class SnookerFeedService {
 
     constructor(private http: HttpClient) { }
 
-    getCurrentEvent(): Observable<Event> {
+    getCurrentEvent(force: boolean): Observable<Event> {
+        let result: Observable<Event>;
+
         const currentEvent = JSON.parse(localStorage.getItem('currentEvent'));
         if (currentEvent) {
             const currentEventSubject = new BehaviorSubject<Event>(currentEvent);
-            return currentEventSubject.asObservable();
+            result = currentEventSubject.asObservable();
         }
 
-        return this.http.get<Event>(`${environment.apiUrl}/snookerFeed/events/current`)
-            .pipe(map(event => {
-                localStorage.setItem('currentEvent', JSON.stringify(event));
-                return event;
-            }));
+        if (result == null || force) {
+            return this.http.get<Event>(`${environment.apiUrl}/snookerFeed/events/current`)
+                .pipe(map(event => {
+                    localStorage.setItem('currentEvent', JSON.stringify(event));
+                    return event;
+                }));
+        }
+
+        return result;
     }
 
     getEventMatches(): Observable<Match[]> {
         return this.http.get<Match[]>(`${environment.apiUrl}/snookerFeed/matches/all`);
+    }
+
+    getOngoingMatches(): Observable<Match[]> {
+        return this.http.get<Match[]>(`${environment.apiUrl}/snookerFeed/matches/ongoing`);
     }
 
     getCurrentRoundInfo(): Observable<RoundInfo> {

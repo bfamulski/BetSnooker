@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using BetSnooker.Configuration;
 using BetSnooker.Helpers;
-using BetSnooker.HttpHelper;
 using BetSnooker.Repositories;
 using BetSnooker.Repositories.Interfaces;
 using BetSnooker.Services;
@@ -65,16 +64,15 @@ namespace BetSnooker
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BetSnookerDatabase")));
 
             services.AddSingleton<ISettings, Settings>();
-
-            services.AddTransient<IAsyncRestClient, AsyncRestClient>();
-            services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
-            services.AddTransient<IBetsRepository, BetsRepository>();
-            services.AddTransient<IBetsService, BetsService>();
-            services.AddTransient<ISnookerFeedService, SnookerFeedService>();
-            services.AddTransient<ISnookerApiService, SnookerApiService>();
-
             services.AddSingleton<ISnookerHubService, SnookerHubService>();
+
+            services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IBetsRepository, BetsRepository>();
+            services.AddScoped<IBetsService, BetsService>();
+            services.AddScoped<ISnookerFeedService, SnookerFeedService>();
+
+            services.AddTransient<ISnookerApiService, SnookerApiService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

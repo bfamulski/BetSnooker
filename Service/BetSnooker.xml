@@ -83,6 +83,12 @@
             </summary>
             <returns>Collection of matches</returns>
         </member>
+        <member name="M:BetSnooker.Controllers.SnookerFeedController.GetOngoingMatches">
+            <summary>
+            Get ongoing matches.
+            </summary>
+            <returns>Collection of matches</returns>
+        </member>
         <member name="M:BetSnooker.Controllers.SnookerFeedController.GetCurrentRoundInfo">
             <summary>
             Get current event round.
@@ -95,7 +101,6 @@
             </summary>
             <returns>Collection of rounds</returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:BetSnooker.HttpHelper.AsyncRestClient" -->
         <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetEvents(System.Int32)" -->
         <member name="M:BetSnooker.Services.SnookerApiService.GetEvent(System.Int32)">
             <summary>
@@ -117,6 +122,14 @@
             <returns></returns>
         </member>
         <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetEventMatches(System.Int32)" -->
+        <member name="M:BetSnooker.Services.SnookerApiService.GetOngoingMatches">
+            <summary>
+            URL format: api.snooker.org/?t=7
+            Example: api.snooker.org/?t=7
+            Output: Match info as JSON (two-dimensional)
+            </summary>
+            <returns></returns>
+        </member>
         <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetEventPlayers(System.Int32)" -->
         <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetEventRounds(System.Int32)" -->
     </members>

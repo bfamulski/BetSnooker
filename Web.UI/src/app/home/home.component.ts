@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   eventVenue: string;
 
   matches: Match[];
+  ongoingMatches: Match[];
   users: User[];
   usersSorted: User[];
   eventRounds: RoundInfo[];
@@ -55,7 +56,7 @@ export class HomeComponent implements OnInit {
   }
 
   getCurrentEvent() {
-    this.snookerFeedService.getCurrentEvent().subscribe(event => {
+    this.snookerFeedService.getCurrentEvent(false).subscribe(event => {
       this.currentEvent = event;
       this.eventName = `${event.sponsor} ${event.name}`.trim();
       this.eventVenue = `${event.venue}, ${event.city} (${event.country})`;
@@ -68,13 +69,15 @@ export class HomeComponent implements OnInit {
   loadData() {
     const eventRoundsRequest = this.snookerFeedService.getEventRounds();
     const eventMatchesRequest = this.snookerFeedService.getEventMatches();
+    const ongoingMatchesRequest = this.snookerFeedService.getOngoingMatches();
     const usersRequest = this.authenticationService.getUsers();
     const eventBetsRequest = this.betsService.getEventBets();
 
-    forkJoin([eventRoundsRequest, eventMatchesRequest, usersRequest, eventBetsRequest]).subscribe(results => {
+    forkJoin([eventRoundsRequest, eventMatchesRequest, ongoingMatchesRequest, usersRequest, eventBetsRequest]).subscribe(results => {
       this.eventRounds = results[0];
       this.matches = results[1];
-      this.users = results[2];
+      this.ongoingMatches = results[2];
+      this.users = results[3];
 
       if (!this.users) {
         this.authenticationService.logout();
@@ -88,7 +91,7 @@ export class HomeComponent implements OnInit {
         return;
       }
 
-      this.eventBets = results[3];
+      this.eventBets = results[4];
 
       if (this.eventBets) {
         this.users.forEach(user => {
@@ -120,6 +123,15 @@ export class HomeComponent implements OnInit {
       this.dashboardItems = [];
       this.matches.sort(this.compareMatches);
       this.matches.forEach(match => {
+
+        if (this.ongoingMatches) {
+          this.ongoingMatches.forEach(ongoingMatch => {
+            if (ongoingMatch.matchId === match.matchId) {
+              match = ongoingMatch;
+            }
+          });
+        }
+
         const dashboardItem = new DashboardItem({
           roundId: match.round,
           matchId: match.matchId,
@@ -214,7 +226,6 @@ export class HomeComponent implements OnInit {
   }
 
   private convertToLocalDateTime(dateTime: Date) {
-    console.log(dateTime);
     if (dateTime != null) {
       const localDateTime = new Date(dateTime);
       const day = localDateTime.getDate().toString().padStart(2, '0');
@@ -227,7 +238,6 @@ export class HomeComponent implements OnInit {
   }
 
   private convertToLocalTime(dateTime: Date) {
-    console.log(dateTime);
     if (dateTime) {
       return `${dateTime.toISOString().slice(0, 10)} ${dateTime.toLocaleTimeString('en-GB')}`;
     } else {
