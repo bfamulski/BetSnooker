@@ -140,8 +140,9 @@ namespace BetSnooker.Services
                 return null;
             }
 
+            var eventId = _settings.EventId;
             var startRoundId = _settings.StartRound;
-            var filteredMatches = ongoingMatches.Where(match => match.Round >= startRoundId).ToList();
+            var filteredMatches = ongoingMatches.Where(match => match.EventId == eventId && match.Round >= startRoundId).ToList();
             return filteredMatches.Any()
                 ? ConvertToMatchDetails(filteredMatches)
                 : new List<MatchDetails>();
