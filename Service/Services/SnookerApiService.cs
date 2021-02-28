@@ -16,9 +16,9 @@ namespace BetSnooker.Services
         private readonly string _snookerApiBaseUrl;
         private readonly ILogger _logger;
 
-        public SnookerApiService(ISettings settings, ILogger<SnookerApiService> logger)
+        public SnookerApiService(ISettingsProvider settingsProvider, ILogger<SnookerApiService> logger)
         {
-            _snookerApiBaseUrl = settings.SnookerApiUrl;
+            _snookerApiBaseUrl = settingsProvider.SnookerApiUrl;
             _logger = logger;
         }
 

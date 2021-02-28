@@ -13,10 +13,10 @@ namespace BetSnooker.Repositories
         private readonly int _maxUsers;
         private readonly DatabaseContext _context;
         
-        public AuthenticationRepository(DatabaseContext context, ISettings settings)
+        public AuthenticationRepository(DatabaseContext context, ISettingsProvider settingsProvider)
         {
             _context = context;
-            _maxUsers = settings.MaxUsers;
+            _maxUsers = settingsProvider.MaxUsers;
         }
 
         public async Task<bool> AddUser(User user)

@@ -12,16 +12,16 @@ namespace BetSnooker.Services
 {
     public class SnookerFeedService : ISnookerFeedService
     {
-        private readonly ISettings _settings;
+        private readonly ISettingsProvider _settingsProvider;
         private readonly ISnookerHubService _snookerHubService;
         private readonly ISnookerApiService _snookerApiService;
         private readonly ILogger _logger;
 
-        public SnookerFeedService(ISnookerHubService snookerHubService, ISnookerApiService snookerApiService, ISettings settings, ILogger<SnookerFeedService> logger)
+        public SnookerFeedService(ISnookerHubService snookerHubService, ISnookerApiService snookerApiService, ISettingsProvider settingsProvider, ILogger<SnookerFeedService> logger)
         {
             _snookerHubService = snookerHubService;
             _snookerApiService = snookerApiService;
-            _settings = settings;
+            _settingsProvider = settingsProvider;
             _logger = logger;
         }
 
@@ -32,8 +32,8 @@ namespace BetSnooker.Services
 
         public IEnumerable<RoundInfoDetails> GetEventRounds()
         {
-            int eventId = _settings.EventId;
-            int startRound = _settings.StartRound;
+            int eventId = _settingsProvider.EventId;
+            int startRound = _settingsProvider.StartRound;
             var eventRounds = _snookerHubService.GetEventRounds().ToList();
             if (!eventRounds.Any())
             {
@@ -95,7 +95,7 @@ namespace BetSnooker.Services
                 _snookerHubService.DisposeHub();
             }
 
-            return currentRound?.Round >= _settings.StartRound ? currentRound : null;
+            return currentRound?.Round >= _settingsProvider.StartRound ? currentRound : null;
         }
 
         public RoundInfoDetails GetNextRound(RoundInfoDetails currentRound)
@@ -125,7 +125,7 @@ namespace BetSnooker.Services
                 return ConvertToMatchDetails(eventMatches);
             }
 
-            var startRoundId = _settings.StartRound;
+            var startRoundId = _settingsProvider.StartRound;
             var filteredMatches = eventMatches.Where(match => match.Round >= startRoundId).ToList();
             return filteredMatches.Any()
                 ? ConvertToMatchDetails(filteredMatches)
@@ -140,8 +140,8 @@ namespace BetSnooker.Services
                 return null;
             }
 
-            var eventId = _settings.EventId;
-            var startRoundId = _settings.StartRound;
+            var eventId = _settingsProvider.EventId;
+            var startRoundId = _settingsProvider.StartRound;
             var filteredMatches = ongoingMatches.Where(match => match.EventId == eventId && match.Round >= startRoundId).ToList();
             return filteredMatches.Any()
                 ? ConvertToMatchDetails(filteredMatches)
