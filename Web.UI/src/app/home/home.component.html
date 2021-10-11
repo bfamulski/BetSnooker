@@ -44,14 +44,14 @@
     <table class="table table-responsive" *ngIf="!loading">
       <thead class="table-header">
         <tr>
-          <th style="border-width: 1px; border-style: solid; border-color: #e0e0e0;"></th>
-          <th style="text-align: center;" colspan="5">{{round.roundName}} ({{round.distance * 2 - 1}})</th>
-          <th *ngFor="let user of users" style="border-width: 1px; border-style: solid; border-color: #e0e0e0;"></th>
+          <th class="themed-border" style="border-width: 1px; border-style: solid"></th>
+          <th class="themed-border" style="text-align: center;" colspan="5">{{round.roundName}} ({{round.distance * 2 - 1}})</th>
+          <th *ngFor="let user of users" class="themed-border" style="border-width: 1px; border-style: solid"></th>
         </tr>
         <tr>
-          <th style="padding: 0px; border-width: 1px; border-style: solid; border-color: #e0e0e0;"></th>
-          <th style="text-align: center; font-size: x-small; padding: 0px;" colspan="5">Start date: {{round.startDate}}</th>
-          <th *ngFor="let user of users" style="padding: 0px; border-width: 1px; border-style: solid; border-color: #e0e0e0;"></th>
+          <th class="themed-border" style="padding: 0px; border-width: 1px; border-style: solid"></th>
+          <th class="themed-border" style="text-align: center; font-size: x-small; padding: 0px; border-width: 1px" colspan="5">Start date: {{round.startDate}}</th>
+          <th *ngFor="let user of users" class="themed-border" style="padding: 0px; border-width: 1px; border-style: solid"></th>
         </tr>
       </thead>
       <thead class="table-sub-header">

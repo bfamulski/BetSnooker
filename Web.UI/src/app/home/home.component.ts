@@ -123,7 +123,6 @@ export class HomeComponent implements OnInit {
       this.dashboardItems = [];
       this.matches.sort(this.compareMatches);
       this.matches.forEach(match => {
-
         if (this.ongoingMatches) {
           this.ongoingMatches.forEach(ongoingMatch => {
             if (ongoingMatch.matchId === match.matchId) {
@@ -256,10 +255,10 @@ export class HomeComponent implements OnInit {
   }
 
   private compareMatches(match1: Match, match2: Match) {
-    if (match1.scheduledDate < match2.scheduledDate) {
+    if (match1.actualStartDate < match2.actualStartDate) {
       return -1;
     }
-    if (match1.scheduledDate > match2.scheduledDate) {
+    if (match1.actualStartDate > match2.actualStartDate) {
       return 1;
     }
     return 0;

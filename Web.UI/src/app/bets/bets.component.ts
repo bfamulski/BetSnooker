@@ -183,7 +183,7 @@ export class BetsComponent implements OnInit {
   }
 
   private convertToLocalDateTime(dateTime: Date) {
-    if (dateTime) {
+    if (dateTime != null) {
       const localDateTime = new Date(dateTime);
       const day = localDateTime.getDate().toString().padStart(2, '0');
       const month = (localDateTime.getMonth() + 1).toString().padStart(2, '0');
