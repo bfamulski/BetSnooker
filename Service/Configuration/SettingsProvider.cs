@@ -4,14 +4,14 @@ using Microsoft.Extensions.Logging;
 
 namespace BetSnooker.Configuration
 {
-    public class Settings : ISettings
+    public class SettingsProvider : ISettingsProvider
     {
         private readonly string _defaultSnookerApiUrl = "http://api.snooker.org/";
         private readonly int _defaultMaxUsers = 2;
         private readonly TimeSpan _defaultGetMatchesInterval = TimeSpan.FromMinutes(15);
         private readonly ILogger _logger;
 
-        public Settings(IConfiguration configuration, ILogger<Settings> logger)
+        public SettingsProvider(IConfiguration configuration, ILogger<SettingsProvider> logger)
         {
             _logger = logger;
 

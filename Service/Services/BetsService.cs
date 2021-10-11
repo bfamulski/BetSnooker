@@ -17,21 +17,21 @@ namespace BetSnooker.Services
 
         private readonly IBetsRepository _betsRepository;
         private readonly ISnookerFeedService _snookerFeedService;
-        private readonly ISettings _settings;
+        private readonly ISettingsProvider _settingsProvider;
         private readonly ILogger _logger;
 
-        public BetsService(IBetsRepository betsRepository, ISnookerFeedService snookerFeedService, ISettings settings, ILogger<BetsService> logger)
+        public BetsService(IBetsRepository betsRepository, ISnookerFeedService snookerFeedService, ISettingsProvider settingsProvider, ILogger<BetsService> logger)
         {
             _betsRepository = betsRepository;
             _snookerFeedService = snookerFeedService;
-            _settings = settings;
+            _settingsProvider = settingsProvider;
             _logger = logger;
         }
 
         // TODO: refactor this method
         public async Task<IEnumerable<EventBets>> GetEventBets()
         {
-            var eventId = _settings.EventId;
+            var eventId = _settingsProvider.EventId;
 
             var eventRounds = _snookerFeedService.GetEventRounds().ToList();
             if (!eventRounds.Any())
@@ -162,7 +162,7 @@ namespace BetSnooker.Services
 
         public async Task<IEnumerable<RoundBets>> GetUserBets(string userId)
         {
-            var eventId = _settings.EventId;
+            var eventId = _settingsProvider.EventId;
 
             RoundInfoDetails currentRound = _snookerFeedService.GetCurrentRound(null);
             if (currentRound == null)
@@ -204,7 +204,7 @@ namespace BetSnooker.Services
             }
 
             bets.UserId = userId;
-            bets.EventId = _settings.EventId;
+            bets.EventId = _settingsProvider.EventId;
             bets.UpdatedAt = DateTime.UtcNow;
 
             try
@@ -238,7 +238,7 @@ namespace BetSnooker.Services
                 }
 
                 roundBets.UserId = userId;
-                roundBets.EventId = _settings.EventId;
+                roundBets.EventId = _settingsProvider.EventId;
                 roundBets.UpdatedAt = DateTime.UtcNow;
 
                 try
@@ -257,7 +257,7 @@ namespace BetSnooker.Services
 
         private bool CanSubmitBets(RoundBets bets)
         {
-            var startRound = _settings.StartRound;
+            var startRound = _settingsProvider.StartRound;
             return bets.RoundId >= startRound && bets.MatchBets.All(matchBet => matchBet.Active);
         }
 

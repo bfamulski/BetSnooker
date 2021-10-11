@@ -2,7 +2,7 @@
 
 namespace BetSnooker.Configuration
 {
-    public interface ISettings
+    public interface ISettingsProvider
     {
         int EventId { get; }
         int StartRound { get; }

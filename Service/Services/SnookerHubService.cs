@@ -29,13 +29,13 @@ namespace BetSnooker.Services
         private readonly ISnookerApiService _snookerApiService;
         private readonly ILogger _logger;
 
-        public SnookerHubService(ISnookerApiService snookerApiService, ISettings settings, ILogger<SnookerHubService> logger)
+        public SnookerHubService(ISnookerApiService snookerApiService, ISettingsProvider settingsProvider, ILogger<SnookerHubService> logger)
         {
-            _eventId = settings.EventId;
+            _eventId = settingsProvider.EventId;
             _snookerApiService = snookerApiService;
             _logger = logger;
 
-            _matchesTimer = new Timer(GetMatchesTimerEvent, null, TimeSpan.Zero, settings.GetMatchesInterval);
+            _matchesTimer = new Timer(GetMatchesTimerEvent, null, TimeSpan.Zero, settingsProvider.GetMatchesInterval);
             _roundsTimer = new Timer(GetRoundsTimerEvent, null, TimeSpan.Zero, GetRoundsTimerPeriod);
             _playersTimer = new Timer(GetPlayersTimerEvent, null, TimeSpan.Zero, GetPlayersTimerPeriod);
             _eventTimer = new Timer(GetEventTimerEvent, null, TimeSpan.Zero, GetEventTimerPeriod);

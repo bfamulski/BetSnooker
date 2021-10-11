@@ -63,7 +63,7 @@ namespace BetSnooker
             //services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "BetSnooker"));
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BetSnookerDatabase")));
 
-            services.AddSingleton<ISettings, Settings>();
+            services.AddSingleton<ISettingsProvider, SettingsProvider>();
             services.AddSingleton<ISnookerHubService, SnookerHubService>();
 
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
