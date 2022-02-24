@@ -1,5 +1,7 @@
 ﻿<!-- navbar -->
-<nav class="navbar navbar-expand-sm navbar-dark" *ngIf="currentUser">
+<nav class="navbar navbar-expand-sm navbar-dark" style="padding: 0px 8px 0px 8px" *ngIf="currentUser">
+    <div class="navbar-brand">{{eventName}}</div>
+    
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
             <a class="nav-link" routerLink='/dashboard' routerLinkActive='active' routerLinkActiveOptions="{exact:true}">Dashboard</a>

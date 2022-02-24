@@ -9,54 +9,40 @@
       <thead class="table-sub-header">
         <tr>
           <th style="text-align: left;">USER</th>
-          <th style="text-align: right;">MATCHES</th>
-          <th style="text-align: right;">WINNER</th>
-          <th style="text-align: right;">EX. SCORE</th>
-          <th style="text-align: right;">ACCURACY</th>
-          <th style="text-align: right;">AV. ERR.</th>
+          <th style="text-align: center;">MATCHES</th>
+          <th style="text-align: center;">WIN / SCORE</th>
+          <th style="text-align: center;">ACCURACY %</th>
+          <th style="text-align: center;">AV. ERR.</th>
           <th style="text-align: right;">SCORE</th>
       </thead>
       <tbody>
         <tr mdbTableCol *ngFor="let user of usersSorted">
           <td style="text-align: left; font-weight: bold; width: 60pc;"><span *ngIf="usersScores[user.username]?.isWinner">&#9734;</span> {{user.username}}</td>
-          <td style="text-align: right; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].matchesFinished : 0}}</td>
-          <td style="text-align: right; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].correctWinners : 0}}</td>
-          <td style="text-align: right; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].exactScores : 0}}</td>
-          <td style="text-align: right; width: 8pc;">
-            {{usersScores[user.username] ? usersScores[user.username].correctWinnersAccuracy : 0.0}}% 
-            ({{usersScores[user.username] ? usersScores[user.username].exactScoresAccuracy : 0.0}}%)
+          <td style="text-align: center; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].matchesFinished : 0}}</td>
+          <td style="text-align: center; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].correctWinners : 0}} / {{usersScores[user.username] ? usersScores[user.username].exactScores : 0}}</td>
+          <td style="text-align: center; width: 8pc;">
+            {{usersScores[user.username] ? usersScores[user.username].correctWinnersAccuracy : 0.0}} / {{usersScores[user.username] ? usersScores[user.username].exactScoresAccuracy : 0.0}}
           </td>
-          <td style="text-align: right; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].averageError : '-'}}</td>
+          <td style="text-align: center; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].averageError : '-'}}</td>
           <td style="text-align: right; width: 8pc; font-weight: bold;">{{usersScores[user.username] ? usersScores[user.username].eventScore : 0.0}}</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Event details -->
-  <div class="center-container" style="margin-bottom: 10px;">
-    <div style="font-weight: bold;">{{eventName}}</div>
-    <div>{{eventVenue}}</div>
-  </div>
-
   <!-- Rounds and matches -->
   <div *ngFor="let round of eventRounds">
     <table class="table table-responsive" *ngIf="!loading">
       <thead class="table-header">
-        <tr>
-          <th class="themed-border" style="border-width: 1px; border-style: solid"></th>
+        <tr style="border-width: 1px; border-style: solid;">
+          <th class="themed-border"></th>
           <th class="themed-border" style="text-align: center;" colspan="5">{{round.roundName}} ({{round.distance * 2 - 1}})</th>
-          <th *ngFor="let user of users" class="themed-border" style="border-width: 1px; border-style: solid"></th>
-        </tr>
-        <tr>
-          <th class="themed-border" style="padding: 0px; border-width: 1px; border-style: solid"></th>
-          <th class="themed-border" style="text-align: center; font-size: x-small; padding: 0px; border-width: 1px" colspan="5">Start date: {{round.startDate}}</th>
-          <th *ngFor="let user of users" class="themed-border" style="padding: 0px; border-width: 1px; border-style: solid"></th>
+          <th *ngFor="let user of users" class="themed-border"></th>
         </tr>
       </thead>
       <thead class="table-sub-header">
         <tr>
-          <th style="text-align: left;">STATUS / SCHEDULE</th>
+          <th style="text-align: left;"></th>
           <th style="text-align: right;">PLAYER 1</th>
           <th style="text-align: right;"></th> <!--SCORE1-->
           <th style="text-align: center;"></th> <!-- : -->
@@ -69,7 +55,8 @@
         <tr mdbTableCol *ngFor="let item of dashboardItems | roundFilter: {round: round.round}">
           <td style="text-align: center">
             <span [ngClass]="{'status-ongoing': item.status.status === 2,
-                              'status-finished': item.status.status === 3}">
+                              'status-finished': item.status.status === 3,
+                              'status-scheduled-not-started': item.status.status === 4}">
             </span>
             <span *ngIf="item.status.status === 1" style="text-align: left; width: 100px; font-size: small; padding-top: 6px;">
               {{item.status.description}}

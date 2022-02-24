@@ -4,8 +4,9 @@
 
 export const environment = {
     production: false,
-    apiUrl: 'https://localhost:5001',
-    version: '1.2'
+    //apiUrl: 'https://localhost:44320',
+    apiUrl: 'https://betsnookerapi.azurewebsites.net/',
+    version: '1.3'
 };
 
 /*

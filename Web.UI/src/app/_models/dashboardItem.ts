@@ -32,5 +32,6 @@ export class MatchStatus {
 export enum EMatchStatus {
   NotStarted = 1,
   Ongoing,
-  Finished
+  Finished,
+  ScheduledNotStarted
 }

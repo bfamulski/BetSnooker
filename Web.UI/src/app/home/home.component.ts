@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
   users: User[];
   usersSorted: User[];
   eventRounds: RoundInfo[];
+  currentRound: RoundInfo;
   roundBets: RoundBets[];
   eventBets: EventBets[];
 
@@ -72,12 +73,14 @@ export class HomeComponent implements OnInit {
     const ongoingMatchesRequest = this.snookerFeedService.getOngoingMatches();
     const usersRequest = this.authenticationService.getUsers();
     const eventBetsRequest = this.betsService.getEventBets();
+    const currentRoundRequest = this.snookerFeedService.getCurrentRoundInfo();
 
-    forkJoin([eventRoundsRequest, eventMatchesRequest, ongoingMatchesRequest, usersRequest, eventBetsRequest]).subscribe(results => {
+    forkJoin([eventRoundsRequest, currentRoundRequest, eventMatchesRequest, ongoingMatchesRequest, usersRequest, eventBetsRequest]).subscribe(results => {
       this.eventRounds = results[0];
-      this.matches = results[1];
-      this.ongoingMatches = results[2];
-      this.users = results[3];
+      this.currentRound = results[1];
+      this.matches = results[2];
+      this.ongoingMatches = results[3];
+      this.users = results[4];
 
       if (!this.users) {
         this.authenticationService.logout();
@@ -91,7 +94,7 @@ export class HomeComponent implements OnInit {
         return;
       }
 
-      this.eventBets = results[4];
+      this.eventBets = results[5];
 
       if (this.eventBets) {
         this.users.forEach(user => {
@@ -178,7 +181,7 @@ export class HomeComponent implements OnInit {
   }
 
   formatAccuracyValue(accuracyValue: number) {
-    return Number((accuracyValue * 100).toFixed(2)).toString();
+    return Number((accuracyValue * 100).toFixed(1)).toString();
   }
 
   formatAverageError(averageError: number) {
@@ -197,6 +200,13 @@ export class HomeComponent implements OnInit {
     if (match.startDate == null) {
       if (match.scheduledDate == null || (!match.player1Name && !match.player2Name)) {
         return new MatchStatus({ status: EMatchStatus.NotStarted });
+      }
+
+      let currentDateTime = new Date(new Date(Date.now()).toISOString());
+      let matchScheduledDate = new Date(match.scheduledDate);
+
+      if (matchScheduledDate != null && matchScheduledDate < currentDateTime) {
+        return new MatchStatus({ status: EMatchStatus.ScheduledNotStarted });
       }
 
       return new MatchStatus({

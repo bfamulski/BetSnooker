@@ -13,6 +13,8 @@ export class AppComponent {
     currentUser: User;
     currentEvent: Event;
 
+    eventName: string;
+
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
@@ -21,6 +23,7 @@ export class AppComponent {
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
         this.snookerFeedService.getCurrentEvent(true).subscribe(event => {
             this.currentEvent = event;
+            this.eventName = `${event.sponsor} ${event.name}`.trim();
         });
     }
 
