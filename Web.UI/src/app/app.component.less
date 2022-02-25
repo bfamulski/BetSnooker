@@ -1,11 +1,38 @@
-/* The container <div> - needed to position the dropdown content */
+@primary-background-color: #c91228;
+@primary-font-color: white;
+
+//background-image: linear-gradient(#ffd74d, #d7b22a);
+//background-image: linear-gradient(#b30300, #670101)
+
+.navbar {
+  background-color: @primary-background-color;
+  align-items: center;
+}
+
+.nav-item .nav-link {
+  color: @primary-font-color;
+}
+
+.active {
+  font-weight: bold;
+}
+
+.dropbtn {
+  background-color: transparent;
+  color: @primary-font-color;
+  border: none;
+  cursor: pointer;
+}
+
+/* Drop-down button contents */
+
+// The container <div> - needed to position the dropdown content
 .dropdown {
-  //float: right;
   position: relative;
   display: inline-block;
 }
 
-/* Dropdown Content (Hidden by Default) */
+// Dropdown Content (Hidden by Default)
 .dropdown-content {
   display: none;
   position: absolute;
@@ -17,7 +44,7 @@
   z-index: 1;
 }
 
-/* Links inside the dropdown */
+// Links inside the dropdown
 .dropdown-content a {
   color: black;
   padding: 12px 16px;
@@ -25,44 +52,12 @@
   display: block;
 }
 
-/* Change color of dropdown links on hover */
+// Change color of dropdown links on hover
 .dropdown-content a:hover {
   background-color: #ddd
 }
 
-/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+// Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button)
 .show {
   display:block;
-}
-
-.navbar {
-  //background-color: #ffd231;  // UK Championship
-  background-color: #c91228;  // English Open
-  //background-color: #cd1328;  // Northern Ireland Open
-  //background-color: #c72027;
-  //background-image: linear-gradient(#ffd74d, #d7b22a);
-  //background-image: linear-gradient(#b30300, #670101)
-  //color: #000;
-  align-items: center;
-  // height: 40px;
-}
-
-.nav-item .nav-link {
-  color: white;
-  //color: black;
-}
-
-.active {
-  font-weight: bold;
-  color: white;
-}
-
-.dropbtn {
-  background-color: transparent;
-  color: white;
-  //color: black;
-  // padding: 16px;
-  // font-size: 16px;
-  border: none;
-  cursor: pointer;
 }

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DashboardItem, RoundInfo } from '../_models';
+import { DashboardItem } from '../_models';
 
 @Pipe({
     name: 'roundFilter',

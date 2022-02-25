@@ -57,11 +57,11 @@ export class BetsComponent implements OnInit {
         }
 
         this.currentRoundBets = this.roundBets[0];
-        this.currentRoundInfo = eventRounds.find(r => r.round === this.currentRoundBets.roundId);
+        this.currentRoundInfo = eventRounds.find(r => r.round === this.currentRoundBets.roundId)!;
 
         if (this.roundBets.length > 1) {
           this.nextRoundBets = this.roundBets[1];
-          this.nextRoundInfo = eventRounds.find(r => r.round === this.nextRoundBets.roundId);
+          this.nextRoundInfo = eventRounds.find(r => r.round === this.nextRoundBets.roundId)!;
 
           this.nextRoundMatchBets = this.nextRoundBets.matchBets.sort(this.compareBets);
           this.nextRoundMatchBetsAvailable = this.nextRoundMatchBets.filter(bet => bet.player1Name && bet.player2Name).length > 0;

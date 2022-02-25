@@ -1,11 +1,21 @@
+@primary-background-color: #9e072d;
+@primary-font-color: white;
+
 table {
   width: 100%;
   table-layout: fixed;
 }
 
-th, td {
+th {
   overflow: hidden;
-  //text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px;
+  vertical-align: top;
+  border-top: 0px;
+}
+
+td {
+  overflow: hidden;
   white-space: nowrap;
   padding: 4px;
   vertical-align: top;
@@ -21,22 +31,17 @@ th, td {
 }
 
 .table-header {
+  background-color: @primary-background-color;
+  color: @primary-font-color;
   font-size: small;
-  //background-color: #e0e0e0;
-  //background-color: #336ae8;
-  background-color: #9e072d;
-  //background-color: #2863f1;
-  //color: black;
-  color: white;
-  border-radius: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: @primary-background-color;
 }
 
 .themed-border {
-  //background-color: #2863f1;
-  //border-color: #2863f1;
-  background-color: #9e072d;
-  border-color: #9e072d;
-  //border-color: #e0e0e0;
+  background-color: @primary-background-color;
+  border-color: @primary-background-color;
 }
 
 .table-sub-header {
@@ -74,6 +79,7 @@ th, td {
   font-weight: normal;
 }
 
+// points backgrounds
 .max-points {
   background-color: green;
   color: white;
@@ -94,6 +100,7 @@ th, td {
   color: white;
 }
 
+// match statuses
 .status-ongoing {
   height: 12px;
   width: 12px;

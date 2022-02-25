@@ -43,7 +43,7 @@ export class RegisterComponent implements OnInit {
   onSubmit() {
       this.error = '';
 
-      if (this.f.password.value !== this.f.confirmpassword.value) {
+      if (this.f['password'].value !== this.f['confirmpassword'].value) {
         this.error = 'Passwords do not match';
         return;
       }
@@ -57,7 +57,7 @@ export class RegisterComponent implements OnInit {
 
       this.loading = true;
 
-      const newUser = new User({ username: this.f.username.value, password: this.f.password.value });
+      const newUser = new User({ username: this.f['username'].value, password: this.f['password'].value });
       this.authenticationService.register(newUser)
           .pipe(first())
           .subscribe(

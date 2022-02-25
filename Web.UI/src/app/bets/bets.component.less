@@ -1,3 +1,6 @@
+@primary-background-color: #9e072d;
+@primary-font-color: white;
+
 table {
   width: 100%;
   table-layout: fixed;
@@ -5,7 +8,6 @@ table {
 
 th, td {
   overflow: hidden;
-  //text-overflow: ellipsis;
   white-space: nowrap;
   padding: 4px;
   vertical-align: top;
@@ -32,7 +34,6 @@ th, td {
 }
 
 .themed-button {
-  //background-color: #2863f1;
-  background-color: #9e072d;
-  color: white;
+  background-color: @primary-background-color;
+  color: @primary-font-color;
 }

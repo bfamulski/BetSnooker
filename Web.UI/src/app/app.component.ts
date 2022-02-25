@@ -1,13 +1,13 @@
-﻿import { Component, HostListener } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthenticationService, SnookerFeedService } from './_services';
 import { User, Event } from './_models';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: 'app.component.html',
-    styleUrls: ['app.component.less']
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.less']
 })
 export class AppComponent {
     currentUser: User;
@@ -33,7 +33,7 @@ export class AppComponent {
     }
 
     showDropdown() {
-        document.getElementById('userDropdown').classList.toggle('show');
+        document.getElementById('userDropdown')!.classList.toggle('show');
     }
 
     // Close the dropdown if the user clicks outside of it

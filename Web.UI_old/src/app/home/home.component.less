@@ -1,0 +1,119 @@
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+th, td {
+  overflow: hidden;
+  //text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px;
+  vertical-align: top;
+}
+
+.bordered {
+  text-align: center;
+  border-color: #e0e0e0;
+  border-left-style: solid;
+  border-right-style: solid;
+  border-left-width: 1px;
+  border-right-width: 1px;
+}
+
+.table-header {
+  font-size: small;
+  //background-color: #e0e0e0;
+  //background-color: #336ae8;
+  background-color: #9e072d;
+  //background-color: #2863f1;
+  //color: black;
+  color: white;
+  border-radius: 20px;
+}
+
+.themed-border {
+  //background-color: #2863f1;
+  //border-color: #2863f1;
+  background-color: #9e072d;
+  border-color: #9e072d;
+  //border-color: #e0e0e0;
+}
+
+.table-sub-header {
+  font-size: x-small;
+}
+
+.center-container {
+  text-align: center;
+}
+
+.footer-container {
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: smaller;
+}
+
+.title-container {
+  text-align: center;
+  font-weight: bold;
+  font-size: medium;
+}
+
+.sub-title-container {
+  text-align: center;
+  font-weight: normal;
+  font-size: small;
+}
+
+.winner-item {
+  font-weight: bold;
+}
+
+.loser-item {
+  font-weight: normal;
+}
+
+.max-points {
+  background-color: green;
+  color: white;
+}
+
+.zero-points {
+  background-color: firebrick;
+  color: white;
+}
+
+.in-between-points {
+  background-color: darkseagreen;
+  color: white;
+}
+
+.no-points {
+  background-color: #f1f1f1;
+  color: white;
+}
+
+.status-ongoing {
+  height: 12px;
+  width: 12px;
+  background-color: greenyellow;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-finished {
+  height: 12px;
+  width: 12px;
+  background-color: crimson;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-scheduled-not-started {
+  height: 12px;
+  width: 12px;
+  background-color: orange;
+  border-radius: 50%;
+  display: inline-block;
+}

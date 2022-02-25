@@ -1,96 +1,97 @@
-﻿<div *ngIf="loading" class="center-container">
-  <span class="spinner-border spinner-border-lm" style="display: inline-block; margin: 50px;"></span>
-</div>
-
-<div *ngIf="!loading && !error">
-  <!-- Users statistics -->
-  <div style="margin-top: 10px;">
-    <table class="table table-responsive" *ngIf="!loading && usersScores">
-      <thead class="table-sub-header">
-        <tr>
-          <th style="text-align: left;">USER</th>
-          <th style="text-align: center;">MATCHES</th>
-          <th style="text-align: center;">WIN / SCORE</th>
-          <th style="text-align: center;">ACCURACY %</th>
-          <th style="text-align: center;">AV. ERR.</th>
-          <th style="text-align: right;">SCORE</th>
-      </thead>
-      <tbody>
-        <tr mdbTableCol *ngFor="let user of usersSorted">
-          <td style="text-align: left; font-weight: bold; width: 60pc;"><span *ngIf="usersScores[user.username]?.isWinner">&#9734;</span> {{user.username}}</td>
-          <td style="text-align: center; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].matchesFinished : 0}}</td>
-          <td style="text-align: center; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].correctWinners : 0}} / {{usersScores[user.username] ? usersScores[user.username].exactScores : 0}}</td>
-          <td style="text-align: center; width: 8pc;">
-            {{usersScores[user.username] ? usersScores[user.username].correctWinnersAccuracy : 0.0}} / {{usersScores[user.username] ? usersScores[user.username].exactScoresAccuracy : 0.0}}
-          </td>
-          <td style="text-align: center; width: 8pc;">{{usersScores[user.username] ? usersScores[user.username].averageError : '-'}}</td>
-          <td style="text-align: right; width: 8pc; font-weight: bold;">{{usersScores[user.username] ? usersScores[user.username].eventScore : 0.0}}</td>
-        </tr>
-      </tbody>
-    </table>
+<div *ngIf="loading" class="center-container">
+    <span class="spinner-border spinner-border-lm" style="display: inline-block; margin: 50px;"></span>
   </div>
-
-  <!-- Rounds and matches -->
-  <div *ngFor="let round of eventRounds">
-    <table class="table table-responsive" *ngIf="!loading">
-      <thead class="table-header">
-        <tr style="border-width: 1px; border-style: solid;">
-          <th class="themed-border"></th>
-          <th class="themed-border" style="text-align: center;" colspan="5">{{round.roundName}} ({{round.distance * 2 - 1}})</th>
-          <th *ngFor="let user of users" class="themed-border"></th>
-        </tr>
-      </thead>
-      <thead class="table-sub-header">
-        <tr>
-          <th style="text-align: left;"></th>
-          <th style="text-align: right;">PLAYER 1</th>
-          <th style="text-align: right;"></th> <!--SCORE1-->
-          <th style="text-align: center;"></th> <!-- : -->
-          <th style="text-align: left;"></th> <!--SCORE2-->
-          <th style="text-align: left;">PLAYER 2</th>
-          <th *ngFor="let user of users" class="bordered">{{user.username}}</th>
-      </thead>
-
-      <tbody>
-        <tr mdbTableCol *ngFor="let item of dashboardItems | roundFilter: {round: round.round}">
-          <td style="text-align: center">
-            <span [ngClass]="{'status-ongoing': item.status.status === 2,
-                              'status-finished': item.status.status === 3,
-                              'status-scheduled-not-started': item.status.status === 4}">
-            </span>
-            <span *ngIf="item.status.status === 1" style="text-align: left; width: 100px; font-size: small; padding-top: 6px;">
-              {{item.status.description}}
-            </span>
-          </td>
-          <td [ngClass]="{'winner-item': item.player1Id === item.winnerId}" style="text-align: right; width: 405px">{{item.player1Name}}</td>
-          <td style="text-align: right; font-weight: bold; width: 22px;">{{item.score1}}</td>
-          <td style="text-align: center; width: 8px;">:</td>
-          <td style="text-align: left; font-weight: bold; width: 22px;">{{item.score2}}</td>
-          <td [ngClass]="{'winner-item': item.player2Id === item.winnerId}" style="text-align: left; width: 405px">{{item.player2Name}}</td>
-          <td *ngFor="let user of users" class="bordered" style="padding: 0px; width: 120px">
-            <table style="margin-top: -1px;" *ngIf="item.userBets[user.username]">
-              <tr style="padding: 0px">
-                <td style="text-align: right; font-weight: bold; width: 28px;">{{item.userBets[user.username]?.betScore1}}</td>
-                <td style="text-align: center; width: 8px;">:</td>
-                <td style="text-align: left; font-weight: bold; width: 28px;">{{item.userBets[user.username]?.betScore2}}</td>
-                <td [ngClass]="{'max-points': item.userBets[user.username]?.scoreValue === item.roundDistance,
-                                'zero-points': item.userBets[user.username]?.scoreValue === 0,
-                                'no-points': item.userBets[user.username]?.scoreValue === null,
-                                'in-between-points': item.userBets[user.username]?.scoreValue !== item.roundDistance && item.userBets[user.username]?.scoreValue !== 0}" 
-                    style="text-align: center; font-weight: bold; width: 48px;">{{item.userBets[user.username]?.scoreValue}}</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  
+  <div *ngIf="!loading && !error">
+    <!-- Users statistics -->
+    <div style="margin-top: 8px;">
+      <table class="table table-responsive" *ngIf="!loading && usersScores">
+        <thead class="table-sub-header">
+          <tr>
+            <th style="text-align: left"></th>
+            <th style="text-align: center">MATCHES</th>
+            <th style="text-align: center">WIN / SCORE</th>
+            <th style="text-align: center">ACCURACY %</th>
+            <th style="text-align: center">AV. ERR.</th>
+            <th style="text-align: right">SCORE</th>
+        </thead>
+        <tbody>
+          <tr mdbTableCol *ngFor="let user of usersSorted">
+            <td style="text-align: left; font-weight: bold; width: 60pc"><span *ngIf="usersScores[user.username]?.isWinner">&#9734;</span> {{user.username}}</td>
+            <td style="text-align: center; width: 8pc">{{usersScores[user.username] ? usersScores[user.username].matchesFinished : 0}}</td>
+            <td style="text-align: center; width: 8pc">{{usersScores[user.username] ? usersScores[user.username].correctWinners : 0}} / {{usersScores[user.username] ? usersScores[user.username].exactScores : 0}}</td>
+            <td style="text-align: center; width: 8pc">
+              {{usersScores[user.username] ? usersScores[user.username].correctWinnersAccuracy : 0.0}} / {{usersScores[user.username] ? usersScores[user.username].exactScoresAccuracy : 0.0}}
+            </td>
+            <td style="text-align: center; width: 8pc">{{usersScores[user.username] ? usersScores[user.username].averageError : '-'}}</td>
+            <td style="text-align: right; width: 8pc; font-weight: bold">{{usersScores[user.username] ? usersScores[user.username].eventScore : 0.0}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Rounds and matches -->
+    <div *ngFor="let round of eventRounds">
+      <table class="table table-responsive" *ngIf="!loading">
+        <thead class="table-header">
+          <tr>
+            <th class="themed-border"></th>
+            <th class="themed-border" style="text-align: center;" colspan="5">{{round.roundName}} ({{round.distance * 2 - 1}})</th>
+            <th *ngFor="let user of users" class="themed-border"></th>
+          </tr>
+        </thead>
+        <thead class="table-sub-header">
+          <tr>
+            <th style="text-align: left;"></th>
+            <th style="text-align: right;">PLAYER 1</th>
+            <th style="text-align: right;"></th> <!--SCORE1-->
+            <th style="text-align: center;"></th> <!-- : -->
+            <th style="text-align: left;"></th> <!--SCORE2-->
+            <th style="text-align: left;">PLAYER 2</th>
+            <th *ngFor="let user of users" class="bordered">{{user.username}}</th>
+        </thead>
+  
+        <tbody>
+          <tr mdbTableCol *ngFor="let item of dashboardItems | roundFilter: {round: round.round}">
+            <td style="text-align: center">
+              <span [ngClass]="{'status-ongoing': item.status.status === 2,
+                                'status-finished': item.status.status === 3,
+                                'status-scheduled-not-started': item.status.status === 4}">
+              </span>
+              <span *ngIf="item.status.status === 1" style="text-align: left; width: 100px; font-size: small; padding-top: 6px;">
+                {{item.status.description}}
+              </span>
+            </td>
+            <td [ngClass]="{'winner-item': item.player1Id === item.winnerId}" style="text-align: right; width: 405px">{{item.player1Name}}</td>
+            <td style="text-align: right; font-weight: bold; width: 22px;">{{item.score1}}</td>
+            <td style="text-align: center; width: 8px;">:</td>
+            <td style="text-align: left; font-weight: bold; width: 22px;">{{item.score2}}</td>
+            <td [ngClass]="{'winner-item': item.player2Id === item.winnerId}" style="text-align: left; width: 405px">{{item.player2Name}}</td>
+            <td *ngFor="let user of users" class="bordered" style="padding: 0px; width: 120px">
+              <table style="margin-top: -1px;" *ngIf="item.userBets[user.username]">
+                <tr style="padding: 0px">
+                  <td style="text-align: right; font-weight: bold; width: 28px;">{{item.userBets[user.username]?.betScore1}}</td>
+                  <td style="text-align: center; width: 8px;">:</td>
+                  <td style="text-align: left; font-weight: bold; width: 28px;">{{item.userBets[user.username]?.betScore2}}</td>
+                  <td [ngClass]="{'max-points': item.userBets[user.username]?.scoreValue === item.roundDistance,
+                                  'zero-points': item.userBets[user.username]?.scoreValue === 0,
+                                  'no-points': item.userBets[user.username]?.scoreValue === undefined,
+                                  'in-between-points': item.userBets[user.username]?.scoreValue !== item.roundDistance && item.userBets[user.username]?.scoreValue !== 0}" 
+                      style="text-align: center; font-weight: bold; width: 48px;">{{item.userBets[user.username]?.scoreValue}}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Footer -->
+    <div class="footer-container">
+      <div>BetSnooker® version: {{version}}</div>
+      <div>Powered by: snooker.org API</div>
+      <div *ngIf="lastRefreshAt">Refreshed at: {{lastRefreshAt}}</div>
+    </div>
   </div>
-
-  <!-- Footer -->
-  <div class="footer-container">
-    <div>BetSnooker® version: {{version}}</div>
-    <div *ngIf="lastRefreshAt">Refreshed at: {{lastRefreshAt}}</div>
-  </div>
-</div>
-
-<div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+  
+  <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { forkJoin, Subscription, interval } from 'rxjs';
 
 import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User, UserStats, Event, MatchStatus, EMatchStatus } from '../_models';
@@ -151,7 +151,7 @@ export class HomeComponent implements OnInit {
         });
 
         this.users.forEach(user => {
-          dashboardItem.userBets[user.username] = { betScore1: null, betScore2: null, scoreValue: null };
+          dashboardItem.userBets[user.username] = { betScore1: "", betScore2: "", scoreValue: undefined };
           if (this.eventBets) {
             const userEventBets = this.eventBets.filter(b => b.userId === user.username)[0];
             if (userEventBets) {
@@ -160,8 +160,8 @@ export class HomeComponent implements OnInit {
                 const bet = userRoundBet.matchBets.find(b => b.matchId === match.matchId);
                 if (bet) {
                   dashboardItem.userBets[user.username] = {
-                    betScore1: bet.score1 != null ? bet.score1.toString() : (bet.betPlaced ? '?' : null),
-                    betScore2: bet.score2 != null ? bet.score2.toString() : (bet.betPlaced ? '?' : null),
+                    betScore1: bet.score1 != null ? bet.score1.toString() : (bet.betPlaced ? '?' : ''),
+                    betScore2: bet.score2 != null ? bet.score2.toString() : (bet.betPlaced ? '?' : ''),
                     scoreValue: bet.scoreValue
                   };
                 }

@@ -13,9 +13,9 @@ export class SnookerFeedService {
     constructor(private http: HttpClient) { }
 
     getCurrentEvent(force: boolean): Observable<Event> {
-        let result: Observable<Event>;
+        let result!: Observable<Event>;
 
-        const currentEvent = JSON.parse(localStorage.getItem('currentEvent'));
+        const currentEvent = JSON.parse(localStorage.getItem('currentEvent')!);
         if (currentEvent) {
             const currentEventSubject = new BehaviorSubject<Event>(currentEvent);
             result = currentEventSubject.asObservable();

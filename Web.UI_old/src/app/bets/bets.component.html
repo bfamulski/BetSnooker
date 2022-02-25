@@ -1,0 +1,86 @@
+<div *ngIf="loading" class="center-container">
+  <span class="spinner-border spinner-border-lm" style="display: inline-block; margin: 50px;"></span>
+</div>
+
+<div *ngIf="!loading && !error && !noBetsAvailable">
+  <div *ngIf="successfulSubmit" class="alert alert-info mt-3 mb-0 alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" (click)="dismissSubmissionAlert()">&times;</button>
+    Bets have been submitted successfully
+  </div>
+
+  <!-- Next round bets -->
+  <div *ngIf="nextRoundMatchBetsAvailable">
+    <div class="title-container" style="padding-top: 10px;">{{nextRoundInfo?.roundName}} ({{nextRoundInfo.distance * 2 - 1}})</div>
+    <div>
+      <table class="table table-responsive">
+          <thead class="table-header">
+            <tr style="padding: 0px;">
+              <th style="text-align: center;">SCHEDULE</th>
+              <th style="text-align: right;">PLAYER 1</th>
+              <th style="text-align: right;"></th>
+              <th style="text-align: center;"></th>
+              <th style="text-align: left;"></th>
+              <th style="text-align: left;">PLAYER 2</th>
+            </tr>
+          </thead>
+          <div *ngIf="loading" class="spinner-border spinner-border-lm" style="margin: 10px;"></div>
+          <tbody>
+            <tr mdbTableCol *ngFor="let bet of nextRoundMatchBets">
+              <td style="text-align: left; width: 76px; font-size: small; padding-top: 8px;">{{bet.formattedStartDate}}</td>
+              <td style="text-align: right; width: 500px; padding: 4px;">{{bet.player1Name}}</td>
+              <td style="text-align: right; padding: 4px;">
+                  <input type="number" min="0" max="{{nextRoundInfo.distance}}" [(ngModel)]="bet.score1" style="width: 40px;" (ngModelChange)="inputChanged()" [disabled]="!bet.active" />
+              </td>
+              <td style="text-align: center; width: 20px; max-width: 20px; padding: 4px;">:</td>
+              <td style="text-align: left; padding: 4px;">
+                  <input type="number" min="0" max="{{nextRoundInfo.distance}}" [(ngModel)]="bet.score2" style="width: 40px;" (ngModelChange)="inputChanged()" [disabled]="!bet.active" />
+              </td>
+              <td style="text-align: left; width: 500px; padding: 4px;">{{bet.player2Name}}</td>
+            </tr>
+          </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Current round bets -->
+  <div *ngIf="currentRoundMatchBets.length > 0">
+    <div class="title-container" style="padding-top: 10px;">{{currentRoundInfo?.roundName}} ({{currentRoundInfo.distance * 2 - 1}})</div>
+    <div>
+      <table class="table table-responsive">
+          <thead class="table-header">
+            <tr style="padding: 0px;">
+              <th style="text-align: center;">SCHEDULE</th>
+              <th style="text-align: right;">PLAYER 1</th>
+              <th style="text-align: right;"></th>
+              <th style="text-align: center;"></th>
+              <th style="text-align: left;"></th>
+              <th style="text-align: left;">PLAYER 2</th>
+            </tr>
+          </thead>
+          <div *ngIf="loading" class="spinner-border spinner-border-lm" style="margin: 10px;"></div>
+          <tbody>
+            <tr mdbTableCol *ngFor="let bet of currentRoundMatchBets">
+              <td style="text-align: left; width: 76px; font-size: small; padding-top: 8px;">{{bet.formattedStartDate}}</td>
+              <td style="text-align: right; width: 500px; padding: 4px;">{{bet.player1Name}}</td>
+              <td style="text-align: right; padding: 4px;">
+                  <input type="number" min="0" max="{{currentRoundInfo.distance}}" [(ngModel)]="bet.score1" style="width: 40px;" (ngModelChange)="inputChanged()" [disabled]="!bet.active" />
+              </td>
+              <td style="text-align: center; width: 20px; max-width: 20px; padding: 4px;">:</td>
+              <td style="text-align: left; padding: 4px;">
+                  <input type="number" min="0" max="{{currentRoundInfo.distance}}" [(ngModel)]="bet.score2" style="width: 40px;" (ngModelChange)="inputChanged()" [disabled]="!bet.active" />
+              </td>
+              <td style="text-align: left; width: 500px; padding: 4px;">{{bet.player2Name}}</td>
+            </tr>
+          </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="center-container">
+    <button type="submit" class="btn themed-button" style="width: 200px; margin: 20px;" (click)="submit()" [disabled]="!canSubmit()" matTooltip="LOL">Submit</button>
+    <div *ngIf="lastUpdatedAt" style="font-size: smaller;">Last updated at: {{lastUpdatedAt}}</div>
+  </div>
+</div>
+
+<div *ngIf="noBetsAvailable" class="alert alert-info mt-3 mb-0">No bets available at this moment</div>
+<div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
