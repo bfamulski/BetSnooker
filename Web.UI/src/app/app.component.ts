@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { AuthenticationService, SnookerFeedService } from './_services';
 import { User, Event } from './_models';
+import { SwPush } from '@angular/service-worker';
 
 @Component({
   selector: 'app-root',
@@ -15,16 +16,33 @@ export class AppComponent {
 
     eventName: string;
 
+    readonly VAPID_PUBLIC_KEY = "BPD84WXKqL81yrFsmQtCRBrLJW8xp7H6mlazwu0ldX_VzbcW0u3HxkhtT7WGoXfbHnPRpfFTuAtyBCa-xoMEOxw";
+
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
-        private snookerFeedService: SnookerFeedService) {
+        private snookerFeedService: SnookerFeedService,
+        private swPush: SwPush) {
 
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
         this.snookerFeedService.getCurrentEvent(true).subscribe(event => {
             this.currentEvent = event;
             this.eventName = `${event.sponsor} ${event.name}`.trim();
         });
+    }
+
+    ngOnInit() {
+        if (!this.swPush.isEnabled) {
+            console.log('Notification is not enabled');
+            return;
+        }
+
+        console.log('Notification is enabled')
+
+        this.swPush.requestSubscription({
+            serverPublicKey: this.VAPID_PUBLIC_KEY
+        }).then(sub => console.log(JSON.stringify(sub)))
+        .catch(err => console.log(err));
     }
 
     logout() {
