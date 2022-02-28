@@ -77,7 +77,7 @@
     </div>
   
     <div class="center-container">
-      <button type="submit" class="btn themed-button" style="width: 200px; margin: 20px;" (click)="submit()" [disabled]="!canSubmit()" matTooltip="LOL">Submit</button>
+      <button type="submit" class="btn themed-button" style="width: 200px; margin: 20px;" (click)="submit()" [disabled]="!canSubmit()">Submit</button>
       <div *ngIf="lastUpdatedAt" style="font-size: smaller;">Last updated at: {{lastUpdatedAt}}</div>
     </div>
   </div>

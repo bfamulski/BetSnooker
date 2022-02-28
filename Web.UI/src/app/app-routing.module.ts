@@ -8,13 +8,11 @@ import { RegisterComponent } from './register';
 import { AuthGuard } from './_helpers';
 
 const routes: Routes = [
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'bets', component: BetsComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'dashboard', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'bets', component: BetsComponent, canActivate: [AuthGuard] },
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' }, // redirect to `dashboard`
-  // otherwise redirect to home
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
