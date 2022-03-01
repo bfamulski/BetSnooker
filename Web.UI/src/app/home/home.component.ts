@@ -5,7 +5,6 @@ import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User, UserStats,
 import { SnookerFeedService, BetsService, AuthenticationService } from '../_services';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { SwPush } from '@angular/service-worker';
 
 @Component({
   selector: 'app-home',
@@ -37,15 +36,12 @@ export class HomeComponent implements OnInit {
   updateIntervalMs = 1000 * 60 * 10; // 10 minutes
   lastRefreshAt = '';
 
-  readonly VAPID_PUBLIC_KEY = "BPD84WXKqL81yrFsmQtCRBrLJW8xp7H6mlazwu0ldX_VzbcW0u3HxkhtT7WGoXfbHnPRpfFTuAtyBCa-xoMEOxw";
-
   version = environment.version;
 
   constructor(private snookerFeedService: SnookerFeedService,
               private betsService: BetsService,
               private authenticationService: AuthenticationService,
-              private router: Router,
-              private swPush: SwPush) { }
+              private router: Router) { }
 
   ngOnInit() {
     this.loading = true;
@@ -58,18 +54,6 @@ export class HomeComponent implements OnInit {
       this.loadData();
       this.lastRefreshAt = `${this.convertToLocalTime(new Date(Date.now()))}`;
     });
-
-    if (!this.swPush.isEnabled) {
-      console.log('Notification is not enabled');
-      return;
-    }
-
-    console.log('Notification is enabled')
-
-    this.swPush.requestSubscription({
-        serverPublicKey: this.VAPID_PUBLIC_KEY
-    }).then(sub => console.log(JSON.stringify(sub)))
-    .catch(err => console.log(err));
   }
 
   getCurrentEvent() {

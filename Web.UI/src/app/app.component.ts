@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 
 import { AuthenticationService, SnookerFeedService } from './_services';
 import { User, Event } from './_models';
-import { SwPush } from '@angular/service-worker';
+import { SwPush, SwUpdate } from '@angular/service-worker';
+import { NotificationsService } from './_services/notifications.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -16,14 +18,13 @@ export class AppComponent {
 
     eventName: string;
 
-    readonly VAPID_PUBLIC_KEY = "BPD84WXKqL81yrFsmQtCRBrLJW8xp7H6mlazwu0ldX_VzbcW0u3HxkhtT7WGoXfbHnPRpfFTuAtyBCa-xoMEOxw";
-
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
         private snookerFeedService: SnookerFeedService,
-        private swPush: SwPush) {
-
+        private swUpdate: SwUpdate,
+        private swPush: SwPush,
+        private notificationsService: NotificationsService) {
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
         this.snookerFeedService.getCurrentEvent(true).subscribe(event => {
             this.currentEvent = event;
@@ -32,17 +33,17 @@ export class AppComponent {
     }
 
     ngOnInit() {
-        if (!this.swPush.isEnabled) {
-            console.log('Notification is not enabled');
-            return;
+        if (this.swUpdate.isEnabled) {
+            this.swUpdate.versionUpdates.subscribe(() => {
+                if (confirm("New version of BetSnooker available. Reload?")) {
+                    window.location.reload();
+                }
+            });
         }
 
-        console.log('Notification is enabled')
-
-        this.swPush.requestSubscription({
-            serverPublicKey: this.VAPID_PUBLIC_KEY
-        }).then(sub => console.log(JSON.stringify(sub)))
-        .catch(err => console.log(err));
+        this.swPush.requestSubscription({ serverPublicKey: environment.vapidPublicKey }).then(sub => {
+            this.notificationsService.addSubscriber(sub).subscribe();
+        }).catch(err => console.error("Could not subscribe to notifications", err));
     }
 
     logout() {
