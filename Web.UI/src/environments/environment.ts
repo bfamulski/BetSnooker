@@ -4,8 +4,7 @@
 
 export const environment = {
   production: false,
-  //apiUrl: 'https://localhost:44320',
-  apiUrl: 'https://betsnookerapi.azurewebsites.net/',
+  apiUrl: 'https://betsnookerapi.azurewebsites.net',
   version: '1.4',
   vapidPublicKey: "BPD84WXKqL81yrFsmQtCRBrLJW8xp7H6mlazwu0ldX_VzbcW0u3HxkhtT7WGoXfbHnPRpfFTuAtyBCa-xoMEOxw"
 };
