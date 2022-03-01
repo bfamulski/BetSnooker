@@ -75,8 +75,8 @@
                   <td style="text-align: left; font-weight: bold; width: 28px;">{{item.userBets[user.username]?.betScore2}}</td>
                   <td [ngClass]="{'max-points': item.userBets[user.username]?.scoreValue === item.roundDistance,
                                   'zero-points': item.userBets[user.username]?.scoreValue === 0,
-                                  'no-points': item.userBets[user.username]?.scoreValue === undefined,
-                                  'in-between-points': item.userBets[user.username]?.scoreValue !== item.roundDistance && item.userBets[user.username]?.scoreValue !== 0}" 
+                                  'no-points': item.userBets[user.username]?.scoreValue === undefined || item.userBets[user.username]?.scoreValue === null,
+                                  'in-between-points': item.userBets[user.username]?.scoreValue !== item.roundDistance && item.userBets[user.username]?.scoreValue !== 0}"
                       style="text-align: center; font-weight: bold; width: 48px;">{{item.userBets[user.username]?.scoreValue}}</td>
                 </tr>
               </table>
