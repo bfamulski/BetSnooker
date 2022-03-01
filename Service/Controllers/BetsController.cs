@@ -83,39 +83,6 @@ namespace BetSnooker.Controllers
         /// </summary>
         /// <param name="bets">User bets</param>
         /// <returns>Submit result</returns>
-        [Obsolete("Use the newer version of the endpoint")]
-        [HttpPost("v1")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(401)]
-        public async Task<IActionResult> SubmitV1([FromBody] RoundBets bets)
-        {
-            var userId = GetUserIdFromRequest(Request);
-            _logger.LogInformation($"Submitting round bets (round ID: {bets.RoundId}) for user: {userId}");
-            
-            var result = await _betsService.SubmitBets(userId, bets);
-            switch (result)
-            {
-                case SubmitResult.ValidationError:
-                    _logger.LogError($"Invalid bets (round ID: {bets.RoundId}, user: {userId})");
-                    return BadRequest(new { message = "Invalid bets" });
-                case SubmitResult.InvalidRound:
-                    _logger.LogError($"Invalid round or round already started (round ID: {bets.RoundId}, user: {userId})");
-                    return BadRequest(new { message = "Invalid round or round already started" });
-                case SubmitResult.InternalServerError:
-                    _logger.LogError($"Unexpected error while submitting bets (round ID: {bets.RoundId}, user: {userId})");
-                    return BadRequest(new { message = "Unexpected error while submitting bets" });
-                default:
-                    _logger.LogInformation($"Bets submitted successfully (round ID: {bets.RoundId}, user: {userId})");
-                    return Ok();
-            }
-        }
-
-        /// <summary>
-        /// Submit user bets.
-        /// </summary>
-        /// <param name="bets">User bets</param>
-        /// <returns>Submit result</returns>
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]

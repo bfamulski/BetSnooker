@@ -220,41 +220,6 @@ namespace BetSnooker.Services
             return SubmitResult.Success;
         }
 
-        // this logic is handled in the controller
-        public async Task<SubmitResult> SubmitBetsV2(string userId, IEnumerable<RoundBets> bets)
-        {
-            foreach (var roundBets in bets)
-            {
-                var canSubmitBets = CanSubmitBets(roundBets);
-                if (!canSubmitBets)
-                {
-                    return SubmitResult.InvalidRound;
-                }
-
-                var betsInvalid = ValidateBets(roundBets);
-                if (betsInvalid)
-                {
-                    return SubmitResult.ValidationError;
-                }
-
-                roundBets.UserId = userId;
-                roundBets.EventId = _settingsProvider.EventId;
-                roundBets.UpdatedAt = DateTime.UtcNow;
-
-                try
-                {
-                    await _betsRepository.SubmitBets(roundBets);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, ex.Message);
-                    return SubmitResult.InternalServerError;
-                }
-            }
-
-            return SubmitResult.Success;
-        }
-
         private bool CanSubmitBets(RoundBets bets)
         {
             var startRound = _settingsProvider.StartRound;

@@ -20,27 +20,35 @@ namespace BetSnooker.Services
         private static List<Player> _eventPlayers = new List<Player>();
         private static Event _event;
 
-        private readonly Timer _matchesTimer;
-        private readonly Timer _roundsTimer;
-        private readonly Timer _playersTimer;
-        private readonly Timer _eventTimer;
+        private Timer _matchesTimer;
+        private Timer _roundsTimer;
+        private Timer _playersTimer;
+        private Timer _eventTimer;
         
         private readonly int _eventId;
         private readonly ISnookerApiService _snookerApiService;
+        private readonly ISettingsProvider _settingsProvider;
         private readonly ILogger _logger;
 
         public SnookerHubService(ISnookerApiService snookerApiService, ISettingsProvider settingsProvider, ILogger<SnookerHubService> logger)
         {
-            _eventId = settingsProvider.EventId;
+            _settingsProvider = settingsProvider;
             _snookerApiService = snookerApiService;
             _logger = logger;
 
-            _matchesTimer = new Timer(GetMatchesTimerEvent, null, TimeSpan.Zero, settingsProvider.GetMatchesInterval);
+            _eventId = settingsProvider.EventId;
+        }
+
+        public void StartHub()
+        {
+            _logger.LogInformation($"Starting {nameof(SnookerHubService)}");
+
+            _matchesTimer = new Timer(GetMatchesTimerEvent, null, TimeSpan.Zero, _settingsProvider.GetMatchesInterval);
             _roundsTimer = new Timer(GetRoundsTimerEvent, null, TimeSpan.Zero, GetRoundsTimerPeriod);
             _playersTimer = new Timer(GetPlayersTimerEvent, null, TimeSpan.Zero, GetPlayersTimerPeriod);
             _eventTimer = new Timer(GetEventTimerEvent, null, TimeSpan.Zero, GetEventTimerPeriod);
 
-            _logger.LogInformation("Snooker Hub started");
+            _logger.LogInformation($"{nameof(SnookerHubService)} started");
         }
 
         public Event GetEvent()
@@ -82,17 +90,17 @@ namespace BetSnooker.Services
 
         public void DisposeHub()
         {
-            _logger.LogInformation("Disposing Snooker Hub");
+            _logger.LogInformation($"Disposing {nameof(SnookerHubService)}");
             _matchesTimer?.Dispose();
             _roundsTimer?.Dispose();
             _playersTimer?.Dispose();
             _eventTimer?.Dispose();
-            _logger.LogInformation("Snooker Hub disposed");
+            _logger.LogInformation($"{nameof(SnookerHubService)} disposed");
         }
 
         private async void GetMatchesTimerEvent(object obj)
         {
-            _logger.LogInformation("Snooker Hub: get event matches");
+            _logger.LogInformation($"{nameof(SnookerHubService)}: get event matches");
             var eventMatches = await _snookerApiService.GetEventMatches(_eventId);
             if (eventMatches != null)
             {
@@ -105,7 +113,7 @@ namespace BetSnooker.Services
 
         private async void GetRoundsTimerEvent(object obj)
         {
-            _logger.LogInformation("Snooker Hub: get event rounds");
+            _logger.LogInformation($"{nameof(SnookerHubService)}: get event rounds");
             var eventRounds = await _snookerApiService.GetEventRounds(_eventId);
             if (eventRounds != null)
             {
@@ -118,7 +126,7 @@ namespace BetSnooker.Services
 
         private async void GetPlayersTimerEvent(object obj)
         {
-            _logger.LogInformation("Snooker Hub: get event players");
+            _logger.LogInformation($"{nameof(SnookerHubService)}: get event players");
             var eventPlayers = await _snookerApiService.GetEventPlayers(_eventId);
             if (eventPlayers != null)
             {
@@ -131,7 +139,7 @@ namespace BetSnooker.Services
 
         private async void GetEventTimerEvent(object obj)
         {
-            _logger.LogInformation("Snooker Hub: get event");
+            _logger.LogInformation($"{nameof(SnookerHubService)}: get event");
             var @event = await _snookerApiService.GetEvent(_eventId);
 
             if (_event == null)
