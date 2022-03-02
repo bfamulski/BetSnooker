@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BetSnooker.Configuration;
 using BetSnooker.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,16 +17,19 @@ namespace BetSnooker.Services
 
         private readonly IServiceProvider _serviceProvider;
         private readonly ISnookerHubService _snookerHubService;
+        private readonly ISettingsProvider _settingsProvider;
 
         private readonly ILogger _logger;
 
         public NotificationsHubService(
             IServiceProvider serviceProvider,
             ISnookerHubService snookerHubService,
+            ISettingsProvider settingsProvider,
             ILogger<NotificationsHubService> logger)
         {
             _serviceProvider = serviceProvider;
             _snookerHubService = snookerHubService;
+            _settingsProvider = settingsProvider;
             _logger = logger;
         }
 
@@ -46,7 +50,8 @@ namespace BetSnooker.Services
         private async void GetMatchesTimerEvent(object obj)
         {
             _logger.LogInformation($"{nameof(NotificationsHubService)}: get event matches");
-            var eventMatches = _snookerHubService.GetEventMatches().ToList();
+            var eventMatches = _snookerHubService.GetEventMatches().Where(m =>
+                m.EventId == _settingsProvider.EventId && m.Round >= _settingsProvider.StartRound).ToList();
             if (eventMatches.Any())
             {
                 if (eventMatches.All(m => m.StartDate.HasValue))
@@ -71,7 +76,10 @@ namespace BetSnooker.Services
         {
             using var scope = _serviceProvider.CreateScope();
             var notificationsService = scope.ServiceProvider.GetRequiredService<INotificationsService>();
-            await notificationsService.SendNotification(message);
+            if (notificationsService != null)
+            {
+                await notificationsService.SendNotification(message);
+            }
         }
     }
 }
