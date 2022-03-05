@@ -1,7 +1,7 @@
 {
   "name": "BetSnooker-Web-App",
   "short_name": "BetSnooker-Web-App",
-  "theme_color": "#1976d2",
+  "theme_color": "#c91228",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",

@@ -1,10 +1,9 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { AuthenticationService, SnookerFeedService } from './_services';
-import { User, Event } from './_models';
 import { SwPush, SwUpdate } from '@angular/service-worker';
-import { NotificationsService } from './_services/notifications.service';
+
+import { AuthenticationService, SnookerFeedService, NotificationsService } from './_services';
+import { User, Event } from './_models';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -25,18 +24,21 @@ export class AppComponent {
         private swUpdate: SwUpdate,
         private swPush: SwPush,
         private notificationsService: NotificationsService) {
-        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
-        this.snookerFeedService.getCurrentEvent(true).subscribe(event => {
-            this.currentEvent = event;
-            this.eventName = `${event.sponsor} ${event.name}`.trim();
-        });
-    }
 
-    ngOnInit() {
         if (this.swUpdate.isEnabled) {
-            this.swUpdate.versionUpdates.subscribe(() => {
-                if (confirm("New version of BetSnooker available. Reload?")) {
-                    window.location.reload();
+            this.swUpdate.versionUpdates.subscribe(evt => {
+                console.log(evt);
+                switch (evt.type) {
+                    case 'VERSION_DETECTED':
+                        if (confirm('New version of BetSnooker available. Reload?')) {
+                            location.reload();
+                        }
+                        break;
+                    case 'VERSION_READY':
+                        break;
+                    case 'VERSION_INSTALLATION_FAILED':
+                        console.log(`Failed to install app version '${evt.version.hash}': ${evt.error}`);
+                        break;
                 }
             });
         }
@@ -44,6 +46,12 @@ export class AppComponent {
         this.swPush.requestSubscription({ serverPublicKey: environment.vapidPublicKey }).then(sub => {
             this.notificationsService.addSubscriber(sub).subscribe();
         }).catch(err => console.error("Could not subscribe to notifications", err));
+
+        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+        this.snookerFeedService.getCurrentEvent(true).subscribe(event => {
+            this.currentEvent = event;
+            this.eventName = `${event.sponsor} ${event.name}`.trim();
+        });
     }
 
     logout() {

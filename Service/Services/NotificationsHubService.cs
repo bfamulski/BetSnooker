@@ -63,7 +63,8 @@ namespace BetSnooker.Services
                 var incomingMatchesCount = eventMatches.Count(m =>
                     m.ScheduledDate.HasValue && m.ScheduledDate.Value.TimeOfDay != TimeSpan.Zero &&
                     !m.StartDate.HasValue &&
-                    m.ScheduledDate.Value - DateTime.UtcNow < TimeSpan.FromMinutes(60));
+                    m.ScheduledDate.Value - DateTime.UtcNow < TimeSpan.FromMinutes(60) &&
+                    m.ScheduledDate.Value - DateTime.UtcNow > TimeSpan.Zero);
 
                 if (incomingMatchesCount > 0)
                 {
