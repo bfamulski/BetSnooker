@@ -23,6 +23,8 @@ namespace BetSnooker.Configuration
         public string SnookerApiUrl { get; private set; }
         public int MaxUsers { get; private set; }
         public TimeSpan GetMatchesInterval { get; private set; }
+        public string VapidPublicKey { get; private set; }
+        public string VapidPrivateKey { get; private set; }
 
         private void GetConfigurationSettings(IConfiguration configuration)
         {
@@ -64,11 +66,16 @@ namespace BetSnooker.Configuration
                 getMatchesInterval = getMatchesIntervalOutput;
             }
 
+            var vapidPublicKey = configuration["VapidPublicKey"];
+            var vapidPrivateKey = configuration["VapidPrivateKey"];
+
             EventId = eventId;
             StartRound = startRound;
             SnookerApiUrl = string.IsNullOrEmpty(snookerApiUrl) ? _defaultSnookerApiUrl : snookerApiUrl;
             MaxUsers = maxUsers ?? _defaultMaxUsers;
             GetMatchesInterval = getMatchesInterval ?? _defaultGetMatchesInterval;
+            VapidPublicKey = vapidPublicKey;
+            VapidPrivateKey = vapidPrivateKey;
 
             _logger.LogInformation(
                 $"Configuring service with following values - EventId: {EventId}, StartRound: {StartRound}, SnookerApiUrl: {SnookerApiUrl}, MaxUsers: {MaxUsers}, GetMatchesInterval: {GetMatchesInterval}");

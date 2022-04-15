@@ -9,5 +9,7 @@ namespace BetSnooker.Configuration
         string SnookerApiUrl { get; }
         int MaxUsers { get; }
         TimeSpan GetMatchesInterval { get; }
+        string VapidPublicKey { get; }
+        string VapidPrivateKey { get; }
     }
 }

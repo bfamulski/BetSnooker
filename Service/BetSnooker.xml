@@ -52,19 +52,17 @@
             This method is not authorized - any user can call it.
             </remarks>
         </member>
-        <member name="M:BetSnooker.Controllers.BetsController.SubmitV1(BetSnooker.Models.RoundBets)">
-            <summary>
-            Submit user bets.
-            </summary>
-            <param name="bets">User bets</param>
-            <returns>Submit result</returns>
-        </member>
         <member name="M:BetSnooker.Controllers.BetsController.Submit(System.Collections.Generic.IEnumerable{BetSnooker.Models.RoundBets})">
             <summary>
             Submit user bets.
             </summary>
             <param name="bets">User bets</param>
             <returns>Submit result</returns>
+        </member>
+        <member name="T:BetSnooker.Controllers.NotificationsController">
+            <summary>
+            Notifications controller.
+            </summary>
         </member>
         <member name="T:BetSnooker.Controllers.SnookerFeedController">
             <summary>

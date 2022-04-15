@@ -53,7 +53,7 @@ namespace BetSnooker.Controllers
             {
                 return NoContent();
             }
-            
+
             return Ok(matches);
         }
 

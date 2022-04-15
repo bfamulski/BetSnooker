@@ -65,18 +65,22 @@ namespace BetSnooker
 
             services.AddSingleton<ISettingsProvider, SettingsProvider>();
             services.AddSingleton<ISnookerHubService, SnookerHubService>();
+            services.AddSingleton<INotificationsHubService, NotificationsHubService>();
 
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IBetsRepository, BetsRepository>();
             services.AddScoped<IBetsService, BetsService>();
             services.AddScoped<ISnookerFeedService, SnookerFeedService>();
+            services.AddScoped<IUserSubscriptionsRepository, UserSubscriptionsRepository>();
+            services.AddScoped<INotificationsService, NotificationsService>();
 
             services.AddTransient<ISnookerApiService, SnookerApiService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger,
+            ISnookerHubService snookerHubService, INotificationsHubService notificationsHubService)
         {
             if (env.IsDevelopment())
             {
@@ -99,6 +103,9 @@ namespace BetSnooker
             {
                 endpoints.MapControllers();
             });
+
+            snookerHubService.StartHub();
+            notificationsHubService.StartHub();
 
             logger.LogInformation("Service started successfully");
         }

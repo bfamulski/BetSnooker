@@ -17,6 +17,8 @@ namespace BetSnooker.Repositories
 
         public DbSet<Bet> MatchBets { get; set; }
 
+        public DbSet<UserSubscription> UserSubscriptions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoundInfo>().HasKey(r => r.Round);

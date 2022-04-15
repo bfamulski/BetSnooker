@@ -32,3 +32,11 @@ Error int NULL,
 BetPlaced bit NOT NULL,
 MatchStartDate datetime NULL
 );
+
+CREATE TABLE [UserSubscriptions] (
+Id int IDENTITY(1,1) PRIMARY KEY,
+Endpoint nvarchar(MAX) NOT NULL,
+ExpirationTime datetime NULL,
+P256DH nvarchar(256) NOT NULL,
+Auth nvarchar(256) NOT NULL
+);
