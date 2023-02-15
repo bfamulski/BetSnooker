@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
     this.loadData();
     this.lastRefreshAt = `${this.convertToLocalTime(new Date(Date.now()))}`;
 
-    this.updateSubscription = interval(this.updateIntervalMs).subscribe(val => {
+    this.updateSubscription = interval(this.updateIntervalMs).subscribe(() => {
       this.loading = true;
       this.loadData();
       this.lastRefreshAt = `${this.convertToLocalTime(new Date(Date.now()))}`;
