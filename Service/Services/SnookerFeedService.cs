@@ -55,18 +55,25 @@ namespace BetSnooker.Services
             var validRoundInfoDetails = new List<RoundInfoDetails>();
             foreach (var roundInfo in validRounds)
             {
-                var matchesGrouped = eventMatchesGroupedByRound.Single(r => r.Key == roundInfo.Round);
-                var minScheduledDate = matchesGrouped.Where(m => !m.Walkover1 && !m.Walkover2).Min(m => m.ActualStartDate);
-                var roundFinished = matchesGrouped.All(MatchFinished);
-
-                var roundInfoDetails = new RoundInfoDetails(roundInfo)
+                try
                 {
-                    ActualStartDate = minScheduledDate?.ToLocalTime(),
-                    Started = minScheduledDate.HasValue && minScheduledDate.Value.ToLocalTime() <= DateTime.Now,
-                    Finished = roundFinished
-                };
+                    var matchesGrouped = eventMatchesGroupedByRound.Single(r => r.Key == roundInfo.Round);
+                    var minScheduledDate = matchesGrouped.Where(m => !m.Walkover1 && !m.Walkover2).Min(m => m.ActualStartDate);
+                    var roundFinished = matchesGrouped.All(MatchFinished);
 
-                validRoundInfoDetails.Add(roundInfoDetails);
+                    var roundInfoDetails = new RoundInfoDetails(roundInfo)
+                    {
+                        ActualStartDate = minScheduledDate?.ToLocalTime(),
+                        Started = minScheduledDate.HasValue && minScheduledDate.Value.ToLocalTime() <= DateTime.Now,
+                        Finished = roundFinished
+                    };
+
+                    validRoundInfoDetails.Add(roundInfoDetails);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex.Message);
+                }
             }
 
             return validRoundInfoDetails.Where(r => r.Round >= startRound);
