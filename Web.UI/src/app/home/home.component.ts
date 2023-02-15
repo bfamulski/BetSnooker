@@ -4,7 +4,7 @@ import { forkJoin, Subscription, interval } from 'rxjs';
 import { Match, RoundInfo, RoundBets, EventBets, DashboardItem, User, UserStats, Event, MatchStatus, EMatchStatus } from '../_models';
 import { SnookerFeedService, BetsService, AuthenticationService } from '../_services';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
+import packageJson from '../../../package.json';
 
 @Component({
   selector: 'app-home',
@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
   updateIntervalMs = 1000 * 60 * 10; // 10 minutes
   lastRefreshAt = '';
 
-  version = environment.version;
+  version = packageJson.version;
 
   constructor(private snookerFeedService: SnookerFeedService,
               private betsService: BetsService,
