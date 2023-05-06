@@ -33,14 +33,14 @@ namespace BetSnooker.Services
         {
             var eventId = _settingsProvider.EventId;
 
-            var eventRounds = _snookerFeedService.GetEventRounds().ToList();
+            var eventRounds = await _snookerFeedService.GetEventRounds();
             if (!eventRounds.Any())
             {
                 _logger.LogWarning("No event rounds available");
                 return null;
             }
 
-            var currentRound = _snookerFeedService.GetCurrentRound(eventRounds);
+            var currentRound = await _snookerFeedService.GetCurrentRound(eventRounds);
             if (currentRound == null)
             {
                 _logger.LogWarning("Current round is not available");
@@ -54,7 +54,7 @@ namespace BetSnooker.Services
                 return null;
             }
 
-            var eventMatches = _snookerFeedService.GetEventMatches().ToList();
+            var eventMatches = await _snookerFeedService.GetEventMatches();
 
             var allUsersEventBets = new List<EventBets>();
             var eventBetsGroupedByUser = eventBets.GroupBy(b => b.UserId);
@@ -164,13 +164,13 @@ namespace BetSnooker.Services
         {
             var eventId = _settingsProvider.EventId;
 
-            RoundInfoDetails currentRound = _snookerFeedService.GetCurrentRound(null);
+            RoundInfoDetails currentRound = await _snookerFeedService.GetCurrentRound(null);
             if (currentRound == null)
             {
                 return null;
             }
 
-            var players = _snookerFeedService.GetEventPlayers().ToList();
+            var players = (await _snookerFeedService.GetEventPlayers()).ToList();
 
             var currentRoundBets = await GetUserBetsForRound(userId, eventId, currentRound, players);
 
@@ -178,7 +178,7 @@ namespace BetSnooker.Services
 
             if (currentRound.Started)
             {
-                RoundInfoDetails nextRound = _snookerFeedService.GetNextRound(currentRound);
+                RoundInfoDetails nextRound = await _snookerFeedService.GetNextRound(currentRound);
                 if (nextRound != null)
                 {
                     var nextRoundBets = await GetUserBetsForRound(userId, eventId, nextRound, players);
@@ -299,7 +299,7 @@ namespace BetSnooker.Services
 
         private async Task<RoundBets> GetUserBetsForRound(string userId, int eventId, RoundInfoDetails round, List<Player> players)
         {
-            var matches = _snookerFeedService.GetRoundMatches(round.Round).ToList();
+            var matches = (await _snookerFeedService.GetRoundMatches(round.Round)).ToList();
 
             var userBets = new RoundBets();
 

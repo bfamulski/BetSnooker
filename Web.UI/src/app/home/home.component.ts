@@ -18,7 +18,6 @@ export class HomeComponent implements OnInit {
   eventVenue: string;
 
   matches: Match[];
-  ongoingMatches: Match[];
   users: User[];
   usersSorted: User[];
   eventRounds: RoundInfo[];
@@ -70,17 +69,15 @@ export class HomeComponent implements OnInit {
   loadData() {
     const eventRoundsRequest = this.snookerFeedService.getEventRounds();
     const eventMatchesRequest = this.snookerFeedService.getEventMatches();
-    const ongoingMatchesRequest = this.snookerFeedService.getOngoingMatches();
     const usersRequest = this.authenticationService.getUsers();
     const eventBetsRequest = this.betsService.getEventBets();
     const currentRoundRequest = this.snookerFeedService.getCurrentRoundInfo();
 
-    forkJoin([eventRoundsRequest, currentRoundRequest, eventMatchesRequest, ongoingMatchesRequest, usersRequest, eventBetsRequest]).subscribe(results => {
+    forkJoin([eventRoundsRequest, currentRoundRequest, eventMatchesRequest, usersRequest, eventBetsRequest]).subscribe(results => {
       this.eventRounds = results[0];
       this.currentRound = results[1];
       this.matches = results[2];
-      this.ongoingMatches = results[3];
-      this.users = results[4];
+      this.users = results[3];
 
       if (!this.users) {
         this.authenticationService.logout();
@@ -94,7 +91,7 @@ export class HomeComponent implements OnInit {
         return;
       }
 
-      this.eventBets = results[5];
+      this.eventBets = results[4];
 
       if (this.eventBets) {
         this.users.forEach(user => {
@@ -126,14 +123,6 @@ export class HomeComponent implements OnInit {
       this.dashboardItems = [];
       this.matches.sort(this.compareMatches);
       this.matches.forEach(match => {
-        if (this.ongoingMatches) {
-          this.ongoingMatches.forEach(ongoingMatch => {
-            if (ongoingMatch.matchId === match.matchId) {
-              match = ongoingMatch;
-            }
-          });
-        }
-
         const dashboardItem = new DashboardItem({
           roundId: match.round,
           matchId: match.matchId,

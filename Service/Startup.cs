@@ -39,6 +39,8 @@ namespace BetSnooker
             services.AddCors();
             services.AddControllers();
 
+            services.AddMemoryCache();
+
             // configure basic authentication 
             services.AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
@@ -64,13 +66,13 @@ namespace BetSnooker
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BetSnookerDatabase")));
 
             services.AddSingleton<ISettingsProvider, SettingsProvider>();
-            services.AddSingleton<ISnookerHubService, SnookerHubService>();
 
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IBetsRepository, BetsRepository>();
             services.AddScoped<IBetsService, BetsService>();
             services.AddScoped<ISnookerFeedService, SnookerFeedService>();
+            services.AddScoped<ISnookerCacheService, SnookerCacheService>();
 
             services.AddTransient<ISnookerApiService, SnookerApiService>();
         }

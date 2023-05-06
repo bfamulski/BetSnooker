@@ -8,19 +8,19 @@ namespace BetSnooker.Services.Interfaces
     public interface ISnookerFeedService
     {
         // events
-        Event GetCurrentEvent();
+        Task<Event> GetCurrentEvent();
 
         // rounds
-        IEnumerable<RoundInfoDetails> GetEventRounds();
-        RoundInfoDetails GetCurrentRound(IEnumerable<RoundInfoDetails> rounds);
-        RoundInfoDetails GetNextRound(RoundInfoDetails currentRound);
+        Task<IEnumerable<RoundInfoDetails>> GetEventRounds();
+        Task<RoundInfoDetails> GetCurrentRound(IEnumerable<RoundInfoDetails> rounds);
+        Task<RoundInfoDetails> GetNextRound(RoundInfoDetails currentRound);
 
         // matches
-        IEnumerable<MatchDetails> GetEventMatches(bool allEventMatches = false);
-        IEnumerable<MatchDetails> GetRoundMatches(int roundId);
+        Task<IEnumerable<MatchDetails>> GetEventMatches(bool allEventMatches = false);
+        Task<IEnumerable<MatchDetails>> GetRoundMatches(int roundId);
         Task<IEnumerable<MatchDetails>> GetOngoingMatches();
 
         // players
-        IEnumerable<Player> GetEventPlayers();
+        Task<IEnumerable<Player>> GetEventPlayers();
     }
 }

@@ -13,7 +13,7 @@ namespace BetSnooker.Helpers
             using (var hasher = SHA256.Create())
             {
                 byte[] passwordWithSaltBytes = Encoding.UTF8.GetBytes(string.Concat(password, Salt));
-                byte[] hashedBytes = hasher.ComputeHash(passwordWithSaltBytes);                
+                byte[] hashedBytes = hasher.ComputeHash(passwordWithSaltBytes);
                 return Convert.ToBase64String(hashedBytes);
             }
         }

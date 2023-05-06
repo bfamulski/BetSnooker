@@ -36,7 +36,7 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> Register([Required, FromBody] User user)
         {
             _logger.LogInformation($"Registering new user: {user.Username}");
-            
+
             var result = await _authenticationService.Register(user);
             if (result == null)
             {

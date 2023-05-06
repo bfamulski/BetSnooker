@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BetSnooker.Configuration
+﻿namespace BetSnooker.Configuration
 {
     public interface ISettingsProvider
     {
@@ -8,6 +6,6 @@ namespace BetSnooker.Configuration
         int StartRound { get; }
         string SnookerApiUrl { get; }
         int MaxUsers { get; }
-        TimeSpan GetMatchesInterval { get; }
+        string RequestedByHeader { get; }
     }
 }

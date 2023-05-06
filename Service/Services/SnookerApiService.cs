@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BetSnooker.Configuration;
@@ -11,14 +12,17 @@ using Newtonsoft.Json;
 
 namespace BetSnooker.Services
 {
-    public class SnookerApiService :  ISnookerApiService
+    /// <summary>
+    /// Current api.snooker.org rate limit is 10 requests per minute.
+    /// </summary>
+    public class SnookerApiService : ISnookerApiService
     {
-        private readonly string _snookerApiBaseUrl;
+        private readonly IFlurlRequest _snookerApiRequest;
         private readonly ILogger _logger;
 
         public SnookerApiService(ISettingsProvider settingsProvider, ILogger<SnookerApiService> logger)
         {
-            _snookerApiBaseUrl = settingsProvider.SnookerApiUrl;
+            _snookerApiRequest = settingsProvider.SnookerApiUrl.WithHeader("X-Requested-By", settingsProvider.RequestedByHeader);
             _logger = logger;
         }
 
@@ -32,21 +36,31 @@ namespace BetSnooker.Services
         /// <returns></returns>
         public async Task<IEnumerable<Event>> GetEvents(int season)
         {
-            var response = await _snookerApiBaseUrl.SetQueryParam("t", 5).SetQueryParam("s", season).GetAsync();
-            if (!response.ResponseMessage.IsSuccessStatusCode)
+            try
             {
-                _logger.LogError(response.ResponseMessage.ReasonPhrase);
-                return null;
-            }
+                _logger.LogDebug("api.snooker.org: getting events");
+                var response = await _snookerApiRequest.SetQueryParam("t", 5).SetQueryParam("s", season).GetAsync();
+                if (!response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    _logger.LogError(response.ResponseMessage.ReasonPhrase);
+                    return null;
+                }
 
-            var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
-            if (string.IsNullOrEmpty(responseContent))
+                var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(responseContent))
+                {
+                    return null;
+                }
+
+                _logger.LogDebug("api.snooker.org: events successfully retrieved");
+                var result = JsonConvert.DeserializeObject<IEnumerable<Event>>(responseContent);
+                return result;
+            }
+            catch (Exception ex)
             {
-                return null;
+                _logger.LogError(ex, ex.Message);
+                throw;
             }
-
-            var result = JsonConvert.DeserializeObject<IEnumerable<Event>>(responseContent);
-            return result;
         }
 
         /// <summary>
@@ -58,21 +72,31 @@ namespace BetSnooker.Services
         /// <returns></returns>
         public async Task<Event> GetEvent(int eventId)
         {
-            var response = await _snookerApiBaseUrl.SetQueryParam("e", eventId).GetAsync();
-            if (!response.ResponseMessage.IsSuccessStatusCode)
+            try
             {
-                _logger.LogError(response.ResponseMessage.ReasonPhrase);
-                return null;
-            }
+                _logger.LogDebug("api.snooker.org: getting event");
+                var response = await _snookerApiRequest.SetQueryParam("e", eventId).GetAsync();
+                if (!response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    _logger.LogError(response.ResponseMessage.ReasonPhrase);
+                    return null;
+                }
 
-            var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
-            if (string.IsNullOrEmpty(responseContent))
+                var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(responseContent))
+                {
+                    return null;
+                }
+
+                _logger.LogDebug("api.snooker.org: event successfully retrieved");
+                var result = JsonConvert.DeserializeObject<IEnumerable<Event>>(responseContent);
+                return result.SingleOrDefault();
+            }
+            catch (Exception ex)
             {
-                return null;
+                _logger.LogError(ex, ex.Message);
+                throw;
             }
-
-            var result = JsonConvert.DeserializeObject<IEnumerable<Event>>(responseContent);
-            return result.SingleOrDefault();
         }
 
         /// <summary>
@@ -86,22 +110,30 @@ namespace BetSnooker.Services
         /// <returns></returns>
         public async Task<Match> GetMatch(int eventId, int roundId, int matchNumber)
         {
-            var response = await _snookerApiBaseUrl.SetQueryParam("e", eventId).SetQueryParam("r", roundId).SetQueryParam("n", matchNumber)
-                .GetAsync();
-            if (!response.ResponseMessage.IsSuccessStatusCode)
+            try
             {
-                _logger.LogError(response.ResponseMessage.ReasonPhrase);
-                return null;
-            }
+                var response = await _snookerApiRequest.SetQueryParam("e", eventId).SetQueryParam("r", roundId).SetQueryParam("n", matchNumber)
+                    .GetAsync();
+                if (!response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    _logger.LogError(response.ResponseMessage.ReasonPhrase);
+                    return null;
+                }
 
-            var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
-            if (string.IsNullOrEmpty(responseContent))
+                var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(responseContent))
+                {
+                    return null;
+                }
+
+                var result = JsonConvert.DeserializeObject<IEnumerable<Match>>(responseContent);
+                return result.SingleOrDefault();
+            }
+            catch (Exception ex)
             {
-                return null;
+                _logger.LogError(ex, ex.Message);
+                throw;
             }
-
-            var result = JsonConvert.DeserializeObject<IEnumerable<Match>>(responseContent);
-            return result.SingleOrDefault();
         }
 
         /// <summary>
@@ -113,21 +145,29 @@ namespace BetSnooker.Services
         /// <returns></returns>
         public async Task<Player> GetPlayer(int playerId)
         {
-            var response = await _snookerApiBaseUrl.SetQueryParam("p", playerId).GetAsync();
-            if (!response.ResponseMessage.IsSuccessStatusCode)
+            try
             {
-                _logger.LogError(response.ResponseMessage.ReasonPhrase);
-                return null;
-            }
+                var response = await _snookerApiRequest.SetQueryParam("p", playerId).GetAsync();
+                if (!response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    _logger.LogError(response.ResponseMessage.ReasonPhrase);
+                    return null;
+                }
 
-            var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
-            if (string.IsNullOrEmpty(responseContent))
+                var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(responseContent))
+                {
+                    return null;
+                }
+
+                var result = JsonConvert.DeserializeObject<IEnumerable<Player>>(responseContent);
+                return result.SingleOrDefault();
+            }
+            catch (Exception ex)
             {
-                return null;
+                _logger.LogError(ex, ex.Message);
+                throw;
             }
-
-            var result = JsonConvert.DeserializeObject<IEnumerable<Player>>(responseContent);
-            return result.SingleOrDefault();
         }
 
         /// <summary>
@@ -139,21 +179,29 @@ namespace BetSnooker.Services
         /// <returns></returns>
         public async Task<IEnumerable<Match>> GetEventMatches(int eventId)
         {
-            var response = await _snookerApiBaseUrl.SetQueryParam("t", 6).SetQueryParam("e", eventId).GetAsync();
-            if (!response.ResponseMessage.IsSuccessStatusCode)
+            try
             {
-                _logger.LogError(response.ResponseMessage.ReasonPhrase);
-                return null;
-            }
+                var response = await _snookerApiRequest.SetQueryParam("t", 6).SetQueryParam("e", eventId).GetAsync();
+                if (!response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    _logger.LogError(response.ResponseMessage.ReasonPhrase);
+                    return null;
+                }
 
-            var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
-            if (string.IsNullOrEmpty(responseContent))
+                var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(responseContent))
+                {
+                    return null;
+                }
+
+                var result = JsonConvert.DeserializeObject<IEnumerable<Match>>(responseContent);
+                return result;
+            }
+            catch (Exception ex)
             {
-                return null;
+                _logger.LogError(ex, ex.Message);
+                throw;
             }
-
-            var result = JsonConvert.DeserializeObject<IEnumerable<Match>>(responseContent);
-            return result;
         }
 
         /// <summary>
@@ -164,21 +212,29 @@ namespace BetSnooker.Services
         /// <returns></returns>
         public async Task<IEnumerable<Match>> GetOngoingMatches()
         {
-            var response = await _snookerApiBaseUrl.SetQueryParam("t", 7).GetAsync();
-            if (!response.ResponseMessage.IsSuccessStatusCode)
+            try
             {
-                _logger.LogError(response.ResponseMessage.ReasonPhrase);
-                return null;
-            }
+                var response = await _snookerApiRequest.SetQueryParam("t", 7).GetAsync();
+                if (!response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    _logger.LogError(response.ResponseMessage.ReasonPhrase);
+                    return null;
+                }
 
-            var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
-            if (string.IsNullOrEmpty(responseContent))
+                var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(responseContent))
+                {
+                    return null;
+                }
+
+                var result = JsonConvert.DeserializeObject<IEnumerable<Match>>(responseContent);
+                return result;
+            }
+            catch (Exception ex)
             {
-                return null;
+                _logger.LogError(ex, ex.Message);
+                throw;
             }
-
-            var result = JsonConvert.DeserializeObject<IEnumerable<Match>>(responseContent);
-            return result;
         }
 
         /// <summary>
@@ -190,21 +246,29 @@ namespace BetSnooker.Services
         /// <returns></returns>
         public async Task<IEnumerable<Player>> GetEventPlayers(int eventId)
         {
-            var response = await _snookerApiBaseUrl.SetQueryParam("t", 9).SetQueryParam("e", eventId).GetAsync();
-            if (!response.ResponseMessage.IsSuccessStatusCode)
+            try
             {
-                _logger.LogError(response.ResponseMessage.ReasonPhrase);
-                return null;
-            }
+                var response = await _snookerApiRequest.SetQueryParam("t", 9).SetQueryParam("e", eventId).GetAsync();
+                if (!response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    _logger.LogError(response.ResponseMessage.ReasonPhrase);
+                    return null;
+                }
 
-            var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
-            if (string.IsNullOrEmpty(responseContent))
+                var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(responseContent))
+                {
+                    return null;
+                }
+
+                var result = JsonConvert.DeserializeObject<IEnumerable<Player>>(responseContent);
+                return result;
+            }
+            catch (Exception ex)
             {
-                return null;
+                _logger.LogError(ex, ex.Message);
+                throw;
             }
-
-            var result = JsonConvert.DeserializeObject<IEnumerable<Player>>(responseContent);
-            return result;
         }
 
         /// <summary>
@@ -216,21 +280,29 @@ namespace BetSnooker.Services
         /// <returns></returns>
         public async Task<IEnumerable<RoundInfo>> GetEventRounds(int eventId)
         {
-            var response = await _snookerApiBaseUrl.SetQueryParam("t", 12).SetQueryParam("e", eventId).GetAsync();
-            if (!response.ResponseMessage.IsSuccessStatusCode)
+            try
             {
-                _logger.LogError(response.ResponseMessage.ReasonPhrase);
-                return null;
-            }
+                var response = await _snookerApiRequest.SetQueryParam("t", 12).SetQueryParam("e", eventId).GetAsync();
+                if (!response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    _logger.LogError(response.ResponseMessage.ReasonPhrase);
+                    return null;
+                }
 
-            var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
-            if (string.IsNullOrEmpty(responseContent))
+                var responseContent = await response.ResponseMessage.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(responseContent))
+                {
+                    return null;
+                }
+
+                var result = JsonConvert.DeserializeObject<IEnumerable<RoundInfo>>(responseContent);
+                return result;
+            }
+            catch (Exception ex)
             {
-                return null;
+                _logger.LogError(ex, ex.Message);
+                throw;
             }
-
-            var result = JsonConvert.DeserializeObject<IEnumerable<RoundInfo>>(responseContent);
-            return result;
         }
     }
 }

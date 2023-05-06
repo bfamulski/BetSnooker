@@ -94,6 +94,11 @@
             </summary>
             <returns>Collection of rounds</returns>
         </member>
+        <member name="T:BetSnooker.Services.SnookerApiService">
+            <summary>
+            Current api.snooker.org rate limit is 10 requests per minute.
+            </summary>
+        </member>
         <!-- Badly formed XML comment ignored for member "M:BetSnooker.Services.SnookerApiService.GetEvents(System.Int32)" -->
         <member name="M:BetSnooker.Services.SnookerApiService.GetEvent(System.Int32)">
             <summary>

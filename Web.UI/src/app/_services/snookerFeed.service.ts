@@ -36,10 +36,6 @@ export class SnookerFeedService {
         return this.http.get<Match[]>(`${environment.apiUrl}/snookerFeed/matches/all`);
     }
 
-    getOngoingMatches(): Observable<Match[]> {
-        return this.http.get<Match[]>(`${environment.apiUrl}/snookerFeed/matches/ongoing`);
-    }
-
     getCurrentRoundInfo(): Observable<RoundInfo> {
         return this.http.get<RoundInfo>(`${environment.apiUrl}/snookerFeed/rounds/current`);
     }

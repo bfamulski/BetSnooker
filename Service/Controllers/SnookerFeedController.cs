@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BetSnooker.Models;
@@ -34,8 +35,17 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> GetCurrentEvent()
         {
             _logger.LogDebug("Getting current event");
-            var result = await Task.Run(() => _snookerFeedService.GetCurrentEvent());
-            return Ok(result);
+
+            try
+            {
+                var result = await _snookerFeedService.GetCurrentEvent();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
         /// <summary>
@@ -48,13 +58,22 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> GetEventMatches()
         {
             _logger.LogDebug("Getting event matches");
-            var matches = await Task.Run(() => _snookerFeedService.GetEventMatches());
-            if (matches == null || !matches.Any())
+
+            try
             {
-                return NoContent();
+                var matches = await _snookerFeedService.GetEventMatches();
+                if (matches == null || !matches.Any())
+                {
+                    return NoContent();
+                }
+
+                return Ok(matches);
             }
-            
-            return Ok(matches);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
         /// <summary>
@@ -67,13 +86,22 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> GetOngoingMatches()
         {
             _logger.LogDebug("Getting ongoing matches");
-            var matches = await Task.Run(() => _snookerFeedService.GetOngoingMatches());
-            if (matches == null || !matches.Any())
-            {
-                return NoContent();
-            }
 
-            return Ok(matches);
+            try
+            {
+                var matches = await _snookerFeedService.GetOngoingMatches();
+                if (matches == null || !matches.Any())
+                {
+                    return NoContent();
+                }
+
+                return Ok(matches);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
         /// <summary>
@@ -85,8 +113,17 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> GetCurrentRoundInfo()
         {
             _logger.LogDebug("Getting current round");
-            var result = await Task.Run(() => _snookerFeedService.GetCurrentRound(null));
-            return Ok(result);
+
+            try
+            {
+                var result = await _snookerFeedService.GetCurrentRound(null);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
         /// <summary>
@@ -99,13 +136,22 @@ namespace BetSnooker.Controllers
         public async Task<IActionResult> GetEventRounds()
         {
             _logger.LogDebug("Getting event rounds");
-            var rounds = await Task.Run(() => _snookerFeedService.GetEventRounds());
-            if (rounds == null || !rounds.Any())
-            {
-                return NoContent();
-            }
 
-            return Ok(rounds);
+            try
+            {
+                var rounds = await _snookerFeedService.GetEventRounds();
+                if (rounds == null || !rounds.Any())
+                {
+                    return NoContent();
+                }
+
+                return Ok(rounds);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

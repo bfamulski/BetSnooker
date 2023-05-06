@@ -13,28 +13,26 @@ namespace BetSnooker.Services
     public class SnookerFeedService : ISnookerFeedService
     {
         private readonly ISettingsProvider _settingsProvider;
-        private readonly ISnookerHubService _snookerHubService;
-        private readonly ISnookerApiService _snookerApiService;
+        private readonly ISnookerCacheService _snookerCacheService;
         private readonly ILogger _logger;
 
-        public SnookerFeedService(ISnookerHubService snookerHubService, ISnookerApiService snookerApiService, ISettingsProvider settingsProvider, ILogger<SnookerFeedService> logger)
+        public SnookerFeedService(ISnookerCacheService snookerCacheService, ISettingsProvider settingsProvider, ILogger<SnookerFeedService> logger)
         {
-            _snookerHubService = snookerHubService;
-            _snookerApiService = snookerApiService;
             _settingsProvider = settingsProvider;
+            _snookerCacheService = snookerCacheService;
             _logger = logger;
         }
 
-        public Event GetCurrentEvent()
+        public async Task<Event> GetCurrentEvent()
         {
-            return _snookerHubService.GetEvent();
+            return await _snookerCacheService.GetEvent(_settingsProvider.EventId);
         }
 
-        public IEnumerable<RoundInfoDetails> GetEventRounds()
+        public async Task<IEnumerable<RoundInfoDetails>> GetEventRounds()
         {
             int eventId = _settingsProvider.EventId;
             int startRound = _settingsProvider.StartRound;
-            var eventRounds = _snookerHubService.GetEventRounds().ToList();
+            var eventRounds = (await _snookerCacheService.GetEventRounds(eventId)).ToList();
             if (!eventRounds.Any())
             {
                 _logger.LogError("No event round available");
@@ -43,7 +41,7 @@ namespace BetSnooker.Services
 
             var validRounds = eventRounds.Where(r => r.EventId == eventId && r.NumMatches > 0); // some events have qualification rounds included
 
-            var eventMatches = GetEventMatches(true).ToList();
+            var eventMatches = (await GetEventMatches(true)).ToList();
             if (!eventMatches.Any())
             {
                 _logger.LogError("No event matches available");
@@ -79,11 +77,11 @@ namespace BetSnooker.Services
             return validRoundInfoDetails.Where(r => r.Round >= startRound);
         }
 
-        public RoundInfoDetails GetCurrentRound(IEnumerable<RoundInfoDetails> rounds)
+        public async Task<RoundInfoDetails> GetCurrentRound(IEnumerable<RoundInfoDetails> rounds)
         {
             if (rounds == null)
             {
-                rounds = GetEventRounds().ToList();
+                rounds = (await GetEventRounds()).ToList();
             }
 
             if (!rounds.Any())
@@ -96,18 +94,12 @@ namespace BetSnooker.Services
             // rounds are ordered by round ID
             RoundInfoDetails currentRound = rounds.FirstOrDefault(eventRound => !eventRound.Finished || eventRound.IsFinalRound);
 
-            if (currentRound != null && currentRound.IsFinalRound && currentRound.Finished)
-            {
-                _logger.LogInformation("Event finished. Disposing Snooker Hub");
-                _snookerHubService.DisposeHub();
-            }
-
             return currentRound?.Round >= _settingsProvider.StartRound ? currentRound : null;
         }
 
-        public RoundInfoDetails GetNextRound(RoundInfoDetails currentRound)
+        public async Task<RoundInfoDetails> GetNextRound(RoundInfoDetails currentRound)
         {
-            var eventRounds = GetEventRounds().ToList();
+            var eventRounds = (await GetEventRounds()).ToList();
             if (!eventRounds.Any())
             {
                 _logger.LogWarning("Could not get event rounds");
@@ -118,9 +110,9 @@ namespace BetSnooker.Services
             return eventRounds.FirstOrDefault(round => round.Round > currentRound.Round);
         }
 
-        public IEnumerable<MatchDetails> GetEventMatches(bool allEventMatches = false)
+        public async Task<IEnumerable<MatchDetails>> GetEventMatches(bool allEventMatches = false)
         {
-            IEnumerable<Match> eventMatches = _snookerHubService.GetEventMatches().ToList();
+            var eventMatches = await _snookerCacheService.GetEventMatches(_settingsProvider.EventId);
             if (!eventMatches.Any())
             {
                 _logger.LogWarning("Could not get any event matches");
@@ -129,19 +121,19 @@ namespace BetSnooker.Services
             
             if (allEventMatches)
             {
-                return ConvertToMatchDetails(eventMatches);
+                return await ConvertToMatchDetails(eventMatches);
             }
 
             var startRoundId = _settingsProvider.StartRound;
             var filteredMatches = eventMatches.Where(match => match.Round >= startRoundId).ToList();
             return filteredMatches.Any()
-                ? ConvertToMatchDetails(filteredMatches)
+                ? await ConvertToMatchDetails(filteredMatches)
                 : new List<MatchDetails>();
         }
 
         public async Task<IEnumerable<MatchDetails>> GetOngoingMatches()
         {
-            IEnumerable<Match> ongoingMatches = await _snookerApiService.GetOngoingMatches();
+            IEnumerable<Match> ongoingMatches = await _snookerCacheService.GetOngoingMatches();
             if (ongoingMatches == null || !ongoingMatches.Any())
             {
                 return null;
@@ -151,28 +143,28 @@ namespace BetSnooker.Services
             var startRoundId = _settingsProvider.StartRound;
             var filteredMatches = ongoingMatches.Where(match => match.EventId == eventId && match.Round >= startRoundId).ToList();
             return filteredMatches.Any()
-                ? ConvertToMatchDetails(filteredMatches)
+                ? await ConvertToMatchDetails(filteredMatches)
                 : new List<MatchDetails>();
         }
 
-        public IEnumerable<MatchDetails> GetRoundMatches(int roundId)
+        public async Task<IEnumerable<MatchDetails>> GetRoundMatches(int roundId)
         {
-            var eventMatches = GetEventMatches();
+            var eventMatches = await GetEventMatches();
             var roundMatches = eventMatches.Where(m => m.Round == roundId);
             return roundMatches;
         }
 
-        public IEnumerable<Player> GetEventPlayers()
+        public async Task<IEnumerable<Player>> GetEventPlayers()
         {
-            return _snookerHubService.GetEventPlayers();
+            return await _snookerCacheService.GetEventPlayers(_settingsProvider.EventId);
         }
 
-        private IEnumerable<MatchDetails> ConvertToMatchDetails(IEnumerable<Match> matches)
+        private async Task<IEnumerable<MatchDetails>> ConvertToMatchDetails(IEnumerable<Match> matches)
         {
             var matchDetailsCollection = new List<MatchDetails>();
 
-            var players = GetEventPlayers().ToList();
-            var eventRounds = GetEventRoundInfos();
+            var players = (await GetEventPlayers()).ToList();
+            var eventRounds = await GetEventRoundInfos();
             if (!players.Any() || !eventRounds.Any())
             {
                 return matchDetailsCollection;
@@ -203,9 +195,9 @@ namespace BetSnooker.Services
             return matchDetailsCollection.AsEnumerable().OrderBy(m => m.Id);
         }
 
-        private List<RoundInfo> GetEventRoundInfos()
+        private async Task<List<RoundInfo>> GetEventRoundInfos()
         {
-            var eventRounds = _snookerHubService.GetEventRounds();
+            var eventRounds = await _snookerCacheService.GetEventRounds(_settingsProvider.EventId);
             var validRounds = eventRounds.Where(r => r.NumMatches > 0);
             return validRounds.ToList();
         }
