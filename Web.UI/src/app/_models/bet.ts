@@ -1,7 +1,10 @@
 export class EventBets {
     userId: string;
-    isWinner: boolean;
     roundBets: RoundBets[];
+    userScore: UserScore;
+}
+
+export class UserScore {
     matchesFinished: number;
     eventScore: number;
     correctWinners: number;
@@ -9,6 +12,7 @@ export class EventBets {
     correctWinnersAccuracy: number;
     exactScoresAccuracy: number;
     averageError: number;
+    isWinner: boolean;
 }
 
 export class RoundBets {

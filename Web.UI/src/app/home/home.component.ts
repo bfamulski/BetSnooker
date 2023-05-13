@@ -98,14 +98,14 @@ export class HomeComponent implements OnInit {
           const userEventBets = this.eventBets.filter(b => b.userId === user.username)[0];
           if (userEventBets) {
             this.usersScores[user.username] = {
-              isWinner: userEventBets.isWinner,
-              matchesFinished: userEventBets.matchesFinished,
-              eventScore: userEventBets.eventScore,
-              correctWinners: userEventBets.correctWinners,
-              exactScores: userEventBets.exactScores,
-              correctWinnersAccuracy: this.formatAccuracyValue(userEventBets.correctWinnersAccuracy),
-              exactScoresAccuracy: this.formatAccuracyValue(userEventBets.exactScoresAccuracy),
-              averageError: this.formatAverageError(userEventBets.averageError)
+              isWinner: userEventBets.userScore.isWinner,
+              matchesFinished: userEventBets.userScore.matchesFinished,
+              eventScore: userEventBets.userScore.eventScore,
+              correctWinners: userEventBets.userScore.correctWinners,
+              exactScores: userEventBets.userScore.exactScores,
+              correctWinnersAccuracy: this.formatAccuracyValue(userEventBets.userScore.correctWinnersAccuracy),
+              exactScoresAccuracy: this.formatAccuracyValue(userEventBets.userScore.exactScoresAccuracy),
+              averageError: this.formatAverageError(userEventBets.userScore.averageError)
             };
 
             user.eventScore = this.usersScores[user.username].eventScore;

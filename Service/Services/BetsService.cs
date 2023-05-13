@@ -13,22 +13,26 @@ namespace BetSnooker.Services
 {
     public class BetsService : IBetsService
     {
-        private const int UnknownPlayerId = 376;
-
         private readonly IBetsRepository _betsRepository;
         private readonly ISnookerFeedService _snookerFeedService;
         private readonly ISettingsProvider _settingsProvider;
+        private readonly IScoreCalculation _scoreCalculation;
         private readonly ILogger _logger;
 
-        public BetsService(IBetsRepository betsRepository, ISnookerFeedService snookerFeedService, ISettingsProvider settingsProvider, ILogger<BetsService> logger)
+        public BetsService(
+            IBetsRepository betsRepository,
+            ISnookerFeedService snookerFeedService,
+            ISettingsProvider settingsProvider,
+            IScoreCalculation scoreCalculation,
+            ILogger<BetsService> logger)
         {
             _betsRepository = betsRepository;
             _snookerFeedService = snookerFeedService;
             _settingsProvider = settingsProvider;
+            _scoreCalculation = scoreCalculation;
             _logger = logger;
         }
 
-        // TODO: refactor this method
         public async Task<IEnumerable<EventBets>> GetEventBets()
         {
             var eventId = _settingsProvider.EventId;
@@ -56,108 +60,8 @@ namespace BetSnooker.Services
 
             var eventMatches = await _snookerFeedService.GetEventMatches();
 
-            var allUsersEventBets = new List<EventBets>();
-            var eventBetsGroupedByUser = eventBets.GroupBy(b => b.UserId);
-            foreach (var betsGrouped in eventBetsGroupedByUser)
-            {
-                int matchesCount = 0;
-                double eventScore = 0.0;
-                int correctWinners = 0;
-                int exactScores = 0;
-                int aggregatedErrors = 0;
-                int matchesWithErrorsCount = 0;
-
-                foreach (var userRoundBets in betsGrouped)
-                {
-                    double roundScore = 0.0;
-                    foreach (var matchBet in userRoundBets.MatchBets)
-                    {
-                        // mark bet as placed
-                        if (matchBet.Score1.HasValue && matchBet.Score2.HasValue)
-                        {
-                            matchBet.BetPlaced = true;
-                        }
-
-                        var eventMatch = eventMatches.SingleOrDefault(m => m.MatchId == matchBet.MatchId);
-                        if (eventMatch == null)
-                        {
-                            continue;
-                        }
-
-                        // do not return match bet if match has not yet started
-                        if (eventMatch.ActualStartDate != null && eventMatch.ActualStartDate.Value.ToLocalTime() > DateTime.Now)
-                        {
-                            matchBet.Score1 = null;
-                            matchBet.Score2 = null;
-                            continue;
-                        }
-
-                        // skip walk-overs
-                        if (eventMatch.WinnerId == 0 || eventMatch.Walkover1 || eventMatch.Walkover2)
-                        {
-                            continue;
-                        }
-
-                        // calculate stats
-                        matchesCount++;
-                        CalculateScore(eventMatch, matchBet, userRoundBets.Distance);
-
-                        if (matchBet.ScoreValue.HasValue)
-                        {
-                            roundScore += matchBet.ScoreValue.Value;
-                        }
-
-                        if (eventMatch.Score1 == matchBet.Score1 && eventMatch.Score2 == matchBet.Score2)
-                        {
-                            exactScores++;
-                        }
-
-                        if (eventMatch.WinnerId == matchBet.WinnerId)
-                        {
-                            correctWinners++;
-                        }
-
-                        if (matchBet.Error.HasValue)
-                        {
-                            aggregatedErrors += matchBet.Error.Value;
-                            matchesWithErrorsCount++;
-                        }
-                    }
-
-                    userRoundBets.RoundScore = roundScore;
-                    eventScore += userRoundBets.RoundScore.Value;
-                }
-
-                allUsersEventBets.Add(new EventBets
-                                      {
-                                          UserId = betsGrouped.Key,
-                                          RoundBets = betsGrouped,
-                                          MatchesFinished = matchesCount,
-                                          EventScore = eventScore,
-                                          CorrectWinners = correctWinners,
-                                          ExactScores = exactScores,
-                                          CorrectWinnersAccuracy = matchesCount != 0 ? (double)correctWinners / matchesCount : 0.0,
-                                          ExactScoresAccuracy = matchesCount != 0 ? (double)exactScores / matchesCount : 0.0,
-                                          AverageError = matchesWithErrorsCount != 0 ? (double)aggregatedErrors / matchesWithErrorsCount : (double?)null
-                                      });
-            }
-
-            // mark the winner/s
-            MarkWinners();
-
+            var allUsersEventBets = _scoreCalculation.CalculateAllScores(eventBets, eventMatches, currentRound);
             return allUsersEventBets;
-
-            void MarkWinners()
-            {
-                if (currentRound.IsFinalRound && currentRound.Finished)
-                {
-                    var maxScore = allUsersEventBets.Max(b => b.EventScore);
-                    foreach (var bet in allUsersEventBets.Where(bet => AreEqual(bet.EventScore, maxScore)))
-                    {
-                        bet.IsWinner = true;
-                    }
-                }
-            }
         }
 
         public async Task<IEnumerable<RoundBets>> GetUserBets(string userId)
@@ -220,41 +124,6 @@ namespace BetSnooker.Services
             return SubmitResult.Success;
         }
 
-        // this logic is handled in the controller
-        public async Task<SubmitResult> SubmitBetsV2(string userId, IEnumerable<RoundBets> bets)
-        {
-            foreach (var roundBets in bets)
-            {
-                var canSubmitBets = CanSubmitBets(roundBets);
-                if (!canSubmitBets)
-                {
-                    return SubmitResult.InvalidRound;
-                }
-
-                var betsInvalid = ValidateBets(roundBets);
-                if (betsInvalid)
-                {
-                    return SubmitResult.ValidationError;
-                }
-
-                roundBets.UserId = userId;
-                roundBets.EventId = _settingsProvider.EventId;
-                roundBets.UpdatedAt = DateTime.UtcNow;
-
-                try
-                {
-                    await _betsRepository.SubmitBets(roundBets);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, ex.Message);
-                    return SubmitResult.InternalServerError;
-                }
-            }
-
-            return SubmitResult.Success;
-        }
-
         private bool CanSubmitBets(RoundBets bets)
         {
             var startRound = _settingsProvider.StartRound;
@@ -271,30 +140,6 @@ namespace BetSnooker.Services
                                                      || bet.Score1 > maxScore || bet.Score2 > maxScore
                                                      || bet.Score1 < 0 || bet.Score2 < 0
                                                      || (bet.Score1 < maxScore && bet.Score2 < maxScore))));
-        }
-
-        private void CalculateScore(MatchDetails eventMatch, Bet matchBet, int matchDistance)
-        {
-            if (eventMatch.WinnerId == 0 || eventMatch.Walkover1 || eventMatch.Walkover2)
-            {
-                matchBet.ScoreValue = null;
-                return;
-            }
-
-            if (eventMatch.WinnerId == matchBet.WinnerId)
-            {
-                var error = matchBet.WinnerId == matchBet.Player1Id
-                    ? Math.Abs(eventMatch.Score2 - matchBet.Score2.Value)
-                    : Math.Abs(eventMatch.Score1 - matchBet.Score1.Value);
-
-                matchBet.ScoreValue = Math.Max(1, matchDistance / Math.Pow(2, error));
-                matchBet.Error = error;
-            }
-            else
-            {
-                matchBet.ScoreValue = 0.0;
-                matchBet.Error = null;
-            }
         }
 
         private async Task<RoundBets> GetUserBetsForRound(string userId, int eventId, RoundInfoDetails round, List<Player> players)
@@ -355,22 +200,12 @@ namespace BetSnooker.Services
 
         private bool IsBetActive(MatchDetails match)
         {
-            return match.Player1Id != UnknownPlayerId &&
-                   match.Player2Id != UnknownPlayerId &&
+            return match.Player1Id != _settingsProvider.UnknownPlayerId &&
+                   match.Player2Id != _settingsProvider.UnknownPlayerId &&
                    !match.Walkover1 &&
                    !match.Walkover2 &&
                    match.ActualStartDate.HasValue &&
                    match.ActualStartDate.Value.ToLocalTime() >= DateTime.Now;
-        }
-
-        private bool AreEqual(double? val1, double? val2)
-        {
-            if (!val1.HasValue || !val2.HasValue)
-            {
-                return false;
-            }
-
-            return Math.Abs(val1.Value - val2.Value) <= double.Epsilon;
         }
     }
 }

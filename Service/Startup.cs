@@ -73,6 +73,7 @@ namespace BetSnooker
             services.AddScoped<IBetsService, BetsService>();
             services.AddScoped<ISnookerFeedService, SnookerFeedService>();
             services.AddScoped<ISnookerCacheService, SnookerCacheService>();
+            services.AddScoped<IScoreCalculation, ScoreCalculation>();
 
             services.AddTransient<ISnookerApiService, SnookerApiService>();
         }
