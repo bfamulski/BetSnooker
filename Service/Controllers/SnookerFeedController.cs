@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BetSnooker.Models;
 using BetSnooker.Models.API;
 using BetSnooker.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -34,17 +35,17 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(200, Type = typeof(Event))]
         public async Task<IActionResult> GetCurrentEvent()
         {
-            _logger.LogDebug("Getting current event");
-
             try
             {
+                _logger.LogDebug("Getting current event");
                 var result = await _snookerFeedService.GetCurrentEvent();
+                _logger.LogDebug("Current event retrieved successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -57,22 +58,23 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> GetEventMatches()
         {
-            _logger.LogDebug("Getting event matches");
-
             try
             {
+                _logger.LogDebug("Getting event matches");
                 var matches = await _snookerFeedService.GetEventMatches();
                 if (matches == null || !matches.Any())
                 {
+                    _logger.LogWarning("No event matches retrieved");
                     return NoContent();
                 }
 
+                _logger.LogDebug("Event matches retrieved successfully");
                 return Ok(matches);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -85,22 +87,23 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> GetOngoingMatches()
         {
-            _logger.LogDebug("Getting ongoing matches");
-
             try
             {
+                _logger.LogDebug("Getting ongoing matches");
                 var matches = await _snookerFeedService.GetOngoingMatches();
                 if (matches == null || !matches.Any())
                 {
+                    _logger.LogInformation("No ongoing matches retrieved");
                     return NoContent();
                 }
 
+                _logger.LogDebug("Ongoing matches retrieved successfully");
                 return Ok(matches);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -112,17 +115,17 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(200, Type = typeof(RoundInfoDetails))]
         public async Task<IActionResult> GetCurrentRoundInfo()
         {
-            _logger.LogDebug("Getting current round");
-
             try
             {
+                _logger.LogDebug("Getting current round");
                 var result = await _snookerFeedService.GetCurrentRound(null);
+                _logger.LogDebug("Current round retrieved successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -135,22 +138,23 @@ namespace BetSnooker.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> GetEventRounds()
         {
-            _logger.LogDebug("Getting event rounds");
-
             try
             {
+                _logger.LogDebug("Getting event rounds");
                 var rounds = await _snookerFeedService.GetEventRounds();
                 if (rounds == null || !rounds.Any())
                 {
+                    _logger.LogWarning("No event rounds retrieved");
                     return NoContent();
                 }
 
+                _logger.LogDebug("Event rounds retrieved successfully");
                 return Ok(rounds);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }

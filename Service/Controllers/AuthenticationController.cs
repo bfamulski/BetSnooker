@@ -91,7 +91,7 @@ namespace BetSnooker.Controllers
                 return NoContent();
             }
 
-            _logger.LogDebug($"Found users: {string.Join(',', users.Select(u => u.Username))}");
+            _logger.LogDebug("Users retrieved successfully");
             return Ok(users);
         }
     }

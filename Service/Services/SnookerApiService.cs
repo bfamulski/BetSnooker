@@ -112,6 +112,7 @@ namespace BetSnooker.Services
         {
             try
             {
+                _logger.LogDebug("api.snooker.org: getting match by ID");
                 var response = await _snookerApiRequest.SetQueryParam("e", eventId).SetQueryParam("r", roundId).SetQueryParam("n", matchNumber)
                     .GetAsync();
                 if (!response.ResponseMessage.IsSuccessStatusCode)
@@ -126,6 +127,7 @@ namespace BetSnooker.Services
                     return null;
                 }
 
+                _logger.LogDebug("api.snooker.org: match by ID successfully retrieved");
                 var result = JsonConvert.DeserializeObject<IEnumerable<Match>>(responseContent);
                 return result.SingleOrDefault();
             }
@@ -147,6 +149,7 @@ namespace BetSnooker.Services
         {
             try
             {
+                _logger.LogDebug("api.snooker.org: getting player by ID");
                 var response = await _snookerApiRequest.SetQueryParam("p", playerId).GetAsync();
                 if (!response.ResponseMessage.IsSuccessStatusCode)
                 {
@@ -160,6 +163,7 @@ namespace BetSnooker.Services
                     return null;
                 }
 
+                _logger.LogDebug("api.snooker.org: player by ID successfully retrieved");
                 var result = JsonConvert.DeserializeObject<IEnumerable<Player>>(responseContent);
                 return result.SingleOrDefault();
             }
@@ -181,6 +185,7 @@ namespace BetSnooker.Services
         {
             try
             {
+                _logger.LogDebug("api.snooker.org: getting event matches");
                 var response = await _snookerApiRequest.SetQueryParam("t", 6).SetQueryParam("e", eventId).GetAsync();
                 if (!response.ResponseMessage.IsSuccessStatusCode)
                 {
@@ -194,6 +199,7 @@ namespace BetSnooker.Services
                     return null;
                 }
 
+                _logger.LogDebug("api.snooker.org: event matches successfully retrieved");
                 var result = JsonConvert.DeserializeObject<IEnumerable<Match>>(responseContent);
                 return result;
             }
@@ -214,6 +220,7 @@ namespace BetSnooker.Services
         {
             try
             {
+                _logger.LogDebug("api.snooker.org: getting ongoing matches");
                 var response = await _snookerApiRequest.SetQueryParam("t", 7).GetAsync();
                 if (!response.ResponseMessage.IsSuccessStatusCode)
                 {
@@ -227,6 +234,7 @@ namespace BetSnooker.Services
                     return null;
                 }
 
+                _logger.LogDebug("api.snooker.org: ongoing matches successfully retrieved");
                 var result = JsonConvert.DeserializeObject<IEnumerable<Match>>(responseContent);
                 return result;
             }
@@ -248,6 +256,7 @@ namespace BetSnooker.Services
         {
             try
             {
+                _logger.LogDebug("api.snooker.org: getting event players");
                 var response = await _snookerApiRequest.SetQueryParam("t", 9).SetQueryParam("e", eventId).GetAsync();
                 if (!response.ResponseMessage.IsSuccessStatusCode)
                 {
@@ -261,6 +270,7 @@ namespace BetSnooker.Services
                     return null;
                 }
 
+                _logger.LogDebug("api.snooker.org: event players successfully retrieved");
                 var result = JsonConvert.DeserializeObject<IEnumerable<Player>>(responseContent);
                 return result;
             }
@@ -282,6 +292,7 @@ namespace BetSnooker.Services
         {
             try
             {
+                _logger.LogDebug("api.snooker.org: getting event rounds");
                 var response = await _snookerApiRequest.SetQueryParam("t", 12).SetQueryParam("e", eventId).GetAsync();
                 if (!response.ResponseMessage.IsSuccessStatusCode)
                 {
@@ -295,6 +306,7 @@ namespace BetSnooker.Services
                     return null;
                 }
 
+                _logger.LogDebug("api.snooker.org: event rounds successfully retrieved");
                 var result = JsonConvert.DeserializeObject<IEnumerable<RoundInfo>>(responseContent);
                 return result;
             }

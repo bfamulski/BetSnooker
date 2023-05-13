@@ -39,7 +39,7 @@ namespace BetSnooker.Services
                 return null;
             }
 
-            var validRounds = eventRounds.Where(r => r.EventId == eventId && r.NumMatches > 0); // some events have qualification rounds included
+            var validRounds = eventRounds.Where(r => r.EventId == eventId && r.NumMatches > 0); // some events have qualification rounds included, omit them
 
             var eventMatches = (await GetEventMatches(true)).ToList();
             if (!eventMatches.Any())
@@ -118,7 +118,7 @@ namespace BetSnooker.Services
                 _logger.LogWarning("Could not get any event matches");
                 return new List<MatchDetails>();
             }
-            
+
             if (allEventMatches)
             {
                 return await ConvertToMatchDetails(eventMatches);
