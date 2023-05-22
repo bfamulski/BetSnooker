@@ -25,7 +25,7 @@ import {
   twCls,
   width,
 } from 'style';
-import { Notification } from 'components';
+import { Notification, Spinner } from 'components';
 
 export const LoginPage = () => {
   const authUser = useRecoilValue(authUserState);
@@ -35,6 +35,7 @@ export const LoginPage = () => {
 
   const [credentials, setCredentials] = useState<Credentials>({} as Credentials);
 
+  const [isInProgress, setIsInProgress] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -46,12 +47,15 @@ export const LoginPage = () => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
+    setIsInProgress(true);
     try {
       await signIn(credentials);
     } catch (error) {
       console.error(error);
       const errorMessage = ErrorHelper.formatErrorMessage(error);
       setError(errorMessage);
+    } finally {
+      setIsInProgress(false);
     }
   };
 
@@ -141,10 +145,13 @@ export const LoginPage = () => {
                   variant="contained"
                   type="submit"
                   color="success"
-                  className={twCls(backgroundColor('bg-green-700', 'disabled:bg-green-200'))}
-                  disabled={!credentials.username || !credentials.password}
+                  className={twCls(backgroundColor('bg-green-700'))}
+                  disabled={!credentials.username || !credentials.password || isInProgress}
                 >
-                  Login
+                  <div className={twCls(display('flex'), alignItems('items-center'), gap('gap-x-2'))}>
+                    {isInProgress && <Spinner size={20} />}
+                    Login
+                  </div>
                 </Button>
               </div>
             </form>
