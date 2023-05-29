@@ -7,3 +7,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@layer base {
+  html[data-theme='default'] {
+    --color-primary-background: 0 133 128;
+    --color-primary-background-from: 254 209 3;
+    --color-primary-background-to: 255 230 142;
+    --color-primary-text: 0 0 0;
+    --color-secondary-background: 0 133 128;
+    --color-secondary-background-from: 100 100 100;
+    --color-secondary-background-to: 100 100 100;
+    --color-secondary-text: 0 0 0;
+    --color-avatar: 220 38 38;
+  }
+}

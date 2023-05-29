@@ -8,11 +8,13 @@ import { Logout } from '@mui/icons-material';
 import {
   alignItems,
   backgroundColor,
+  backgroundImage,
   combineCls,
   display,
   fontSize,
   fontWeight,
   gap,
+  gradientColorStops,
   height,
   justifyContent,
   padding,
@@ -47,9 +49,10 @@ export const NavigationHeader = () => {
         width('w-full'),
         display('flex'),
         justifyContent('justify-between'),
-        backgroundColor('bg-green-700'),
-        textColor('text-white'),
-        alignItems('items-center')
+        alignItems('items-center'),
+        backgroundImage('bg-gradient-to-r'),
+        gradientColorStops('from-primary-background-from', 'to-primary-background-to'),
+        textColor('text-primary-text')
       )}
     >
       <nav className={twCls(display('flex'))}>
@@ -60,10 +63,17 @@ export const NavigationHeader = () => {
         ))}
       </nav>
       <Button className={twCls(display('flex'), gap('gap-x-2'))} onClick={handleClick}>
-        <span className={twCls(textColor('text-white'), textTransform('normal-case'), fontSize('text-base'))}>
+        <span
+          className={twCls(
+            textColor('text-primary-text'),
+            textTransform('normal-case'),
+            fontSize('text-base')
+            // fontWeight('font-bold')
+          )}
+        >
           {authUser?.username}
         </span>
-        <Avatar className={twCls(height('h-7'), width('w-7'), backgroundColor('bg-red-600'))}>
+        <Avatar className={twCls(height('h-7'), width('w-7'), backgroundColor('bg-avatar'))}>
           {authUser?.username.slice(0, 1)}
         </Avatar>
       </Button>
